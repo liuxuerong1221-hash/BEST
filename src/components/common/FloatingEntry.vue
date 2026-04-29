@@ -1,5 +1,5 @@
 <template>
-  <button class="floating-entry" type="button" aria-label="会议室">
+  <button class="floating-entry" type="button" aria-label="会议室" @click="goToMeetingRoom">
     <span class="floating-entry__icon" aria-hidden="true">
       <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -22,6 +22,15 @@
     <span class="floating-entry__text">会议室</span>
   </button>
 </template>
+
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+function goToMeetingRoom() {
+  router.push({ name: 'meeting-room' })
+}
+</script>
 
 <style lang="scss" scoped>
 .floating-entry {
