@@ -23,7 +23,7 @@
           <div
             class="floor-selector__right"
             :class="{ 'floor-selector__right--active': activeFloor === b.key }"
-            @click="activeFloor = b.key"
+            @click="selectFloor(b)"
           >
             <span class="floor-selector__diamond-wrap">
               <span class="floor-selector__diamond" />
@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 
 interface Building {
   key: string
@@ -67,9 +67,32 @@ const buildings = reactive<Building[]>([
   { key: 'b6', name: '建筑楼6', floor: 'B1F' },
 ])
 
+const props = defineProps<{
+  selectedFloor?: string
+}>()
+
+const emit = defineEmits<{
+  floorChange: [floor: string]
+}>()
+
 const activeBuilding = ref('b2')
 const activeFloor = ref('b5')
 const expanded = ref(true)
+
+watch(
+  () => props.selectedFloor,
+  floor => {
+    if (!floor) return
+    const target = buildings.find(item => item.floor === floor)
+    if (target) activeFloor.value = target.key
+  },
+  { immediate: true },
+)
+
+function selectFloor(building: Building) {
+  activeFloor.value = building.key
+  emit('floorChange', building.floor)
+}
 </script>
 
 <style lang="scss" scoped>

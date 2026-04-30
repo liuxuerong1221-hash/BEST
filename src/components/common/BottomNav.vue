@@ -5,7 +5,8 @@
       :key="tab.key"
       class="bottom-nav__tab"
       :class="{ 'bottom-nav__tab--active': activeTab === tab.key }"
-      @click="activeTab = tab.key"
+      type="button"
+      @click="onSelect(tab.key)"
     >
       <img class="bottom-nav__tab-bg" :src="activeTab === tab.key ? bgActive : bgInactive" alt="" />
       <span class="bottom-nav__tab-label">{{ tab.label }}</span>
@@ -14,17 +15,40 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import bgActive   from '@/assets/images/tab选中背景.png'
 import bgInactive from '@/assets/images/tab未选中背景.png'
 
-const tabs = [
-  { key: 'overview',  label: '综合态势' },
-  { key: 'access',    label: '通行态势' },
-  { key: 'security',  label: '安全态势' },
-  { key: 'energy',    label: '设备能耗' },
+type TabKey = 'overview' | 'access' | 'security' | 'energy'
+
+interface Tab {
+  key: TabKey
+  label: string
+  routeName?: string
+}
+
+const tabs: Tab[] = [
+  { key: 'overview', label: '综合态势', routeName: 'dashboard' },
+  { key: 'access',   label: '通行态势', routeName: 'access' },
+  { key: 'security', label: '安全态势' },
+  { key: 'energy',   label: '设备能耗' },
 ]
-const activeTab = ref('overview')
+
+const router = useRouter()
+const route = useRoute()
+
+const activeTab = computed<TabKey>(() => {
+  const match = tabs.find(t => t.routeName === route.name)
+  return match?.key ?? 'overview'
+})
+
+function onSelect(key: TabKey) {
+  const target = tabs.find(t => t.key === key)
+  if (target?.routeName && target.routeName !== route.name) {
+    router.push({ name: target.routeName })
+  }
+}
 </script>
 
 <style lang="scss" scoped>

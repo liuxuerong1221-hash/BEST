@@ -15,7 +15,11 @@
       <!-- 左侧：会议室面板 -->
       <aside class="meeting-room__left">
         <MeetingStatsPanel />
-        <MeetingListPanel />
+        <MeetingListPanel
+          :meetings="meetingMarkers"
+          :selected-id="selectedMeetingId"
+          @select="selectMeeting"
+        />
       </aside>
 
       <!-- 返回入口（位于左侧栏右侧、地图区上方） -->
@@ -39,7 +43,7 @@
       <section class="meeting-room__center">
         <div class="meeting-room__map">
           <MapMarker
-            v-for="marker in meetingMarkers"
+            v-for="marker in visibleMarkers"
             :key="marker.id"
             :x="marker.x"
             :y="marker.y"
@@ -49,14 +53,17 @@
           />
           <div class="meeting-room__map-controls">
             <Compass />
-            <FloorSelector />
+            <FloorSelector
+              :selected-floor="selectedFloor"
+              @floor-change="selectFloor"
+            />
           </div>
         </div>
       </section>
 
       <!-- 右侧：摄像头数据看板 -->
-      <aside class="meeting-room__right">
-        <CameraViewPanel :room="selectedMeeting" />
+      <aside v-if="cameraVisible" class="meeting-room__right">
+        <CameraViewPanel :room="selectedMeeting" @close="cameraVisible = false" />
       </aside>
     </main>
 
@@ -87,23 +94,44 @@ interface MeetingMarker {
   capacity: number
   location: string
   status: RoomStatus
+  floor: string
   x: number
   y: number
 }
 
 const meetingMarkers = [
-  { id: 1, name: '一楼203会议室', capacity: 272, location: '1号楼2层', status: 'in-use', x: 44, y: 46 },
-  { id: 2, name: '二楼会议厅', capacity: 86, location: '2号楼4层', status: 'idle', x: 57, y: 38 },
-  { id: 3, name: '三楼小会议室', capacity: 24, location: '3号楼3层', status: 'reserved', x: 63, y: 58 },
+  { id: 1, name: '一楼203会议室', capacity: 272, location: '1号楼2层', status: 'in-use', floor: '2F', x: 44, y: 46 },
+  { id: 2, name: '二楼会议厅', capacity: 86, location: '2号楼4层', status: 'idle', floor: '4F', x: 57, y: 38 },
+  { id: 3, name: '三楼小会议室', capacity: 24, location: '3号楼3层', status: 'reserved', floor: '3F', x: 63, y: 58 },
+  { id: 4, name: '一楼101会议室', capacity: 32, location: '1号楼1层', status: 'idle', floor: '1F', x: 39, y: 60 },
+  { id: 5, name: '一楼105洽谈室', capacity: 12, location: '1号楼1层', status: 'reserved', floor: '1F', x: 49, y: 64 },
+  { id: 6, name: '二楼201会议室', capacity: 48, location: '1号楼2层', status: 'in-use', floor: '2F', x: 52, y: 51 },
+  { id: 7, name: '二楼208培训室', capacity: 120, location: '2号楼2层', status: 'idle', floor: '2F', x: 68, y: 45 },
+  { id: 8, name: '三楼301会议室', capacity: 36, location: '3号楼3层', status: 'in-use', floor: '3F', x: 59, y: 69 },
+  { id: 9, name: '四楼401多功能厅', capacity: 160, location: '4号楼4层', status: 'reserved', floor: '4F', x: 72, y: 61 },
+  { id: 10, name: '五楼501董事会议室', capacity: 28, location: '5号楼5层', status: 'idle', floor: '5F', x: 47, y: 33 },
 ] satisfies MeetingMarker[]
 
 const selectedMeetingId = ref(meetingMarkers[0].id)
+const selectedFloor = ref(meetingMarkers[0].floor)
+const cameraVisible = ref(true)
+const visibleMarkers = computed(() =>
+  meetingMarkers.filter(marker => marker.floor === selectedFloor.value),
+)
 const selectedMeeting = computed(() =>
   meetingMarkers.find(marker => marker.id === selectedMeetingId.value) ?? meetingMarkers[0],
 )
 
 function selectMeeting(id: number) {
   selectedMeetingId.value = id
+  selectedFloor.value = selectedMeeting.value.floor
+  cameraVisible.value = true
+}
+
+function selectFloor(floor: string) {
+  selectedFloor.value = floor
+  const firstVisible = meetingMarkers.find(marker => marker.floor === floor)
+  if (firstVisible) selectedMeetingId.value = firstVisible.id
 }
 
 function goBack() {

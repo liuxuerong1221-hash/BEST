@@ -13,6 +13,11 @@ const router = createRouter({
       name: 'meeting-room',
       component: () => import('@/views/MeetingRoomView.vue'),
     },
+    {
+      path: '/access',
+      name: 'access',
+      component: () => import('@/views/AccessView.vue'),
+    },
   ],
 })
 

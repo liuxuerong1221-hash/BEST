@@ -1,5 +1,5 @@
 <template>
-  <BasePanel class="meeting-list" title="会议列表">
+  <BasePanel class="meeting-list" title="会议室列表">
     <!-- 搜索 + 筛选 -->
     <div class="meeting-list__toolbar">
       <label class="search-input">
@@ -42,7 +42,17 @@
       </div>
 
       <div class="meeting-list__body">
-        <div v-for="m in filtered" :key="m.id" class="meeting-row">
+        <div
+          v-for="m in filtered"
+          :key="m.id"
+          class="meeting-row meeting-row--selectable"
+          :class="{ 'meeting-row--selected': m.id === selectedId }"
+          role="button"
+          tabindex="0"
+          @click="emit('select', m.id)"
+          @keydown.enter.prevent="emit('select', m.id)"
+          @keydown.space.prevent="emit('select', m.id)"
+        >
           <span class="meeting-row__name">{{ m.name }}</span>
           <span class="meeting-row__capacity meeting-row__num">{{ m.capacity }}</span>
           <span class="meeting-row__location">{{ m.location }}</span>
@@ -71,6 +81,24 @@ interface Meeting {
   status: MeetingStatus
 }
 
+const props = withDefaults(defineProps<{
+  meetings?: Meeting[]
+  selectedId?: number
+}>(), {
+  meetings: () => Array.from({ length: 47 }, (_, i) => ({
+    id: i + 1,
+    name: i % 3 === 0 ? '一楼101会议室' : i % 3 === 1 ? '二楼会议厅' : '三楼小会议室',
+    capacity: [23, 12, 8, 16, 30][i % 5],
+    location: `${(i % 4) + 1}号楼-${(i % 6) + 1}层`,
+    status: (['in-use', 'idle', 'reserved'] as const)[i % 3],
+  })),
+  selectedId: undefined,
+})
+
+const emit = defineEmits<{
+  select: [id: number]
+}>()
+
 const STATUS_TEXT: Record<MeetingStatus, string> = {
   'in-use': '使用中',
   'idle': '空闲中',
@@ -78,21 +106,10 @@ const STATUS_TEXT: Record<MeetingStatus, string> = {
 }
 function statusLabel(s: MeetingStatus) { return STATUS_TEXT[s] }
 
-// 模拟数据
-const meetings = ref<Meeting[]>(
-  Array.from({ length: 47 }, (_, i) => ({
-    id: i + 1,
-    name: i % 3 === 0 ? '一楼101会议室' : i % 3 === 1 ? '二楼会议厅' : '三楼小会议室',
-    capacity: [23, 12, 8, 16, 30][i % 5],
-    location: `${(i % 4) + 1}号楼-${(i % 6) + 1}层`,
-    status: (['in-use', 'idle', 'reserved'] as const)[i % 3],
-  })),
-)
-
 // 搜索
 const keyword = ref('')
 const filtered = computed(() => {
-  let list = meetings.value
+  let list = props.meetings
   if (keyword.value.trim()) {
     const k = keyword.value.trim()
     list = list.filter(m => m.name.includes(k) || m.location.includes(k))
@@ -255,7 +272,7 @@ function selectFilter(v: 'all' | MeetingStatus) {
   display: grid;
   grid-template-columns: 1.4fr 0.85fr 1fr 0.85fr;
   align-items: center;
-  height: 38px;
+  height: 40px;
   padding: 0 12px;
   font-size: $font-size-xs;
   color: $color-text-2;
@@ -268,6 +285,29 @@ function selectFilter(v: 'all' | MeetingStatus) {
 
   &:not(&--header):nth-child(odd) {
     background: rgba(0, 174, 255, 0.04);
+  }
+
+  &--selectable {
+    cursor: pointer;
+    outline: none;
+    transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+
+    &:hover,
+    &:focus-visible {
+      color: $color-text-1;
+      background: rgba(0, 174, 255, 0.14);
+      box-shadow: inset 2px 0 0 $color-primary-bright;
+    }
+  }
+
+  &--selected {
+    color: $color-text-1;
+    background: linear-gradient(89deg, rgba(0, 174, 255, 0.28) 0%, rgba(0, 174, 255, 0.08) 100%) !important;
+    box-shadow: inset 2px 0 0 $color-primary-bright, inset 0 0 12px rgba(77, 242, 255, 0.16);
+  }
+
+  &--selected &__num {
+    color: $color-primary-bright;
   }
 
   &__name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

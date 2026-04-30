@@ -150,6 +150,10 @@ const props = withDefaults(defineProps<{
   }),
 })
 
+const emit = defineEmits<{
+  close: []
+}>()
+
 const STATUS_TEXT: Record<RoomStatus, string> = {
   'in-use': '使用中',
   'idle': '空闲中',
@@ -168,7 +172,12 @@ function closeExpand() {
 }
 
 function onClose() {
-  // 占位：后续接入交互（如关闭弹层 / 切换摄像头）
+  // 若放大弹层处于打开状态，先关闭它；否则关闭整个看板
+  if (expanded.value) {
+    expanded.value = false
+    return
+  }
+  emit('close')
 }
 </script>
 
