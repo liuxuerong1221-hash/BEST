@@ -10,7 +10,18 @@
       "Bash(git init *)",
       "Bash(echo 'node_modules/ *)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(git config *)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git push *)",
+      "Bash(git pull *)",
+      "Bash(python *)",
+      "Bash(npx vue-tsc *)",
+      "Bash(curl *)",
+      "Bash(node -e ' *)",
+      "Bash(node *)",
+      "Bash(gh repo *)"
     ]
   },
   "enableAllProjectMcpServers": true,

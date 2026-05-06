@@ -38,38 +38,43 @@
 
     </div>
 
-    <!-- 左侧：天气 -->
-    <div class="app-header__weather">
-      <svg class="app-header__icon" viewBox="0 0 28 28" fill="none">
-        <circle cx="14" cy="14" r="6" stroke="#4DF2FF" stroke-width="1.5"/>
-        <path d="M14 2V4M14 24V26M2 14H4M24 14H26M5.5 5.5L7 7M21 21L22.5 22.5M5.5 22.5L7 21M21 7L22.5 5.5"
-              stroke="#4DF2FF" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <span class="app-header__weather-text">{{ weather.condition }}</span>
+    <!-- 左侧：时间日期 + 天气 -->
+    <div class="app-header__left">
+      <div class="app-header__time-group">
+        <span class="app-header__time">{{ datetime.time }}</span>
+        <span class="app-header__weekday">{{ datetime.weekday }}</span>
+        <span class="app-header__date">{{ datetime.date }}</span>
+      </div>
       <div class="app-header__divider" />
-      <span class="app-header__weather-temp">{{ weather.temp }}</span>
+      <WeatherScenePopover class="app-header__weather" />
     </div>
 
-    <!-- 右侧：日期时间 -->
-    <div class="app-header__datetime">
-      <svg class="app-header__icon" viewBox="0 0 28 28" fill="none">
-        <rect x="3" y="5" width="22" height="19" rx="2" stroke="#4DF2FF" stroke-width="1.5"/>
-        <path d="M3 11H25" stroke="#4DF2FF" stroke-width="1.5"/>
-        <path d="M9 2V6M19 2V6" stroke="#4DF2FF" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <span class="app-header__date">{{ datetime.weekday }} {{ datetime.date }}</span>
-      <div class="app-header__divider" />
-      <span class="app-header__time">{{ datetime.time }}</span>
+    <!-- 右侧：用户信息 + 退出登录 -->
+    <div class="app-header__right">
+      <div class="app-header__user">
+        <svg class="app-header__avatar" viewBox="0 0 20 20" aria-hidden="true">
+          <circle cx="10" cy="10" r="10" fill="#254D85" />
+          <path d="M9.94 3.5a3.01 3.01 0 1 1 0 6.03 3.01 3.01 0 0 1 0-6.03Zm-5.27 11.96c-.03-3.09 1.48-5.01 3.37-5.76l1.94 3.24 2.05-3.17c1.83.8 3.28 2.7 3.3 5.69-3.35 1.33-6.89 1.43-10.66 0Z" fill="#DEF8FF" />
+        </svg>
+        <span class="app-header__username">{{ user.name }}</span>
+      </div>
+      <button class="app-header__logout" type="button" aria-label="退出登录">
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M10.62 5.75a.7.7 0 0 0-1.4 0v1.84a.7.7 0 0 0 1.4 0V5.75Zm2.63.36a.7.7 0 1 0-.84 1.12 3.85 3.85 0 1 1-4.98 0 .7.7 0 1 0-.84-1.12 5.25 5.25 0 1 0 6.66 0Z" />
+          <path d="M4.58 1.25h10.84a3.33 3.33 0 0 1 3.33 3.33v10.84a3.33 3.33 0 0 1-3.33 3.33H4.58a3.33 3.33 0 0 1-3.33-3.33V4.58a3.33 3.33 0 0 1 3.33-3.33Zm0 1.4a1.93 1.93 0 0 0-1.93 1.93v10.84c0 1.07.86 1.93 1.93 1.93h10.84c1.07 0 1.93-.86 1.93-1.93V4.58a1.93 1.93 0 0 0-1.93-1.93H4.58Z" />
+        </svg>
+      </button>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import WeatherScenePopover from '@/components/common/WeatherScenePopover.vue'
 
-const weather = ref({ condition: '晴天', temp: '4°C-20°C' })
+const user = ref({ name: 'admin' })
 
-const datetime = ref({ weekday: '周四', date: '2025.09.11', time: '18:30' })
+const datetime = ref({ weekday: '星期三', date: '2026年05月06日', time: '13:38' })
 
 let timer: ReturnType<typeof setInterval>
 onMounted(() => {
@@ -77,8 +82,8 @@ onMounted(() => {
     const now = new Date()
     const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     datetime.value = {
-      weekday: weekdays[now.getDay()],
-      date: `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`,
+      weekday: weekdays[now.getDay()].replace('周', '星期'),
+      date: `${now.getFullYear()}年${String(now.getMonth() + 1).padStart(2, '0')}月${String(now.getDate()).padStart(2, '0')}日`,
       time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
     }
   }
@@ -155,50 +160,122 @@ onUnmounted(() => clearInterval(timer))
     z-index: 0;
   }
 
-  &__weather {
+  &__left {
     position: absolute;
     left: 40px;
+    top: 35px;
     display: flex;
     align-items: center;
-    gap: $spacing-xs;
+    gap: 16px;
     z-index: 1;
+    height: 35px;
   }
 
-  &__datetime {
+  &__right {
     position: absolute;
     right: 40px;
+    top: 35px;
     display: flex;
     align-items: center;
-    gap: $spacing-xs;
+    gap: 16px;
     z-index: 1;
+    height: 44px;
+    padding: 6px 0;
   }
 
-  &__icon {
-    width: 18px;
-    height: 18px;
+  &__time-group,
+  &__weather,
+  &__user {
+    display: flex;
+    align-items: center;
+  }
+
+  &__time-group {
+    gap: 8px;
+  }
+
+  &__weather {
+    gap: 8px;
+  }
+
+  &__weather-icon {
+    width: 28px;
+    height: 28px;
     flex-shrink: 0;
+    fill: $color-warning;
   }
 
+  &__time {
+    font-family: $font-body;
+    font-size: 18px;
+    line-height: 18px;
+    font-weight: 600;
+    background: linear-gradient(180deg, #E6F4FB 0%, #248FCC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  &__weekday,
   &__weather-text,
   &__date {
     font-family: $font-body;
     font-size: $font-size-sm;
-    color: $color-text-2;
-  }
-
-  &__weather-temp,
-  &__time {
-    font-family: $font-number;
-    font-size: $font-size-sm;
-    color: $color-primary;
-    font-weight: bold;
+    line-height: 16px;
+    font-weight: 600;
+    background: linear-gradient(180deg, #E6F4FB 0%, #248FCC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   &__divider {
     width: 1px;
-    height: 16px;
-    background: $color-border;
+    height: 19px;
+    background: $color-primary;
+    opacity: 0.4;
     flex-shrink: 0;
+  }
+
+  &__user {
+    gap: 8px;
+  }
+
+  &__avatar,
+  &__logout svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  &__username {
+    width: 53px;
+    font-family: $font-body;
+    font-size: 18px;
+    line-height: 18px;
+    font-weight: 600;
+    background: linear-gradient(180deg, #E6F4FB 0%, #248FCC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+  }
+
+  &__logout {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: $color-primary;
+    cursor: pointer;
+
+    svg {
+      fill: currentColor;
+    }
   }
 }
 </style>

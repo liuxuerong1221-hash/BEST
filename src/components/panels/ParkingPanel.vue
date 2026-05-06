@@ -25,9 +25,9 @@
 import BasePanel from '@/components/common/BasePanel.vue'
 import AnimatedIconFrame from '@/components/common/AnimatedIconFrame.vue'
 import MetricBlock from '@/components/common/MetricBlock.vue'
-import iconUsed from '@/assets/images/已使用汽车工业.svg'
+import iconUsed from '@/assets/images/icon/车位-已使用.svg'
 import iconTotal from '@/assets/images/车位总数.svg'
-import iconFree from '@/assets/images/空闲.svg'
+import iconFree from '@/assets/images/icon/车位-空闲.svg'
 </script>
 
 <style lang="scss" scoped>

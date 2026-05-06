@@ -54,5 +54,6 @@ declare module 'vue' {
     VehicleMonitorPanel: typeof import('./../components/panels/VehicleMonitorPanel.vue')['default']
     VisitorBarChart: typeof import('./../components/charts/VisitorBarChart.vue')['default']
     VisitorStatsPanel: typeof import('./../components/panels/VisitorStatsPanel.vue')['default']
+    WeatherScenePopover: typeof import('./../components/common/WeatherScenePopover.vue')['default']
   }
 }

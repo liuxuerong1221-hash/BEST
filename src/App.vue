@@ -21,6 +21,7 @@ function updateScale() {
   scale.value  = s
   transX.value = (window.innerWidth  - DESIGN_W * s) / 2 / s
   transY.value = (window.innerHeight - DESIGN_H * s) / 2 / s
+  document.documentElement.style.setProperty('--app-scale', String(s))
 }
 
 onMounted(() => {
