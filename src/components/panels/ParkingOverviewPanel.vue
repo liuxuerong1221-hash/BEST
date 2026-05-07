@@ -20,17 +20,22 @@
         </div>
       </div>
 
-      <!-- 停车场胶囊 -->
+      <!-- 停车场进度条 -->
       <div class="parking-overview__lots">
         <div
           v-for="lot in lots"
           :key="lot.name"
           class="parking-overview__lot"
         >
-          <span class="parking-overview__lot-tag" :style="{ background: lot.tagBg }">{{ lot.name }}</span>
-          <span class="parking-overview__lot-free">
-            余位<span class="parking-overview__lot-free-num">{{ lot.free }}</span>
-          </span>
+          <div class="parking-overview__lot-header">
+            <span class="parking-overview__lot-label">{{ lot.name }}</span>
+            <span class="parking-overview__lot-value">
+              {{ lot.used }}<span class="parking-overview__lot-total">/{{ lot.total }}</span>
+            </span>
+          </div>
+          <div class="parking-overview__lot-bar">
+            <div class="parking-overview__lot-fill" :style="{ width: (lot.used / lot.total * 100) + '%' }" />
+          </div>
         </div>
       </div>
     </div>
@@ -49,14 +54,20 @@ interface Metric {
 }
 
 const metrics: Metric[] = [
-  { label: '车位总数', value: '276', unit: '位', color: '#EDD505' }, // 黄
-  { label: '已使用',   value: '345', unit: '位', color: '#00AEFF' }, // 蓝
-  { label: '使用率',   value: '65',  unit: '%', color: '#29F3D9' }, // 青绿
+  { label: '车位总数', value: '1000', unit: '位', color: '#4DF2FF' },
+  { label: '剩余车位', value: '200', unit: '位', color: '#4DF2FF' },
+  { label: '车位占用率', value: '80', unit: '%', color: '#4DF2FF' },
 ]
 
-const lots = [
-  { name: '地下负二层', free: 86, tagBg: '#0081FF' },
-  { name: '地下停车场', free: 86, tagBg: '#00AEFF' },
+interface ParkingLot {
+  name: string
+  used: number
+  total: number
+}
+
+const lots: ParkingLot[] = [
+  { name: '地下负二层', used: 6, total: 500 },
+  { name: '地下停车场', used: 194, total: 500 },
 ]
 </script>
 
@@ -133,7 +144,7 @@ const lots = [
     white-space: nowrap;
   }
 
-  // 停车场胶囊
+  // 停车场进度条
   &__lots {
     display: flex;
     gap: 10px;
@@ -141,44 +152,50 @@ const lots = [
 
   &__lot {
     flex: 1;
-    min-width: 0;
-    height: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__lot-header {
     display: flex;
     align-items: center;
-    padding-right: 10px;
-    background: rgba(0, 174, 255, 0.1);
-    border-radius: $radius-md;
+    justify-content: space-between;
+  }
+
+  &__lot-label {
+    font-size: $font-size-xs;
+    color: $color-text-2;
+  }
+
+  &__lot-value {
+    font-family: $font-number;
+    font-size: $font-size-sm;
+    font-weight: bold;
+    color: $color-primary-bright;
+  }
+
+  &__lot-total {
+    font-size: $font-size-xs;
+    color: $color-text-3;
+    font-weight: normal;
+  }
+
+  &__lot-bar {
+    height: 8px;
+    background: rgba(0, 174, 255, 0.15);
+    border-radius: 4px;
     overflow: hidden;
+    position: relative;
   }
 
-  &__lot-tag {
-    width: 88px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: $font-size-xs;
-    font-weight: 800;
-    color: #FFFFFF;
-    border-radius: $radius-md;
-    flex-shrink: 0;
-  }
-
-  &__lot-free {
-    flex: 1;
-    margin-left: 10px;
-    font-size: $font-size-xs;
-    color: #FFFFFF;
-    line-height: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: clip;
-  }
-
-  &__lot-free-num {
-    font-size: $font-size-xs;
-    font-weight: 800;
-    margin: 0 2px;
+  &__lot-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: linear-gradient(90deg, #00AEFF 0%, #4DF2FF 100%);
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(77, 242, 255, 0.6);
+    transition: width 0.3s ease;
   }
 }
 </style>
