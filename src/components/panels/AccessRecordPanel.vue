@@ -238,16 +238,11 @@ function updateDatePickerPos() {
   const r = el.getBoundingClientRect()
 
   const pickerWidth = 280
-  const pickerHeight = 320 // 估算选择器高度
+  const pickerHeight = 320
 
-  // 默认向上展开
-  let top = r.top - pickerHeight - 8
+  // 固定在选择框上方8px
+  const top = r.top - pickerHeight - 8
   let left = r.left
-
-  // 检查上方空间，如果不够则向下展开
-  if (top < 8) {
-    top = r.bottom + 8
-  }
 
   // 检查右侧空间，防止超出屏幕
   const maxLeft = window.innerWidth - pickerWidth - 8
@@ -256,11 +251,6 @@ function updateDatePickerPos() {
   }
   if (left < 8) {
     left = 8
-  }
-
-  // 检查下方空间，防止超出屏幕底部
-  if (top + pickerHeight > window.innerHeight - 8) {
-    top = window.innerHeight - pickerHeight - 8
   }
 
   datePickerPos.value = { top, left }
