@@ -56,7 +56,7 @@
             }"
             @click="selectSeason(item.key)"
           >
-            <span class="weather-scene-panel__cell-label">{{ item.label }}</span>
+            <span class="weather-scene-panel__cell-season-text">{{ item.label }}</span>
           </div>
         </div>
 
@@ -68,10 +68,10 @@
             :key="item.key"
             class="weather-scene-panel__cell"
             :class="{
-              'weather-scene-panel__cell--active': current === item.key,
-              'weather-scene-panel__cell--disabled': auto && current !== item.key,
+              'weather-scene-panel__cell--active': currentTimeKey === item.key,
+              'weather-scene-panel__cell--disabled': auto && currentTimeKey !== item.key,
             }"
-            @click="selectScene(item.key)"
+            @click="selectTime(item.key)"
           >
             <img class="weather-scene-panel__cell-icon" :src="item.icon" alt="" />
             <span class="weather-scene-panel__cell-label">{{ item.label }}</span>
@@ -86,10 +86,10 @@
             :key="item.key"
             class="weather-scene-panel__cell"
             :class="{
-              'weather-scene-panel__cell--active': current === item.key,
-              'weather-scene-panel__cell--disabled': auto && current !== item.key,
+              'weather-scene-panel__cell--active': currentWeatherKey === item.key,
+              'weather-scene-panel__cell--disabled': auto && currentWeatherKey !== item.key,
             }"
-            @click="selectScene(item.key)"
+            @click="selectWeather(item.key)"
           >
             <img class="weather-scene-panel__cell-icon" :src="item.icon" alt="" />
             <span class="weather-scene-panel__cell-label">{{ item.label }}</span>
@@ -111,14 +111,18 @@ import iconCloudyUrl  from '@/assets/images/icon/weather/多云.svg'
 import iconRainUrl    from '@/assets/images/icon/weather/下雨.svg'
 import iconSnowUrl    from '@/assets/images/icon/weather/雪.svg'
 
-type SceneKey =
-  | 'morning' | 'noon' | 'sunset' | 'night'
-  | 'sunny' | 'cloudy' | 'rainy' | 'snowy'
-
+type TimeKey = 'morning' | 'noon' | 'sunset' | 'night'
+type WeatherKey = 'sunny' | 'cloudy' | 'rainy' | 'snowy'
 type SeasonKey = 'spring' | 'summer' | 'autumn' | 'winter'
 
-interface SceneItem {
-  key: SceneKey
+interface TimeSceneItem {
+  key: TimeKey
+  label: string
+  icon: string
+}
+
+interface WeatherSceneItem {
+  key: WeatherKey
   label: string
   icon: string
 }
@@ -129,7 +133,7 @@ interface SeasonItem {
 }
 
 const emit = defineEmits<{
-  change: [payload: { auto: boolean; scene: SceneKey }]
+  change: [payload: { auto: boolean; time: TimeKey; weather: WeatherKey }]
 }>()
 
 const seasonOptions: SeasonItem[] = [
@@ -139,19 +143,18 @@ const seasonOptions: SeasonItem[] = [
   { key: 'winter', label: '冬' },
 ]
 
-const timeScenes: SceneItem[] = [
+const timeScenes: TimeSceneItem[] = [
   { key: 'morning', label: '早晨', icon: iconMorningUrl },
   { key: 'noon',    label: '中午', icon: iconNoonUrl },
   { key: 'sunset',  label: '日落', icon: iconSunsetUrl },
   { key: 'night',   label: '夜晚', icon: iconNightUrl },
 ]
-const weatherScenes: SceneItem[] = [
+const weatherScenes: WeatherSceneItem[] = [
   { key: 'sunny',  label: '晴',   icon: iconSunnyUrl },
   { key: 'cloudy', label: '多云', icon: iconCloudyUrl },
   { key: 'rainy',  label: '下雨', icon: iconRainUrl },
   { key: 'snowy',  label: '雪',   icon: iconSnowUrl },
 ]
-const allScenes = [...timeScenes, ...weatherScenes]
 
 // 节气：根据月份简化判断
 function getSeason(): string {
@@ -181,7 +184,7 @@ function getPeriod(): string {
   return '夜晚'
 }
 
-function detectAutoScene(): SceneKey {
+function detectAutoTime(): TimeKey {
   const h = new Date().getHours()
   if (h >= 5 && h < 10) return 'morning'
   if (h >= 10 && h < 16) return 'noon'
@@ -191,13 +194,13 @@ function detectAutoScene(): SceneKey {
 
 const open = ref(false)
 const auto = ref(true)
-const current = ref<SceneKey>(detectAutoScene())
+const currentTimeKey = ref<TimeKey>(detectAutoTime())
+const currentWeatherKey = ref<WeatherKey>('sunny')
 const currentSeasonKey = ref<SeasonKey>(getSeasonKey())
 
 const currentSeason = computed(() => getSeason())
 const currentPeriod = computed(() => getPeriod())
-const activeLabel = computed(() => allScenes.find(s => s.key === current.value)?.label ?? '自动')
-const activeIcon = computed(() => allScenes.find(s => s.key === current.value)?.icon ?? iconSunnyUrl)
+const activeIcon = computed(() => weatherScenes.find(s => s.key === currentWeatherKey.value)?.icon ?? iconSunnyUrl)
 
 const PANEL_WIDTH = 412
 const PANEL_OFFSET = 12
@@ -228,20 +231,26 @@ function close() { open.value = false }
 function toggleAuto() {
   auto.value = !auto.value
   if (auto.value) {
-    current.value = detectAutoScene()
+    currentTimeKey.value = detectAutoTime()
     currentSeasonKey.value = getSeasonKey()
   }
-  emit('change', { auto: auto.value, scene: current.value })
-}
-
-function selectScene(key: SceneKey) {
-  if (auto.value) auto.value = false
-  current.value = key
-  emit('change', { auto: auto.value, scene: key })
+  emit('change', { auto: auto.value, time: currentTimeKey.value, weather: currentWeatherKey.value })
 }
 
 function selectSeason(key: SeasonKey) {
   currentSeasonKey.value = key
+}
+
+function selectTime(key: TimeKey) {
+  if (auto.value) auto.value = false
+  currentTimeKey.value = key
+  emit('change', { auto: auto.value, time: key, weather: currentWeatherKey.value })
+}
+
+function selectWeather(key: WeatherKey) {
+  if (auto.value) auto.value = false
+  currentWeatherKey.value = key
+  emit('change', { auto: auto.value, time: currentTimeKey.value, weather: key })
 }
 
 const trigger = ref<HTMLElement | null>(null)
@@ -461,7 +470,6 @@ onBeforeUnmount(() => {
 
     &--season {
       justify-content: center;
-      padding: 16px 0;
     }
   }
 
@@ -482,9 +490,14 @@ onBeforeUnmount(() => {
     color: $color-primary-bright;
   }
 
-  &__cell--season &__cell-label {
+  &__cell-season-text {
     font-size: 20px;
     line-height: 28px;
+    color: $color-text-2;
+  }
+
+  &__cell--active &__cell-season-text {
+    color: $color-primary-bright;
   }
 }
 </style>
