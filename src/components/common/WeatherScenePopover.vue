@@ -470,7 +470,8 @@ onBeforeUnmount(() => {
 
     &--season {
       justify-content: center;
-      height: 56px;
+      min-height: 56px;
+      padding: 0;
     }
   }
 
