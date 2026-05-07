@@ -29,7 +29,7 @@
         >
           <div
             class="parking-overview__lot-fill"
-            :style="{ width: ((lot.total - lot.remaining) / lot.total * 100) + '%', background: lot.fillColor }"
+            :style="{ width: ((lot.total - lot.remaining) / lot.total * 100) + '%', background: getLotColor(lot) }"
           />
           <div class="parking-overview__lot-content">
             <span class="parking-overview__lot-label">{{ lot.name }}</span>
@@ -64,13 +64,20 @@ interface ParkingLot {
   name: string
   remaining: number
   total: number
-  fillColor: string
 }
 
 const lots: ParkingLot[] = [
-  { name: '地下负二层', remaining: 6, total: 500, fillColor: '#FF1414' },
-  { name: '地下停车场', remaining: 194, total: 500, fillColor: '#0081FF' },
+  { name: '地下负二层', remaining: 6, total: 500 },
+  { name: '地下停车场', remaining: 194, total: 500 },
 ]
+
+// 剩余车位少于2%红色告警，少于10%黄色提醒，正常蓝色
+function getLotColor(lot: ParkingLot): string {
+  const ratio = lot.remaining / lot.total
+  if (ratio < 0.02) return '#FF1414'
+  if (ratio < 0.10) return '#FFF700'
+  return '#0081FF'
+}
 </script>
 
 <style lang="scss" scoped>
