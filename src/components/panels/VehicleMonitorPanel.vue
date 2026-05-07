@@ -382,6 +382,7 @@ function toggleFullscreen() {
     background: rgba(5, 25, 49, 0.64);
     border-right: 1px solid #0B2C52;
     position: relative;
+    min-height: 0;
   }
 
   &__locations-arrow {
@@ -481,6 +482,7 @@ function toggleFullscreen() {
     display: flex;
     flex-direction: column;
     min-width: 0;
+    min-height: 0;
   }
 
   &__header {
