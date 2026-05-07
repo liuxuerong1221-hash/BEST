@@ -2,7 +2,10 @@
   <BasePanel class="visitor-stats" title="访客统计">
     <div class="visitor-stats__cards">
       <div class="visitor-stats__card">
-        <img class="visitor-stats__card-icon" :src="iconVisitor" alt="" />
+        <div class="visitor-stats__icon-wrap">
+          <img class="visitor-stats__card-icon" :src="iconVisitor" alt="" />
+          <span class="visitor-stats__particle" v-for="n in 6" :key="'p1-'+n" />
+        </div>
         <div class="visitor-stats__card-info">
           <span class="visitor-stats__card-value">128</span>
           <span class="visitor-stats__card-label">今日预约访客</span>
@@ -10,7 +13,10 @@
       </div>
 
       <div class="visitor-stats__card">
-        <img class="visitor-stats__card-icon" :src="iconArrival" alt="" />
+        <div class="visitor-stats__icon-wrap">
+          <img class="visitor-stats__card-icon" :src="iconArrival" alt="" />
+          <span class="visitor-stats__particle" v-for="n in 6" :key="'p2-'+n" />
+        </div>
         <div class="visitor-stats__card-info">
           <span class="visitor-stats__card-value">86</span>
           <span class="visitor-stats__card-label">今日到访访客</span>
@@ -83,12 +89,43 @@ import iconArrival from '@/assets/images/icon/容器 1017.svg'
     }
   }
 
+  &__icon-wrap {
+    position: relative;
+    width: 45px;
+    height: 47px;
+    flex-shrink: 0;
+    overflow: visible;
+  }
+
   &__card-icon {
     width: 45px;
     height: 47px;
     flex-shrink: 0;
     object-fit: contain;
     display: block;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__particle {
+    position: absolute;
+    bottom: 8px;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: $color-primary-bright;
+    box-shadow: 0 0 4px rgba(77, 242, 255, 0.85);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+    animation: visitor-particle-float 2.6s ease-in infinite;
+
+    &:nth-child(2) { left: 6px;  animation-delay: 0s;    animation-duration: 2.4s; }
+    &:nth-child(3) { left: 14px; animation-delay: 0.4s;  animation-duration: 3s;   }
+    &:nth-child(4) { left: 22px; animation-delay: 0.8s;  animation-duration: 2.2s; }
+    &:nth-child(5) { left: 30px; animation-delay: 1.2s;  animation-duration: 2.8s; }
+    &:nth-child(6) { left: 38px; animation-delay: 1.6s;  animation-duration: 2.6s; }
+    &:nth-child(7) { left: 10px; animation-delay: 2.0s;  animation-duration: 2.4s; width: 2px; height: 2px; }
   }
 
   &__card-info {
@@ -174,6 +211,31 @@ import iconArrival from '@/assets/images/icon/容器 1017.svg'
     flex: 1;
     min-height: 0;
     margin-top: 4px;
+  }
+}
+
+@keyframes visitor-particle-float {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1);
+  }
+  60% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-42px) scale(0.4);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visitor-stats__particle {
+    animation: none;
+    opacity: 0;
   }
 }
 </style>
