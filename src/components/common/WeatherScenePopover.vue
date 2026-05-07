@@ -30,7 +30,7 @@
             场景设置
           </div>
           <label class="weather-scene-panel__auto">
-            <span class="weather-scene-panel__auto-text">自动</span>
+            <span class="weather-scene-panel__auto-text">{{ auto ? '自动' : '手动' }}</span>
             <span
               class="weather-scene-panel__switch"
               :class="{ 'weather-scene-panel__switch--on': auto }"
