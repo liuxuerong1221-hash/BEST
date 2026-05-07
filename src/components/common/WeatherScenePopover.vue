@@ -46,14 +46,30 @@
           </label>
         </div>
 
+        <div class="weather-scene-panel__group weather-scene-panel__group--seasons">
+          <div
+            v-for="item in seasonOptions"
+            :key="item.key"
+            class="weather-scene-panel__cell weather-scene-panel__cell--season"
+            :class="{
+              'weather-scene-panel__cell--active': currentSeasonKey === item.key,
+            }"
+            @click="selectSeason(item.key)"
+          >
+            <span class="weather-scene-panel__cell-label">{{ item.label }}</span>
+          </div>
+        </div>
+
+        <span class="weather-scene-panel__divider" />
+
         <div class="weather-scene-panel__group">
           <div
             v-for="item in timeScenes"
             :key="item.key"
             class="weather-scene-panel__cell"
             :class="{
-              'weather-scene-panel__cell--active': !auto && current === item.key,
-              'weather-scene-panel__cell--disabled': auto,
+              'weather-scene-panel__cell--active': current === item.key,
+              'weather-scene-panel__cell--disabled': auto && current !== item.key,
             }"
             @click="selectScene(item.key)"
           >
@@ -70,8 +86,8 @@
             :key="item.key"
             class="weather-scene-panel__cell"
             :class="{
-              'weather-scene-panel__cell--active': !auto && current === item.key,
-              'weather-scene-panel__cell--disabled': auto,
+              'weather-scene-panel__cell--active': current === item.key,
+              'weather-scene-panel__cell--disabled': auto && current !== item.key,
             }"
             @click="selectScene(item.key)"
           >
@@ -99,15 +115,29 @@ type SceneKey =
   | 'morning' | 'noon' | 'sunset' | 'night'
   | 'sunny' | 'cloudy' | 'rainy' | 'snowy'
 
+type SeasonKey = 'spring' | 'summer' | 'autumn' | 'winter'
+
 interface SceneItem {
   key: SceneKey
   label: string
   icon: string
 }
 
+interface SeasonItem {
+  key: SeasonKey
+  label: string
+}
+
 const emit = defineEmits<{
   change: [payload: { auto: boolean; scene: SceneKey }]
 }>()
+
+const seasonOptions: SeasonItem[] = [
+  { key: 'spring', label: '春' },
+  { key: 'summer', label: '夏' },
+  { key: 'autumn', label: '秋' },
+  { key: 'winter', label: '冬' },
+]
 
 const timeScenes: SceneItem[] = [
   { key: 'morning', label: '早晨', icon: iconMorningUrl },
@@ -132,6 +162,14 @@ function getSeason(): string {
   return '冬'
 }
 
+function getSeasonKey(): SeasonKey {
+  const month = new Date().getMonth() + 1
+  if (month >= 3 && month <= 5) return 'spring'
+  if (month >= 6 && month <= 8) return 'summer'
+  if (month >= 9 && month <= 11) return 'autumn'
+  return 'winter'
+}
+
 // 时间段：早晨/上午/中午/下午/傍晚/夜晚
 function getPeriod(): string {
   const h = new Date().getHours()
@@ -154,6 +192,7 @@ function detectAutoScene(): SceneKey {
 const open = ref(false)
 const auto = ref(true)
 const current = ref<SceneKey>(detectAutoScene())
+const currentSeasonKey = ref<SeasonKey>(getSeasonKey())
 
 const currentSeason = computed(() => getSeason())
 const currentPeriod = computed(() => getPeriod())
@@ -188,14 +227,21 @@ function close() { open.value = false }
 
 function toggleAuto() {
   auto.value = !auto.value
-  if (auto.value) current.value = detectAutoScene()
+  if (auto.value) {
+    current.value = detectAutoScene()
+    currentSeasonKey.value = getSeasonKey()
+  }
   emit('change', { auto: auto.value, scene: current.value })
 }
 
 function selectScene(key: SceneKey) {
-  if (auto.value) return
+  if (auto.value) auto.value = false
   current.value = key
   emit('change', { auto: auto.value, scene: key })
+}
+
+function selectSeason(key: SeasonKey) {
+  currentSeasonKey.value = key
 }
 
 const trigger = ref<HTMLElement | null>(null)
@@ -374,6 +420,10 @@ onBeforeUnmount(() => {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
+
+    &--seasons {
+      gap: 12px;
+    }
   }
 
   &__divider {
@@ -408,6 +458,11 @@ onBeforeUnmount(() => {
 
       &:hover { background: transparent; }
     }
+
+    &--season {
+      justify-content: center;
+      padding: 16px 0;
+    }
   }
 
   &__cell-icon {
@@ -425,6 +480,11 @@ onBeforeUnmount(() => {
 
   &__cell--active &__cell-label {
     color: $color-primary-bright;
+  }
+
+  &__cell--season &__cell-label {
+    font-size: 20px;
+    line-height: 28px;
   }
 }
 </style>
