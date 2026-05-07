@@ -431,7 +431,8 @@ onBeforeUnmount(() => {
     gap: 12px;
 
     &--seasons {
-      gap: 12px;
+      height: 84px;
+      align-items: center;
     }
   }
 
