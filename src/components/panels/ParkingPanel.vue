@@ -3,7 +3,7 @@
     <div class="parking-panel__body">
 
       <div class="parking-panel__col parking-panel__col--used">
-        <AnimatedIconFrame :src="iconUsed" effect="none" tone="cyan" :size="58" />
+        <img class="parking-panel__icon" :src="iconUsed" alt="已使用" />
         <MetricBlock label="已使用" value="275" unit-placement="below" tone="accent" size="lg" align="center" gap="8px" />
       </div>
 
@@ -13,7 +13,7 @@
       </div>
 
       <div class="parking-panel__col parking-panel__col--free">
-        <AnimatedIconFrame :src="iconFree" effect="none" tone="cyan" :size="58" />
+        <img class="parking-panel__icon" :src="iconFree" alt="空闲中" />
         <MetricBlock label="空闲中" value="3" unit-placement="below" tone="success" size="lg" align="center" gap="8px" />
       </div>
 
@@ -25,9 +25,9 @@
 import BasePanel from '@/components/common/BasePanel.vue'
 import AnimatedIconFrame from '@/components/common/AnimatedIconFrame.vue'
 import MetricBlock from '@/components/common/MetricBlock.vue'
-import iconUsed from '@/assets/images/已使用汽车工业.svg'
+import iconUsed from '@/assets/images/icon/车位-已使用.svg'
 import iconTotal from '@/assets/images/车位总数.svg'
-import iconFree from '@/assets/images/空闲.svg'
+import iconFree from '@/assets/images/icon/车位-空闲.svg'
 </script>
 
 <style lang="scss" scoped>
@@ -57,6 +57,14 @@ import iconFree from '@/assets/images/空闲.svg'
     &--total {
       background: linear-gradient(198deg, #133E72 19%, rgba(5, 25, 49, 0) 90%);
     }
+  }
+
+  &__icon {
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+    object-fit: contain;
+    display: block;
   }
 }
 </style>
