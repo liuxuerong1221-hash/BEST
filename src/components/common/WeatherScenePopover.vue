@@ -53,6 +53,7 @@
             class="weather-scene-panel__cell weather-scene-panel__cell--season"
             :class="{
               'weather-scene-panel__cell--active': currentSeasonKey === item.key,
+              'weather-scene-panel__cell--disabled': auto && currentSeasonKey !== item.key,
             }"
             @click="selectSeason(item.key)"
           >
@@ -246,6 +247,7 @@ function toggleAuto() {
 }
 
 function selectSeason(key: SeasonKey) {
+  if (auto.value) auto.value = false
   currentSeasonKey.value = key
 }
 
