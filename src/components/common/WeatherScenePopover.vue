@@ -10,7 +10,6 @@
       <span class="weather-scene__season">{{ currentSeason }}</span>
       <img class="weather-scene__icon" :src="activeIcon" alt="" />
       <span class="weather-scene__period">{{ currentPeriod }}</span>
-      <span class="weather-scene__divider" />
       <svg class="weather-scene__caret" :class="{ 'weather-scene__caret--open': open }"
            viewBox="0 0 12 12" fill="none" aria-hidden="true">
         <path d="M2 4.5L6 8.5L10 4.5" stroke="currentColor" stroke-width="1.4"
@@ -262,13 +261,6 @@ onBeforeUnmount(() => {
     width: 28px;
     height: 28px;
     object-fit: contain;
-  }
-
-  &__divider {
-    width: 1px;
-    height: 14px;
-    background: rgba(255, 255, 255, 0.3);
-    margin-left: 4px;
   }
 
   &__caret {
