@@ -27,14 +27,15 @@
           :key="lot.name"
           class="parking-overview__lot"
         >
-          <div class="parking-overview__lot-header">
+          <div
+            class="parking-overview__lot-fill"
+            :style="{ width: (lot.used / lot.total * 100) + '%', background: lot.fillColor }"
+          />
+          <div class="parking-overview__lot-content">
             <span class="parking-overview__lot-label">{{ lot.name }}</span>
             <span class="parking-overview__lot-value">
               {{ lot.used }}<span class="parking-overview__lot-total">/{{ lot.total }}</span>
             </span>
-          </div>
-          <div class="parking-overview__lot-bar">
-            <div class="parking-overview__lot-fill" :style="{ width: (lot.used / lot.total * 100) + '%', background: lot.fillColor }" />
           </div>
         </div>
       </div>
@@ -54,9 +55,9 @@ interface Metric {
 }
 
 const metrics: Metric[] = [
-  { label: '车位总数', value: '1000', unit: '位', color: '#4DF2FF' },
-  { label: '剩余车位', value: '200', unit: '位', color: '#4DF2FF' },
-  { label: '车位占用率', value: '80', unit: '%', color: '#4DF2FF' },
+  { label: '车位总数', value: '1000', unit: '位', color: '#FFFFFF' },
+  { label: '剩余车位', value: '200', unit: '位', color: '#0CF92C' },
+  { label: '车位占用率', value: '80', unit: '%', color: '#FFF700' },
 ]
 
 interface ParkingLot {
@@ -151,48 +152,52 @@ const lots: ParkingLot[] = [
 
   &__lot {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  &__lot-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  &__lot-label {
-    font-size: $font-size-xs;
-    color: $color-text-2;
-  }
-
-  &__lot-value {
-    font-family: $font-number;
-    font-size: $font-size-sm;
-    font-weight: bold;
-    color: $color-primary-bright;
-  }
-
-  &__lot-total {
-    font-size: $font-size-xs;
-    color: $color-text-3;
-    font-weight: normal;
-  }
-
-  &__lot-bar {
-    height: 8px;
-    background: rgba(0, 174, 255, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
+    height: 40px;
     position: relative;
+    background: rgba(0, 174, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
   }
 
   &__lot-fill {
     position: absolute;
-    inset: 0 auto 0 0;
-    border-radius: 4px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 8px 0 0 8px;
     transition: width 0.3s ease;
+  }
+
+  &__lot-content {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+  }
+
+  &__lot-label {
+    font-family: 'PingFang SC', $font-body;
+    font-size: 14px;
+    font-weight: 800;
+    color: #FFFFFF;
+  }
+
+  &__lot-value {
+    font-family: 'PingFang SC', $font-body;
+    font-size: 16px;
+    font-weight: 800;
+    color: #FFFFFF;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+
+  &__lot-total {
+    font-size: 10px;
+    font-weight: 400;
+    color: #FFFFFF;
   }
 }
 </style>
