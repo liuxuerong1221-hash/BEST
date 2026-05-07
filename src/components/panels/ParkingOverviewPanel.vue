@@ -44,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import BasePanel from '@/components/common/BasePanel.vue'
 import iconCar from '@/assets/images/icon/icon_车.svg'
 
@@ -54,11 +55,24 @@ interface Metric {
   color: string
 }
 
-const metrics: Metric[] = [
-  { label: '车位总数', value: '1000', unit: '位', color: '#FFFFFF' },
-  { label: '剩余车位', value: '200', unit: '位', color: '#0CF92C' },
-  { label: '车位占用率', value: '80', unit: '%', color: '#FFF700' },
-]
+const totalSpots = 1000
+const remainingSpots = 200
+
+// 车位占用率 ≥ 90% 红色，80%~90% 黄色，< 80% 蓝色
+function getUsageColor(rate: number): string {
+  if (rate > 90) return '#FF1414'
+  if (rate >= 80) return '#FFF700'
+  return '#0081FF'
+}
+
+const metrics = computed<Metric[]>(() => {
+  const usageRate = Math.round((totalSpots - remainingSpots) / totalSpots * 100)
+  return [
+    { label: '车位总数', value: String(totalSpots), unit: '位', color: '#FFFFFF' },
+    { label: '剩余车位', value: String(remainingSpots), unit: '位', color: '#0CF92C' },
+    { label: '车位占用率', value: String(usageRate), unit: '%', color: getUsageColor(usageRate) },
+  ]
+})
 
 interface ParkingLot {
   name: string
