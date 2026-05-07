@@ -7,13 +7,14 @@
           class="vehicle-monitor__locations-arrow vehicle-monitor__locations-arrow--up"
           type="button"
           aria-label="向上滚动"
+          :disabled="!canScrollUp"
           @click="scrollLocations(-1)"
         >
           <svg viewBox="0 0 12 8" fill="none">
             <path d="M1 7L6 2L11 7" stroke="#4DF2FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-        <div ref="locationsScrollRef" class="vehicle-monitor__locations-scroll">
+        <div ref="locationsScrollRef" class="vehicle-monitor__locations-scroll" @scroll="onLocationsScroll">
           <button
             v-for="loc in locations"
             :key="loc.id"
@@ -29,6 +30,7 @@
           class="vehicle-monitor__locations-arrow vehicle-monitor__locations-arrow--down"
           type="button"
           aria-label="向下滚动"
+          :disabled="!canScrollDown"
           @click="scrollLocations(1)"
         >
           <svg viewBox="0 0 12 8" fill="none">
@@ -214,6 +216,13 @@ const locations: Location[] = [
   { id: 7, name: '监控室', cameras: [
     { id: '7-1', name: '监控室-摄像头1' },
   ]},
+  { id: 8, name: '东门', cameras: [
+    { id: '8-1', name: '东门-摄像头1' },
+    { id: '8-2', name: '东门-摄像头2' },
+  ]},
+  { id: 9, name: '西门', cameras: [
+    { id: '9-1', name: '西门-摄像头1' },
+  ]},
 ]
 
 const activeLocation = ref(2)
@@ -222,6 +231,8 @@ const carouselEnabled = ref(true)
 const progress = ref(58)
 const fullscreen = ref(false)
 const locationsScrollRef = ref<HTMLElement | null>(null)
+const canScrollUp = ref(false)
+const canScrollDown = ref(true)
 
 const currentLocation = computed(() => locations.find(l => l.id === activeLocation.value) ?? locations[0])
 const currentLocationName = computed(() => currentLocation.value.name)
@@ -238,6 +249,17 @@ function scrollLocations(direction: number) {
   const el = locationsScrollRef.value
   if (!el) return
   el.scrollBy({ top: direction * 56, behavior: 'smooth' })
+}
+
+function updateScrollState() {
+  const el = locationsScrollRef.value
+  if (!el) return
+  canScrollUp.value = el.scrollTop > 1
+  canScrollDown.value = el.scrollTop < el.scrollHeight - el.clientHeight - 1
+}
+
+function onLocationsScroll() {
+  updateScrollState()
 }
 
 // 摄像头下拉菜单
@@ -289,6 +311,7 @@ function onDocClick(e: MouseEvent) {
 onMounted(() => {
   document.addEventListener('click', onDocClick)
   window.addEventListener('resize', updateCameraMenuPos)
+  updateScrollState()
 })
 onBeforeUnmount(() => {
   document.removeEventListener('click', onDocClick)
@@ -377,10 +400,20 @@ function toggleFullscreen() {
     svg {
       width: 12px;
       height: 8px;
+      transition: opacity 0.2s ease;
     }
 
-    &:hover {
+    &:hover:not(:disabled) {
       background: rgba(0, 174, 255, 0.12);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.3;
+
+      svg {
+        opacity: 0.5;
+      }
     }
 
     &--up {
