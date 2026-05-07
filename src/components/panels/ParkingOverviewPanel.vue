@@ -34,7 +34,7 @@
             </span>
           </div>
           <div class="parking-overview__lot-bar">
-            <div class="parking-overview__lot-fill" :style="{ width: (lot.used / lot.total * 100) + '%' }" />
+            <div class="parking-overview__lot-fill" :style="{ width: (lot.used / lot.total * 100) + '%', background: lot.fillColor }" />
           </div>
         </div>
       </div>
@@ -63,11 +63,12 @@ interface ParkingLot {
   name: string
   used: number
   total: number
+  fillColor: string
 }
 
 const lots: ParkingLot[] = [
-  { name: '地下负二层', used: 6, total: 500 },
-  { name: '地下停车场', used: 194, total: 500 },
+  { name: '地下负二层', used: 6, total: 500, fillColor: '#FF1414' },
+  { name: '地下停车场', used: 194, total: 500, fillColor: '#0081FF' },
 ]
 </script>
 
@@ -181,7 +182,7 @@ const lots: ParkingLot[] = [
 
   &__lot-bar {
     height: 8px;
-    background: rgba(0, 174, 255, 0.15);
+    background: rgba(0, 174, 255, 0.1);
     border-radius: 4px;
     overflow: hidden;
     position: relative;
@@ -190,9 +191,7 @@ const lots: ParkingLot[] = [
   &__lot-fill {
     position: absolute;
     inset: 0 auto 0 0;
-    background: linear-gradient(90deg, #00AEFF 0%, #4DF2FF 100%);
     border-radius: 4px;
-    box-shadow: 0 0 8px rgba(77, 242, 255, 0.6);
     transition: width 0.3s ease;
   }
 }
