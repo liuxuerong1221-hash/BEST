@@ -11,6 +11,11 @@
       <img class="weather-scene__icon" :src="activeIcon" alt="" />
       <span class="weather-scene__period">{{ currentPeriod }}</span>
       <span class="weather-scene__divider" />
+      <svg class="weather-scene__caret" :class="{ 'weather-scene__caret--open': open }"
+           viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="M2 4.5L6 8.5L10 4.5" stroke="currentColor" stroke-width="1.4"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </button>
 
     <Teleport to="body">
@@ -243,10 +248,13 @@ onBeforeUnmount(() => {
 
   &__season,
   &__period {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 23px;
-    color: #FFFFFF;
+    font-size: $font-size-sm;
+    font-weight: 600;
+    line-height: 16px;
+    background: linear-gradient(180deg, #E6F4FB 0%, #248FCC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   &__icon {
@@ -261,6 +269,15 @@ onBeforeUnmount(() => {
     height: 14px;
     background: rgba(255, 255, 255, 0.3);
     margin-left: 4px;
+  }
+
+  &__caret {
+    width: 12px;
+    height: 12px;
+    color: $color-primary-bright;
+    transition: transform 0.18s ease;
+
+    &--open { transform: rotate(180deg); }
   }
 
   &__panel {
