@@ -29,12 +29,12 @@
         >
           <div
             class="parking-overview__lot-fill"
-            :style="{ width: (lot.used / lot.total * 100) + '%', background: lot.fillColor }"
+            :style="{ width: ((lot.total - lot.remaining) / lot.total * 100) + '%', background: lot.fillColor }"
           />
           <div class="parking-overview__lot-content">
             <span class="parking-overview__lot-label">{{ lot.name }}</span>
             <span class="parking-overview__lot-value">
-              {{ lot.used }}<span class="parking-overview__lot-total">/{{ lot.total }}</span>
+              {{ lot.remaining }}<span class="parking-overview__lot-total">/{{ lot.total }}</span>
             </span>
           </div>
         </div>
@@ -62,14 +62,14 @@ const metrics: Metric[] = [
 
 interface ParkingLot {
   name: string
-  used: number
+  remaining: number
   total: number
   fillColor: string
 }
 
 const lots: ParkingLot[] = [
-  { name: '地下负二层', used: 6, total: 500, fillColor: '#FF1414' },
-  { name: '地下停车场', used: 194, total: 500, fillColor: '#0081FF' },
+  { name: '地下负二层', remaining: 6, total: 500, fillColor: '#FF1414' },
+  { name: '地下停车场', remaining: 194, total: 500, fillColor: '#0081FF' },
 ]
 </script>
 
