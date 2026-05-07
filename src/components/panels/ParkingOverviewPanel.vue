@@ -125,10 +125,8 @@ const lots: ParkingLot[] = [
   &__num {
     font-family: 'PingFang SC', $font-body;
     font-size: 24px;
-    font-weight: 800;     // 特粗
+    font-weight: 800;
     line-height: 1.4;
-    text-shadow: 0 0 10px currentColor;
-    filter: brightness(1.05);
   }
 
   &__unit {
