@@ -198,8 +198,16 @@ const currentTimeKey = ref<TimeKey>(detectAutoTime())
 const currentWeatherKey = ref<WeatherKey>('sunny')
 const currentSeasonKey = ref<SeasonKey>(getSeasonKey())
 
-const currentSeason = computed(() => getSeason())
-const currentPeriod = computed(() => getPeriod())
+const currentSeason = computed(() => {
+  const item = seasonOptions.find(s => s.key === currentSeasonKey.value)
+  return item?.label ?? '春'
+})
+
+const currentPeriod = computed(() => {
+  const item = timeScenes.find(s => s.key === currentTimeKey.value)
+  return item?.label ?? '早晨'
+})
+
 const activeIcon = computed(() => weatherScenes.find(s => s.key === currentWeatherKey.value)?.icon ?? iconSunnyUrl)
 
 const PANEL_WIDTH = 412
