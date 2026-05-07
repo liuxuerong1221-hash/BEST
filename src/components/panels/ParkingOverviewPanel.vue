@@ -85,12 +85,12 @@ const lots: ParkingLot[] = [
   { name: '地下停车场', remaining: 194, total: 500 },
 ]
 
-// 剩余车位少于2%红色告警，少于10%黄色提醒，正常蓝色
+// 各停车场占用率：>80% 红色，50%<x≤80% 黄色，≤50% 绿色
 function getLotColor(lot: ParkingLot): string {
-  const ratio = lot.remaining / lot.total
-  if (ratio < 0.02) return '#FF1414'
-  if (ratio < 0.10) return '#FFF700'
-  return '#0081FF'
+  const usageRate = (lot.total - lot.remaining) / lot.total
+  if (usageRate > 0.80) return '#FF1414'
+  if (usageRate > 0.50) return '#FFF700'
+  return '#0CF92C'
 }
 </script>
 
