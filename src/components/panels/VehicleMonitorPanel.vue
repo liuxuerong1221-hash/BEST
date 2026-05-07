@@ -140,11 +140,25 @@
         <div class="vehicle-monitor-fullscreen__content" @click.stop>
           <header class="vehicle-monitor-fullscreen__header">
             <span class="vehicle-monitor-fullscreen__title">{{ currentLocationName }} - {{ activeCameraName }}</span>
-            <button class="vehicle-monitor-fullscreen__close" type="button" @click="toggleFullscreen">
-              <svg viewBox="0 0 20 20" fill="none">
-                <path d="M15 5L5 15M5 5L15 15" stroke="#4DF2FF" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </button>
+            <div class="vehicle-monitor-fullscreen__actions">
+              <div class="vehicle-monitor__carousel-toggle">
+                <span class="vehicle-monitor__carousel-label">轮播</span>
+                <button
+                  class="vehicle-monitor__carousel-switch"
+                  :class="{ 'vehicle-monitor__carousel-switch--on': carouselEnabled }"
+                  type="button"
+                  @click="toggleCarousel"
+                >
+                  <span class="vehicle-monitor__carousel-switch-dot" />
+                </button>
+                <span class="vehicle-monitor__carousel-status">{{ carouselEnabled ? '开启' : '关闭' }}</span>
+              </div>
+              <button class="vehicle-monitor-fullscreen__close" type="button" @click="toggleFullscreen">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path d="M15 5L5 15M5 5L15 15" stroke="#4DF2FF" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
           </header>
           <div class="vehicle-monitor-fullscreen__video">
             <div class="vehicle-monitor__video-grid" />
@@ -809,6 +823,12 @@ function toggleFullscreen() {
     font-size: $font-size-md;
     color: $color-text-1;
     font-weight: 500;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
 
   &__close {
