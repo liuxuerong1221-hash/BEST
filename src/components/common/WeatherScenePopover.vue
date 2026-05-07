@@ -7,13 +7,10 @@
       type="button"
       @click="toggle"
     >
+      <span class="weather-scene__season">{{ currentSeason }}</span>
       <img class="weather-scene__icon" :src="activeIcon" alt="" />
-      <span class="weather-scene__text">{{ activeLabel }}</span>
-      <svg class="weather-scene__caret" :class="{ 'weather-scene__caret--open': open }"
-           viewBox="0 0 12 12" fill="none" aria-hidden="true">
-        <path d="M2 4.5L6 8.5L10 4.5" stroke="currentColor" stroke-width="1.4"
-              stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <span class="weather-scene__period">{{ currentPeriod }}</span>
+      <span class="weather-scene__divider" />
     </button>
 
     <Teleport to="body">
@@ -122,6 +119,26 @@ const weatherScenes: SceneItem[] = [
 ]
 const allScenes = [...timeScenes, ...weatherScenes]
 
+// 节气：根据月份简化判断
+function getSeason(): string {
+  const month = new Date().getMonth() + 1
+  if (month >= 3 && month <= 5) return '春'
+  if (month >= 6 && month <= 8) return '夏'
+  if (month >= 9 && month <= 11) return '秋'
+  return '冬'
+}
+
+// 时间段：早晨/上午/中午/下午/傍晚/夜晚
+function getPeriod(): string {
+  const h = new Date().getHours()
+  if (h >= 5 && h < 8) return '早晨'
+  if (h >= 8 && h < 11) return '上午'
+  if (h >= 11 && h < 14) return '中午'
+  if (h >= 14 && h < 17) return '下午'
+  if (h >= 17 && h < 19) return '傍晚'
+  return '夜晚'
+}
+
 function detectAutoScene(): SceneKey {
   const h = new Date().getHours()
   if (h >= 5 && h < 10) return 'morning'
@@ -134,8 +151,10 @@ const open = ref(false)
 const auto = ref(true)
 const current = ref<SceneKey>(detectAutoScene())
 
+const currentSeason = computed(() => getSeason())
+const currentPeriod = computed(() => getPeriod())
 const activeLabel = computed(() => allScenes.find(s => s.key === current.value)?.label ?? '自动')
-const activeIcon = computed(() => allScenes.find(s => s.key === current.value)?.icon ?? iconSun)
+const activeIcon = computed(() => allScenes.find(s => s.key === current.value)?.icon ?? iconSunnyUrl)
 
 const PANEL_WIDTH = 412
 const PANEL_OFFSET = 12
@@ -209,7 +228,7 @@ onBeforeUnmount(() => {
   &__trigger {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     padding: 0 6px;
     border: 0;
     background: transparent;
@@ -222,6 +241,14 @@ onBeforeUnmount(() => {
     color: $color-primary-bright;
   }
 
+  &__season,
+  &__period {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 23px;
+    color: #FFFFFF;
+  }
+
   &__icon {
     display: inline-block;
     width: 28px;
@@ -229,23 +256,11 @@ onBeforeUnmount(() => {
     object-fit: contain;
   }
 
-  &__text {
-    font-size: $font-size-sm;
-    font-weight: 600;
-    line-height: 16px;
-    background: linear-gradient(180deg, #E6F4FB 0%, #248FCC 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  &__caret {
-    width: 12px;
-    height: 12px;
-    color: $color-primary-bright;
-    transition: transform 0.18s ease;
-
-    &--open { transform: rotate(180deg); }
+  &__divider {
+    width: 1px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.3);
+    margin-left: 4px;
   }
 
   &__panel {
