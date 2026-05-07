@@ -453,116 +453,6 @@ $exit-glow:  linear-gradient(90deg, rgba(255, 72, 72, 0) 15%, rgba(255, 72, 72, 
     height: 13px;
     flex-shrink: 0;
   }
-}
-
-.access-record-date-picker {
-  position: fixed;
-  z-index: 9999;
-  width: 280px;
-  padding: 16px;
-  background: linear-gradient(180deg, rgba(5, 25, 49, 0.95) 0%, rgba(10, 44, 83, 0.95) 100%);
-  border: 1px solid rgba(0, 174, 255, 0.4);
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-
-  &__nav {
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 174, 255, 0.1);
-    border: 1px solid rgba(0, 174, 255, 0.3);
-    border-radius: 4px;
-    color: #00AEFF;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-
-    &:hover {
-      background: rgba(0, 174, 255, 0.2);
-    }
-  }
-
-  &__title {
-    font-size: 14px;
-    color: #FFFFFF;
-    font-weight: 600;
-  }
-
-  &__calendar {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  &__weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    margin-bottom: 4px;
-
-    span {
-      text-align: center;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.6);
-      padding: 4px 0;
-    }
-  }
-
-  &__days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-  }
-
-  &__day {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 174, 255, 0.05);
-    border: 1px solid transparent;
-    border-radius: 4px;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:hover:not(:disabled) {
-      background: rgba(0, 174, 255, 0.15);
-      border-color: rgba(0, 174, 255, 0.4);
-    }
-
-    &--empty {
-      background: transparent;
-      cursor: default;
-    }
-
-    &--selected {
-      background: rgba(77, 242, 255, 0.25);
-      border-color: #4DF2FF;
-      color: #4DF2FF;
-      font-weight: 600;
-    }
-
-    &--today {
-      border-color: rgba(0, 174, 255, 0.6);
-    }
-
-    &:disabled {
-      cursor: not-allowed;
-      opacity: 0.3;
-    }
-  }
 
   &__person-table {
     flex: 1;
@@ -890,6 +780,116 @@ $exit-glow:  linear-gradient(90deg, rgba(255, 72, 72, 0) 15%, rgba(255, 72, 72, 
     font-weight: bold;
     color: currentColor;
     text-shadow: 0 0 6px currentColor;
+  }
+}
+
+.access-record-date-picker {
+  position: fixed;
+  z-index: 9999;
+  width: 280px;
+  padding: 16px;
+  background: linear-gradient(180deg, rgba(5, 25, 49, 0.95) 0%, rgba(10, 44, 83, 0.95) 100%);
+  border: 1px solid rgba(0, 174, 255, 0.4);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  &__nav {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 174, 255, 0.1);
+    border: 1px solid rgba(0, 174, 255, 0.3);
+    border-radius: 4px;
+    color: #00AEFF;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba(0, 174, 255, 0.2);
+    }
+  }
+
+  &__title {
+    font-size: 14px;
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+
+  &__calendar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 4px;
+
+    span {
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      padding: 4px 0;
+    }
+  }
+
+  &__days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  &__day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 174, 255, 0.05);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: rgba(0, 174, 255, 0.15);
+      border-color: rgba(0, 174, 255, 0.4);
+    }
+
+    &--empty {
+      background: transparent;
+      cursor: default;
+    }
+
+    &--selected {
+      background: rgba(77, 242, 255, 0.25);
+      border-color: #4DF2FF;
+      color: #4DF2FF;
+      font-weight: 600;
+    }
+
+    &--today {
+      border-color: rgba(0, 174, 255, 0.6);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.3;
+    }
   }
 }
 </style>
