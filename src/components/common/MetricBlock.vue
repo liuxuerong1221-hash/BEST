@@ -94,18 +94,6 @@ const styleVars = computed(() => ({
   &--success &__value { color: $color-success; }
   &--warning &__value { color: $color-warning; }
 
-  &--lg.metric-block--bright &__value {
-    text-shadow: 0 0 10px rgba(77, 242, 255, 0.6);
-  }
-
-  &--lg.metric-block--accent &__value {
-    text-shadow: 0 0 10px rgba(237, 213, 5, 0.6);
-  }
-
-  &--lg.metric-block--success &__value {
-    text-shadow: 0 0 10px rgba(46, 208, 176, 0.6);
-  }
-
   &__unit {
     color: $color-text-2;
     white-space: nowrap;
