@@ -92,8 +92,8 @@ const lots: ParkingLot[] = [
   &__row {
     display: flex;
     align-items: center;
-    gap: 22px;
-    padding: 0 8px;
+    gap: 16px;
+    padding: 0 4px;
   }
 
   &__icon {
@@ -106,8 +106,11 @@ const lots: ParkingLot[] = [
 
   &__metrics {
     flex: 1;
+    min-width: 0;
     display: flex;
-    gap: 48px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
   }
 
   &__metric {
@@ -115,6 +118,7 @@ const lots: ParkingLot[] = [
     flex-direction: column;
     gap: 0;
     min-width: 0;
+    flex-shrink: 0;
   }
 
   &__metric-value {
