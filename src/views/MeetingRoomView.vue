@@ -112,14 +112,14 @@ const meetingMarkers = [
   { id: 10, name: '五楼501董事会议室', capacity: 28, location: '5号楼5层', status: 'idle', floor: '5F', x: 47, y: 33 },
 ] satisfies MeetingMarker[]
 
-const selectedMeetingId = ref(meetingMarkers[0].id)
+const selectedMeetingId = ref<number | null>(null)
 const selectedFloor = ref(meetingMarkers[0].floor)
-const cameraVisible = ref(true)
+const cameraVisible = ref(false)
 const visibleMarkers = computed(() =>
   meetingMarkers.filter(marker => marker.floor === selectedFloor.value),
 )
 const selectedMeeting = computed(() =>
-  meetingMarkers.find(marker => marker.id === selectedMeetingId.value) ?? meetingMarkers[0],
+  meetingMarkers.find(marker => marker.id === selectedMeetingId.value),
 )
 
 function selectMeeting(id: number) {
@@ -130,8 +130,15 @@ function selectMeeting(id: number) {
 
 function selectFloor(floor: string) {
   selectedFloor.value = floor
-  const firstVisible = meetingMarkers.find(marker => marker.floor === floor)
-  if (firstVisible) selectedMeetingId.value = firstVisible.id
+  // 切换楼层时不自动选中第一个会议室
+  // 如果当前选中的会议室不在新楼层，则清空选中状态
+  if (selectedMeetingId.value) {
+    const currentMeeting = meetingMarkers.find(m => m.id === selectedMeetingId.value)
+    if (currentMeeting && currentMeeting.floor !== floor) {
+      selectedMeetingId.value = null
+      cameraVisible.value = false
+    }
+  }
 }
 
 function goBack() {
