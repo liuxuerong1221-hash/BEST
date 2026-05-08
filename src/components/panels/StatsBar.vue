@@ -38,7 +38,7 @@ const stats = [
     align-items: center;
     padding: 0;
     height: 58px;
-    margin-top: 32px;
+    margin-top: 10px;
     border-radius: 0.25rem;
     background: linear-gradient(96deg, rgba(8, 38, 74, 0.352) 0%, rgba(3, 21, 43, 0.368) 95%);
     box-sizing: border-box;

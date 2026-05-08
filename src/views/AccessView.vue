@@ -119,14 +119,13 @@ const selectedFloor = ref('1F')
     flex-direction: column;
     gap: 10px;
     overflow: hidden;
-    padding: 14px 0 8px;
+    padding: 24px 0 8px;
   }
 
   &__center {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 14px;
     gap: 0;
     min-width: 0;
   }
@@ -134,7 +133,7 @@ const selectedFloor = ref('1F')
   &__floating-entries {
     position: absolute;
     left: calc(40px + #{$panel-left-w} + 24px);
-    top: 44px;
+    top: 24px;
     z-index: 12;
   }
 

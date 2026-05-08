@@ -85,7 +85,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import BasePanel from '@/components/common/BasePanel.vue'
 
 type TurnstileStatus = 'online' | 'offline'
@@ -107,6 +107,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   select: [id: number]
+  visibleChange: [ids: number[]]
 }>()
 
 const STATUS_TEXT: Record<TurnstileStatus, string> = {
@@ -157,6 +158,10 @@ const filtered = computed(() => {
   const start = (currentPage.value - 1) * pageSize
   return filteredAll.value.slice(start, start + pageSize)
 })
+
+watch(filtered, list => {
+  emit('visibleChange', list.map(item => item.id))
+}, { immediate: true })
 </script>
 
 <style lang="scss" scoped>

@@ -19,6 +19,7 @@
           :gates="gateDevices"
           :selected-id="selectedGateId"
           @select="selectGate"
+          @visible-change="updateVisibleGateIds"
         />
       </aside>
 
@@ -83,6 +84,7 @@ interface Gate {
   id: number
   name: string
   location: string
+  ip: string
   status: GateStatus
   x: number
   y: number
@@ -92,6 +94,7 @@ const gateDevices: Gate[] = Array.from({ length: 392 }, (_, i) => ({
   id: i + 1,
   name: `门禁设备${String(i + 1).padStart(3, '0')}`,
   location: `${(i % 5) + 1}号楼-${(i % 8) + 1}层`,
+  ip: `192.168.${Math.floor(i / 255) + 1}.${(i % 255) + 1}`,
   status: (i < 357 ? 'online' : 'offline') as GateStatus,
   x: 200 + Math.random() * 800,
   y: 150 + Math.random() * 400,
@@ -99,14 +102,19 @@ const gateDevices: Gate[] = Array.from({ length: 392 }, (_, i) => ({
 
 const selectedGateId = ref<number | null>(null)
 const detailVisible = ref(false)
+const visibleGateIds = ref<number[]>(gateDevices.slice(0, 10).map(gate => gate.id))
 
 const selectedGate = computed(() => {
   if (!selectedGateId.value) return undefined
   const gate = gateDevices.find(g => g.id === selectedGateId.value)
-  return gate ? { name: gate.name, location: gate.location, status: gate.status } : undefined
+  return gate
 })
 
-const visibleMarkers = computed(() => gateDevices.slice(0, 20))
+const visibleMarkers = computed(() => gateDevices.filter(gate => visibleGateIds.value.includes(gate.id)))
+
+function updateVisibleGateIds(ids: number[]) {
+  visibleGateIds.value = ids
+}
 
 function selectGate(id: number) {
   selectedGateId.value = id
@@ -171,7 +179,7 @@ function goBack() {
     flex-direction: column;
     gap: 10px;
     overflow: hidden;
-    padding: 44px 0 8px;
+    padding: 24px 0 8px;
   }
 
   &__right {
@@ -187,7 +195,7 @@ function goBack() {
   &__back {
     position: absolute;
     left: calc(40px + #{$panel-left-w} + 24px);
-    top: 44px;
+    top: 24px;
     z-index: 12;
     width: 105px;
     height: 40px;

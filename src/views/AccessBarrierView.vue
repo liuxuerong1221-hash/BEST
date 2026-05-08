@@ -19,6 +19,7 @@
           :barriers="barrierDevices"
           :selected-id="selectedBarrierId"
           @select="selectBarrier"
+          @visible-change="updateVisibleBarrierIds"
         />
       </aside>
 
@@ -56,7 +57,7 @@
 
       <!-- 右侧：道闸详情面板 -->
       <aside v-if="detailVisible" class="access-barrier__right">
-        <GateDetailPanel :device="selectedBarrier" @close="detailVisible = false" />
+        <VehicleDetailPanel :device="selectedBarrier" @close="detailVisible = false" />
       </aside>
     </main>
 
@@ -71,7 +72,7 @@ import { useRouter } from 'vue-router'
 import AppHeader from '@/components/common/AppHeader.vue'
 import BottomNav from '@/components/common/BottomNav.vue'
 import BarrierMapMarker from '@/components/common/BarrierMapMarker.vue'
-import GateDetailPanel from '@/components/panels/GateDetailPanel.vue'
+import VehicleDetailPanel from '@/components/panels/VehicleDetailPanel.vue'
 import BarrierStatsPanel from '@/components/panels/BarrierStatsPanel.vue'
 import BarrierListPanel from '@/components/panels/BarrierListPanel.vue'
 
@@ -83,6 +84,7 @@ interface Barrier {
   id: number
   name: string
   location: string
+  ip: string
   status: BarrierStatus
   x: number
   y: number
@@ -92,6 +94,7 @@ const barrierDevices: Barrier[] = Array.from({ length: 30 }, (_, i) => ({
   id: i + 1,
   name: `道闸设备${String(i + 1).padStart(3, '0')}`,
   location: `${(i % 5) + 1}号楼-${(i % 8) + 1}层`,
+  ip: `192.168.2.${(i % 255) + 1}`,
   status: (i < 28 ? 'online' : 'offline') as BarrierStatus,
   x: 200 + Math.random() * 800,
   y: 150 + Math.random() * 400,
@@ -99,14 +102,20 @@ const barrierDevices: Barrier[] = Array.from({ length: 30 }, (_, i) => ({
 
 const selectedBarrierId = ref<number | null>(null)
 const detailVisible = ref(false)
+const visibleBarrierIds = ref<number[]>(barrierDevices.slice(0, 10).map(item => item.id))
 
 const selectedBarrier = computed(() => {
   if (!selectedBarrierId.value) return undefined
-  const device = barrierDevices.find(d => d.id === selectedBarrierId.value)
-  return device ? { name: device.name, location: device.location, status: device.status } : undefined
+  return barrierDevices.find(d => d.id === selectedBarrierId.value)
 })
 
-const visibleMarkers = computed(() => barrierDevices.slice(0, 20))
+const visibleMarkers = computed(() =>
+  barrierDevices.filter(item => visibleBarrierIds.value.includes(item.id)),
+)
+
+function updateVisibleBarrierIds(ids: number[]) {
+  visibleBarrierIds.value = ids
+}
 
 function selectBarrier(id: number) {
   selectedBarrierId.value = id
@@ -171,7 +180,7 @@ function goBack() {
     flex-direction: column;
     gap: 10px;
     overflow: hidden;
-    padding: 44px 0 8px;
+    padding: 24px 0 8px;
   }
 
   &__right {
@@ -187,7 +196,7 @@ function goBack() {
   &__back {
     position: absolute;
     left: calc(40px + #{$panel-left-w} + 24px);
-    top: 44px;
+    top: 24px;
     z-index: 12;
     width: 105px;
     height: 40px;

@@ -46,6 +46,7 @@ const stats: StatItem[] = [
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-top: 24px;
 
   &__item {
     width: 174px;

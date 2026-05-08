@@ -61,7 +61,12 @@ const entries: EntryItem[] = [
 ]
 
 function selectEntry(kind: EntryKind) {
-  router.push({ name: 'access', query: { type: kind } })
+  const routeMap: Record<EntryKind, string> = {
+    gate: 'access-gate',
+    turnstile: 'access-turnstile',
+    barrier: 'access-barrier',
+  }
+  router.push({ name: routeMap[kind] })
 }
 </script>
 

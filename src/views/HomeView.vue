@@ -119,7 +119,7 @@ import AlertLineChart   from '@/components/charts/AlertLineChart.vue'
     flex-direction: column;
     gap: 10px;
     overflow: hidden;
-    padding: 44px 0 8px;
+    padding: 24px 0 8px;
   }
 
   &__center {
@@ -130,7 +130,7 @@ import AlertLineChart   from '@/components/charts/AlertLineChart.vue'
   &__floating-entry {
     position: absolute;
     left: calc(40px + #{$panel-left-w} + 24px);
-    top: 44px;
+    top: 24px;
     z-index: 12;
   }
 

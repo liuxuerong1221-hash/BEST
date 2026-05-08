@@ -1,7 +1,7 @@
 <template>
-  <BasePanel class="barrier-list" title="道闸设备列表">
+  <BasePanel class="gate-list" title="门禁设备列表">
     <!-- 搜索 + 筛选 -->
-    <div class="barrier-list__toolbar">
+    <div class="gate-list__toolbar">
       <label class="search-input">
         <input
           v-model="keyword"
@@ -33,28 +33,28 @@
     </div>
 
     <!-- 表格 -->
-    <div class="barrier-list__table">
-      <div class="barrier-row barrier-row--header">
-        <span class="barrier-row__name">设备名称</span>
-        <span class="barrier-row__location">所在位置</span>
-        <span class="barrier-row__status">状态</span>
+    <div class="gate-list__table">
+      <div class="gate-row gate-row--header">
+        <span class="gate-row__name">设备名称</span>
+        <span class="gate-row__location">所在位置</span>
+        <span class="gate-row__status">状态</span>
       </div>
 
-      <div class="barrier-list__body">
+      <div class="gate-list__body">
         <div
           v-for="g in filtered"
           :key="g.id"
-          class="barrier-row barrier-row--selectable"
-          :class="{ 'barrier-row--selected': g.id === selectedId }"
+          class="gate-row gate-row--selectable"
+          :class="{ 'gate-row--selected': g.id === selectedId }"
           role="button"
           tabindex="0"
           @click="emit('select', g.id)"
           @keydown.enter.prevent="emit('select', g.id)"
           @keydown.space.prevent="emit('select', g.id)"
         >
-          <span class="barrier-row__name">{{ g.name }}</span>
-          <span class="barrier-row__location">{{ g.location }}</span>
-          <span class="barrier-row__status">
+          <span class="gate-row__name">{{ g.name }}</span>
+          <span class="gate-row__location">{{ g.location }}</span>
+          <span class="gate-row__status">
             <span class="status-badge" :class="`status-badge--${g.status}`">
               {{ statusLabel(g.status) }}
             </span>
@@ -64,7 +64,7 @@
     </div>
 
     <!-- 分页器 -->
-    <div class="barrier-list__pagination">
+    <div class="gate-list__pagination">
       <button
         class="pagination-btn"
         :disabled="currentPage === 1"
@@ -88,21 +88,26 @@
 import { ref, computed, watch } from 'vue'
 import BasePanel from '@/components/common/BasePanel.vue'
 
-type BarrierStatus = 'online' | 'offline'
+type GateStatus = 'online' | 'offline'
 
-interface Barrier {
+interface Gate {
   id: number
   name: string
   location: string
-  status: BarrierStatus
+  status: GateStatus
 }
 
 const props = withDefaults(defineProps<{
-  barriers?: Barrier[]
-  selectedId?: number | null
+  gates?: Gate[]
+  selectedId?: number
 }>(), {
-  barriers: () => [],
-  selectedId: null,
+  gates: () => Array.from({ length: 392 }, (_, i) => ({
+    id: i + 1,
+    name: `门禁设备${String(i + 1).padStart(3, '0')}`,
+    location: `${(i % 5) + 1}号楼-${(i % 8) + 1}层`,
+    status: (i < 357 ? 'online' : 'offline') as GateStatus,
+  })),
+  selectedId: undefined,
 })
 
 const emit = defineEmits<{
@@ -110,18 +115,18 @@ const emit = defineEmits<{
   visibleChange: [ids: number[]]
 }>()
 
-const STATUS_TEXT: Record<BarrierStatus, string> = {
+const STATUS_TEXT: Record<GateStatus, string> = {
   'online': '在线',
   'offline': '离线',
 }
-function statusLabel(s: BarrierStatus) { return STATUS_TEXT[s] }
+function statusLabel(s: GateStatus) { return STATUS_TEXT[s] }
 
 // 搜索
 const keyword = ref('')
 
 // 筛选
 const filterOpen = ref(false)
-const filter = ref<'all' | BarrierStatus>('all')
+const filter = ref<'all' | GateStatus>('all')
 const filterOptions = [
   { value: 'all',     label: '全部状态' },
   { value: 'online',  label: '在线' },
@@ -131,7 +136,7 @@ const filterLabel = computed(() =>
   filterOptions.find(o => o.value === filter.value)?.label ?? '全部状态',
 )
 function toggleFilter() { filterOpen.value = !filterOpen.value }
-function selectFilter(v: 'all' | BarrierStatus) {
+function selectFilter(v: 'all' | GateStatus) {
   filter.value = v
   filterOpen.value = false
   currentPage.value = 1
@@ -139,7 +144,7 @@ function selectFilter(v: 'all' | BarrierStatus) {
 
 // 过滤后的列表
 const filteredAll = computed(() => {
-  let list = props.barriers
+  let list = props.gates
   if (keyword.value.trim()) {
     const k = keyword.value.trim()
     list = list.filter(g => g.name.includes(k) || g.location.includes(k))
@@ -160,12 +165,12 @@ const filtered = computed(() => {
 })
 
 watch(filtered, list => {
-  emit('visibleChange', list.map(item => item.id))
+  emit('visibleChange', list.map(g => g.id))
 }, { immediate: true })
 </script>
 
 <style lang="scss" scoped>
-.barrier-list {
+.gate-list {
   flex: 1;
   min-height: 0;
 
@@ -301,7 +306,7 @@ watch(filtered, list => {
 }
 
 // 表格行
-.barrier-row {
+.gate-row {
   display: grid;
   grid-template-columns: 1.5fr 1.5fr 1fr;
   align-items: center;

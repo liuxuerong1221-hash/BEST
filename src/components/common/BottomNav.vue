@@ -39,8 +39,15 @@ const router = useRouter()
 const route = useRoute()
 
 const activeTab = computed<TabKey>(() => {
-  const match = tabs.find(t => t.routeName === route.name)
-  return match?.key ?? 'overview'
+  const routeName = route.name as string
+  // 精确匹配
+  const exactMatch = tabs.find(t => t.routeName === routeName)
+  if (exactMatch) return exactMatch.key
+
+  // 前缀匹配：access-gate、access-turnstile 等都归属 access
+  if (routeName?.startsWith('access')) return 'access'
+
+  return 'overview'
 })
 
 function onSelect(key: TabKey) {

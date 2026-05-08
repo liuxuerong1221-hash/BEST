@@ -199,7 +199,7 @@ function goBack() {
     flex-direction: column;
     gap: 10px;
     overflow: hidden;
-    padding: 44px 0 8px;
+    padding: 24px 0 8px;
   }
 
   &__center {
@@ -210,7 +210,7 @@ function goBack() {
   &__back {
     position: absolute;
     left: calc(40px + #{$panel-left-w} + 24px);
-    top: 44px;
+    top: 24px;
     z-index: 12;
     width: 105px;
     height: 40px;

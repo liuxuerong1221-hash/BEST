@@ -18,6 +18,21 @@ const router = createRouter({
       name: 'access',
       component: () => import('@/views/AccessView.vue'),
     },
+    {
+      path: '/access/gate',
+      name: 'access-gate',
+      component: () => import('@/views/AccessGateView.vue'),
+    },
+    {
+      path: '/access/turnstile',
+      name: 'access-turnstile',
+      component: () => import('@/views/AccessTurnstileView.vue'),
+    },
+    {
+      path: '/access/barrier',
+      name: 'access-barrier',
+      component: () => import('@/views/AccessBarrierView.vue'),
+    },
   ],
 })
 

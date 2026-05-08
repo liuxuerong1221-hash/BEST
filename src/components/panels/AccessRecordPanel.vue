@@ -26,64 +26,7 @@
         </svg>
       </label>
 
-      <button
-        ref="dateButton"
-        class="access-record__date"
-        type="button"
-        @click="toggleDatePicker"
-      >
-        <span class="access-record__date-text">{{ date }}</span>
-        <svg class="access-record__date-icon" viewBox="0 0 13 13" fill="none">
-          <path
-            fill="#00AEFF"
-            d="M1.625 2.16694C1.32681 2.16694 1.08306 2.40987 1.08306 2.70806L1.08306 11.375C1.08306 11.674 1.32681 11.9169 1.625 11.9169L11.375 11.9169C11.6743 11.9169 11.9169 11.6743 11.9169 11.375L11.9169 2.70806C11.9165 2.40908 11.674 2.16694 11.375 2.16694L1.625 2.16694ZM11.375 13L1.625 13C0.728813 13 0 12.2712 0 11.375L0 2.70806C0 1.81269 0.728813 1.08306 1.625 1.08306L11.375 1.08306C12.2712 1.08306 13 1.81269 13 2.70806L13 11.375C13 12.2712 12.2712 13 11.375 13ZM3.82525 3.25L3.75781 3.25C3.47754 3.24955 3.25045 3.02246 3.25 2.74219L3.25 0.507812C3.25 0.228313 3.47831 0 3.75781 0L3.82525 0C4.10475 0 4.33306 0.228313 4.33306 0.507812L4.33306 2.74219C4.33262 3.02214 4.10602 3.24911 3.82606 3.25M9.24219 3.25L9.17475 3.25C8.89448 3.24955 8.66738 3.02246 8.66694 2.74219L8.66694 0.507812C8.66694 0.228312 8.89444 0 9.17475 0L9.24219 0C9.52169 0 9.75 0.228313 9.75 0.507812L9.75 2.74219C9.74955 3.02246 9.52246 3.24955 9.24219 3.25ZM3.79194 9.20806L2.70806 9.20806C2.40976 9.20673 2.16827 8.96524 2.16694 8.66694C2.16694 8.36875 2.41069 8.125 2.70806 8.125L3.79194 8.125C4.08931 8.125 4.33306 8.36875 4.33306 8.66694C4.33306 8.96431 4.08931 9.20806 3.79194 9.20806ZM7.04194 9.20806L5.95806 9.20806C5.65976 9.20673 5.41827 8.96524 5.41694 8.66694C5.41694 8.36875 5.66069 8.125 5.95806 8.125L7.04194 8.125C7.33931 8.125 7.58306 8.36875 7.58306 8.66694C7.58306 8.96431 7.33931 9.20806 7.04194 9.20806ZM3.79194 6.5L2.70806 6.5C2.40945 6.49866 2.16783 6.25668 2.16694 5.95806C2.16694 5.66069 2.41069 5.41694 2.70806 5.41694L3.79194 5.41694C4.08931 5.41694 4.33306 5.66069 4.33306 5.95806C4.33306 6.25625 4.08931 6.5 3.79194 6.5ZM10.2919 6.5L9.20806 6.5C8.90945 6.49866 8.66783 6.25668 8.66694 5.95806C8.66694 5.66069 8.91069 5.41694 9.20806 5.41694L10.2919 5.41694C10.5893 5.41694 10.8331 5.66069 10.8331 5.95806C10.8331 6.25625 10.5893 6.5 10.2919 6.5ZM7.04194 6.5L5.95806 6.5C5.65945 6.49866 5.41783 6.25668 5.41694 5.95806C5.41694 5.66069 5.66069 5.41694 5.95806 5.41694L7.04194 5.41694C7.33931 5.41694 7.58306 5.66069 7.58306 5.95806C7.58306 6.25625 7.33931 6.5 7.04194 6.5Z"/>
-        </svg>
-      </button>
-
-      <Teleport to="body">
-        <div
-          v-if="datePickerOpen"
-          class="access-record-date-picker"
-          :style="datePickerStyle"
-          @click.stop
-        >
-          <div class="access-record-date-picker__header">
-            <button
-              class="access-record-date-picker__nav"
-              type="button"
-              @click="changeMonth(-1)"
-            >&lt;</button>
-            <span class="access-record-date-picker__title">{{ currentYear }}年{{ currentMonth }}月</span>
-            <button
-              class="access-record-date-picker__nav"
-              type="button"
-              @click="changeMonth(1)"
-            >&gt;</button>
-          </div>
-          <div class="access-record-date-picker__calendar">
-            <div class="access-record-date-picker__weekdays">
-              <span v-for="day in weekdays" :key="day">{{ day }}</span>
-            </div>
-            <div class="access-record-date-picker__days">
-              <button
-                v-for="(day, idx) in calendarDays"
-                :key="idx"
-                class="access-record-date-picker__day"
-                :class="{
-                  'access-record-date-picker__day--empty': !day,
-                  'access-record-date-picker__day--selected': day && isSelectedDate(day),
-                  'access-record-date-picker__day--today': day && isToday(day),
-                }"
-                type="button"
-                :disabled="!day"
-                @click="selectDate(day)"
-              >
-                {{ day }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </Teleport>
+      <DatePicker v-model="date" />
     </div>
 
     <div v-if="tab === 'person'" class="access-record__person-table">
@@ -119,9 +62,14 @@
         :class="`access-record__item--${r.direction}`"
       >
         <!-- 左：抓拍图 -->
-        <div class="access-record__photo" aria-hidden="true">
+        <button
+          class="access-record__photo"
+          type="button"
+          aria-label="查看抓拍图"
+          @click="openPreview(r)"
+        >
           <span class="access-record__plate">{{ r.plate }}</span>
-        </div>
+        </button>
 
         <!-- 中：信息（两列：标签 / 值）-->
         <div class="access-record__info">
@@ -157,12 +105,95 @@
         </div>
       </div>
     </div>
+
+    <!-- 抓拍图预览弹窗 -->
+    <Teleport to="body">
+      <div
+        v-if="previewRecord"
+        class="capture-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="车辆抓拍图预览"
+        tabindex="-1"
+        @click.self="closePreview"
+        @keydown.esc="closePreview"
+      >
+        <section class="capture-modal__panel">
+          <header class="capture-modal__header">
+            <div class="capture-modal__title">
+              <span class="capture-modal__dot" />
+              <span class="capture-modal__title-text">车辆抓拍图 · {{ previewRecord.plate }}</span>
+              <span
+                class="capture-modal__badge"
+                :class="`capture-modal__badge--${previewRecord.direction}`"
+              >{{ previewRecord.direction === 'in' ? '进' : '出' }}</span>
+            </div>
+            <button class="capture-modal__close" type="button" aria-label="关闭" @click="closePreview">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M9.57 8L15.73 1.86C16.15 1.44 16.15 0.75 15.73 0.31C15.32 -0.10 14.62 -0.10 14.19 0.31L8.02 6.48L1.86 0.31C1.44 -0.10 0.75 -0.10 0.31 0.31C-0.10 0.72 -0.10 1.42 0.31 1.86L6.48 8.02L0.31 14.19C-0.10 14.60 -0.10 15.30 0.31 15.73C0.72 16.15 1.42 16.15 1.86 15.73L8.02 9.57L14.19 15.73C14.60 16.15 15.30 16.15 15.73 15.73C16.15 15.32 16.15 14.62 15.73 14.19L9.57 8Z" fill="#FFFFFF"/>
+              </svg>
+            </button>
+          </header>
+
+          <div class="capture-modal__body">
+            <div class="capture-modal__image">
+              <svg viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <linearGradient id="cap-sky" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#0E2647"/>
+                    <stop offset="100%" stop-color="#08172E"/>
+                  </linearGradient>
+                  <linearGradient id="cap-ground" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#13365C"/>
+                    <stop offset="100%" stop-color="#061328"/>
+                  </linearGradient>
+                  <linearGradient id="cap-car" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#2B6AA8"/>
+                    <stop offset="100%" stop-color="#0D2D4D"/>
+                  </linearGradient>
+                </defs>
+                <rect width="640" height="260" fill="url(#cap-sky)"/>
+                <rect y="260" width="640" height="140" fill="url(#cap-ground)"/>
+                <rect x="40" y="160" width="80" height="100" fill="#0B2C52" opacity="0.7"/>
+                <rect x="520" y="140" width="90" height="120" fill="#0B2C52" opacity="0.7"/>
+                <rect x="80" y="120" width="10" height="140" fill="#1B3F6B"/>
+                <rect x="550" y="120" width="10" height="140" fill="#1B3F6B"/>
+                <rect x="90" y="170" width="460" height="6" fill="#4DF2FF" opacity="0.75"/>
+                <g transform="translate(180, 220)">
+                  <rect x="0" y="40" width="280" height="70" rx="12" fill="url(#cap-car)" stroke="#4DF2FF" stroke-opacity="0.4"/>
+                  <path d="M30 40 L70 10 L210 10 L250 40 Z" fill="#1B3F6B" stroke="#4DF2FF" stroke-opacity="0.3"/>
+                  <rect x="75" y="15" width="130" height="22" rx="3" fill="#0A2240" opacity="0.8"/>
+                  <circle cx="55" cy="115" r="18" fill="#050F1E" stroke="#4DF2FF" stroke-opacity="0.5"/>
+                  <circle cx="55" cy="115" r="8" fill="#1B3F6B"/>
+                  <circle cx="225" cy="115" r="18" fill="#050F1E" stroke="#4DF2FF" stroke-opacity="0.5"/>
+                  <circle cx="225" cy="115" r="8" fill="#1B3F6B"/>
+                  <rect x="100" y="80" width="80" height="20" rx="2" fill="#0E7F3B" stroke="#FFFFFF" stroke-width="0.6"/>
+                  <text x="140" y="95" text-anchor="middle" font-size="12" fill="#FFFFFF" font-family="PingFang SC, sans-serif" font-weight="700">{{ previewRecord.plate }}</text>
+                  <rect x="10" y="50" width="16" height="10" rx="2" fill="#FFE48A" opacity="0.9"/>
+                  <rect x="254" y="50" width="16" height="10" rx="2" fill="#FFE48A" opacity="0.9"/>
+                </g>
+                <g opacity="0.16">
+                  <path d="M0 120 H640" stroke="#4DF2FF" stroke-dasharray="4 6"/>
+                  <path d="M0 300 H640" stroke="#4DF2FF" stroke-dasharray="4 6"/>
+                </g>
+                <text x="20" y="30" fill="#4DF2FF" font-size="14" font-family="PingFang SC, sans-serif" opacity="0.75">BEST · 智慧园区 · 通行抓拍</text>
+              </svg>
+            </div>
+            <div class="capture-modal__meta">
+              <span>通行时间：{{ previewRecord.time }}</span>
+              <span>通过设备：{{ previewRecord.device }}</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </Teleport>
   </BasePanel>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed } from 'vue'
 import BasePanel from '@/components/common/BasePanel.vue'
+import DatePicker from '@/components/common/DatePicker.vue'
 
 type Direction = 'in' | 'out'
 
@@ -192,121 +223,7 @@ const tab = ref<Tab>('vehicle')
 
 const keyword = ref('')
 const date = ref('2026-4-20')
-
-// 日期选择器状态
-const datePickerOpen = ref(false)
-const dateButton = ref<HTMLElement | null>(null)
-const currentYear = ref(2026)
-const currentMonth = ref(4)
-const selectedDay = ref(20)
-
-const weekdays = ['日', '一', '二', '三', '四', '五', '六']
-
-const datePickerPos = ref({ top: 0, left: 0 })
-const datePickerStyle = computed(() => ({
-  top: `${datePickerPos.value.top}px`,
-  left: `${datePickerPos.value.left}px`,
-}))
-
-// 计算日历天数
-const calendarDays = computed(() => {
-  const year = currentYear.value
-  const month = currentMonth.value
-  const firstDay = new Date(year, month - 1, 1).getDay()
-  const daysInMonth = new Date(year, month, 0).getDate()
-
-  const days: (number | null)[] = []
-  for (let i = 0; i < firstDay; i++) {
-    days.push(null)
-  }
-  for (let i = 1; i <= daysInMonth; i++) {
-    days.push(i)
-  }
-  return days
-})
-
-function toggleDatePicker() {
-  datePickerOpen.value = !datePickerOpen.value
-  if (datePickerOpen.value) {
-    requestAnimationFrame(updateDatePickerPos)
-  }
-}
-
-function updateDatePickerPos() {
-  const el = dateButton.value
-  if (!el) return
-  const r = el.getBoundingClientRect()
-
-  const pickerWidth = 280
-  const pickerHeight = 320
-
-  // 固定在选择框上方8px
-  const top = r.top - pickerHeight - 8
-  let left = r.left
-
-  // 检查右侧空间，防止超出屏幕
-  const maxLeft = window.innerWidth - pickerWidth - 8
-  if (left > maxLeft) {
-    left = maxLeft
-  }
-  if (left < 8) {
-    left = 8
-  }
-
-  datePickerPos.value = { top, left }
-}
-
-function changeMonth(delta: number) {
-  let newMonth = currentMonth.value + delta
-  let newYear = currentYear.value
-
-  if (newMonth < 1) {
-    newMonth = 12
-    newYear--
-  } else if (newMonth > 12) {
-    newMonth = 1
-    newYear++
-  }
-
-  currentMonth.value = newMonth
-  currentYear.value = newYear
-}
-
-function selectDate(day: number | null) {
-  if (!day) return
-  selectedDay.value = day
-  date.value = `${currentYear.value}-${currentMonth.value}-${day}`
-  datePickerOpen.value = false
-}
-
-function isSelectedDate(day: number): boolean {
-  return day === selectedDay.value &&
-         currentMonth.value === parseInt(date.value.split('-')[1]) &&
-         currentYear.value === parseInt(date.value.split('-')[0])
-}
-
-function isToday(day: number): boolean {
-  const today = new Date()
-  return day === today.getDate() &&
-         currentMonth.value === today.getMonth() + 1 &&
-         currentYear.value === today.getFullYear()
-}
-
-function onDocClick(e: MouseEvent) {
-  const target = e.target as HTMLElement
-  if (!target.closest('.access-record__date') &&
-      !target.closest('.access-record-date-picker')) {
-    datePickerOpen.value = false
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('click', onDocClick)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', onDocClick)
-})
+const previewRecord = ref<Record | null>(null)
 
 const records: Record[] = [
   { id: 1, plate: '皖A1***45', device: '门禁1', time: '2025.1.1 15:12:11', direction: 'in' },
@@ -342,6 +259,14 @@ const filteredPersonRecords = computed(() => {
     r.time.includes(k),
   )
 })
+
+function openPreview(record: Record) {
+  previewRecord.value = record
+}
+
+function closePreview() {
+  previewRecord.value = null
+}
 </script>
 
 <style lang="scss" scoped>
@@ -435,36 +360,6 @@ $exit-glow:  linear-gradient(90deg, rgba(255, 72, 72, 0) 15%, rgba(255, 72, 72, 
   &__search-icon {
     width: 18px;
     height: 18px;
-    flex-shrink: 0;
-  }
-
-  &__date {
-    width: 132px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    background: $ctrl-bg;
-    border: 1px solid $ctrl-border;
-    border-radius: 4px;
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.2s ease;
-
-    &:hover {
-      background: rgba(8, 39, 76, 0.8);
-    }
-  }
-
-  &__date-text {
-    font-size: $font-size-xs;
-    color: $color-text-1;
-  }
-
-  &__date-icon {
-    width: 13px;
-    height: 13px;
     flex-shrink: 0;
   }
 
@@ -603,6 +498,17 @@ $exit-glow:  linear-gradient(90deg, rgba(255, 72, 72, 0) 15%, rgba(255, 72, 72, 
     box-shadow:
       5px 5px 5px 0 rgba(0, 0, 0, 0.349),
       inset 0 5px 5px 0 rgba(0, 0, 0, 0.349);
+    padding: 0;
+    cursor: pointer;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+
+    &:hover {
+      border-color: rgba(77, 242, 255, 0.6);
+      box-shadow:
+        5px 5px 5px 0 rgba(0, 0, 0, 0.349),
+        inset 0 5px 5px 0 rgba(0, 0, 0, 0.349),
+        0 0 12px rgba(77, 242, 255, 0.3);
+    }
 
     &::before {
       content: '';
@@ -797,113 +703,121 @@ $exit-glow:  linear-gradient(90deg, rgba(255, 72, 72, 0) 15%, rgba(255, 72, 72, 
   }
 }
 
-.access-record-date-picker {
+.capture-modal {
   position: fixed;
-  z-index: 9999;
-  width: 280px;
-  padding: 16px;
-  background: linear-gradient(180deg, rgba(5, 25, 49, 0.95) 0%, rgba(10, 44, 83, 0.95) 100%);
-  border: 1px solid rgba(0, 174, 255, 0.4);
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background: rgba(0, 8, 18, 0.78);
+  backdrop-filter: blur(6px);
+
+  &__panel {
+    width: min(680px, calc(100vw - 96px));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgba(77, 242, 255, 0.35);
+    border-radius: $radius-md;
+    background: rgba(5, 25, 49, 0.95);
+    box-shadow: 0 0 32px rgba(0, 174, 255, 0.24), inset 0 0 24px rgba(0, 174, 255, 0.08);
+  }
 
   &__header {
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
-  }
-
-  &__nav {
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 174, 255, 0.1);
-    border: 1px solid rgba(0, 174, 255, 0.3);
-    border-radius: 4px;
-    color: #00AEFF;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-
-    &:hover {
-      background: rgba(0, 174, 255, 0.2);
-    }
+    padding: 0 $spacing-lg;
+    border-bottom: 1px solid rgba(0, 174, 255, 0.24);
+    flex-shrink: 0;
   }
 
   &__title {
-    font-size: 14px;
-    color: #FFFFFF;
-    font-weight: 600;
-  }
-
-  &__calendar {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  &__weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    margin-bottom: 4px;
-
-    span {
-      text-align: center;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.6);
-      padding: 4px 0;
-    }
-  }
-
-  &__days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-  }
-
-  &__day {
-    aspect-ratio: 1;
     display: flex;
     align-items: center;
-    justify-content: center;
-    background: rgba(0, 174, 255, 0.05);
-    border: 1px solid transparent;
+    gap: $spacing-sm;
+    min-width: 0;
+  }
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $color-primary;
+    box-shadow: 0 0 10px rgba(0, 174, 255, 0.75);
+    flex-shrink: 0;
+  }
+
+  &__title-text {
+    font-size: $font-size-sm;
+    font-weight: bold;
+    color: $color-text-1;
+    white-space: nowrap;
+  }
+
+  &__badge {
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 8px;
     border-radius: 4px;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 13px;
+    font-size: $font-size-xxs;
+    font-weight: bold;
+
+    &--in {
+      color: #0CF92C;
+      background: rgba(12, 249, 44, 0.25);
+    }
+
+    &--out {
+      color: #FF1414;
+      background: rgba(255, 72, 72, 0.25);
+    }
+  }
+
+  &__close {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    padding: 7px;
+    background: transparent;
     cursor: pointer;
-    transition: all 0.2s ease;
 
-    &:hover:not(:disabled) {
-      background: rgba(0, 174, 255, 0.15);
-      border-color: rgba(0, 174, 255, 0.4);
-    }
+    &:hover { opacity: 0.75; }
+    svg { width: 16px; height: 16px; }
+  }
 
-    &--empty {
-      background: transparent;
-      cursor: default;
-    }
+  &__body {
+    padding: $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
 
-    &--selected {
-      background: rgba(77, 242, 255, 0.25);
-      border-color: #4DF2FF;
-      color: #4DF2FF;
-      font-weight: 600;
-    }
+  &__image {
+    width: 100%;
+    border-radius: $radius-sm;
+    overflow: hidden;
+    border: 1px solid rgba(0, 174, 255, 0.2);
 
-    &--today {
-      border-color: rgba(0, 174, 255, 0.6);
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
     }
+  }
 
-    &:disabled {
-      cursor: not-allowed;
-      opacity: 0.3;
-    }
+  &__meta {
+    display: flex;
+    justify-content: space-between;
+    color: $color-text-2;
+    font-size: $font-size-xs;
   }
 }
 </style>

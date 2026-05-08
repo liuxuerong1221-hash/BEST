@@ -19,6 +19,7 @@
           :turnstiles="turnstileDevices"
           :selected-id="selectedTurnstileId"
           @select="selectTurnstile"
+          @visible-change="updateVisibleTurnstileIds"
         />
       </aside>
 
@@ -83,6 +84,7 @@ interface Turnstile {
   id: number
   name: string
   location: string
+  ip: string
   status: TurnstileStatus
   x: number
   y: number
@@ -92,6 +94,7 @@ const turnstileDevices: Turnstile[] = Array.from({ length: 50 }, (_, i) => ({
   id: i + 1,
   name: `摆闸设备${String(i + 1).padStart(3, '0')}`,
   location: `${(i % 5) + 1}号楼-${(i % 8) + 1}层`,
+  ip: `192.168.${Math.floor(i / 255) + 2}.${(i % 255) + 1}`,
   status: (i < 45 ? 'online' : 'offline') as TurnstileStatus,
   x: 200 + Math.random() * 800,
   y: 150 + Math.random() * 400,
@@ -99,14 +102,20 @@ const turnstileDevices: Turnstile[] = Array.from({ length: 50 }, (_, i) => ({
 
 const selectedTurnstileId = ref<number | null>(null)
 const detailVisible = ref(false)
+const visibleTurnstileIds = ref<number[]>(turnstileDevices.slice(0, 10).map(item => item.id))
 
 const selectedTurnstile = computed(() => {
   if (!selectedTurnstileId.value) return undefined
-  const device = turnstileDevices.find(d => d.id === selectedTurnstileId.value)
-  return device ? { name: device.name, location: device.location, status: device.status } : undefined
+  return turnstileDevices.find(d => d.id === selectedTurnstileId.value)
 })
 
-const visibleMarkers = computed(() => turnstileDevices.slice(0, 20))
+const visibleMarkers = computed(() =>
+  turnstileDevices.filter(item => visibleTurnstileIds.value.includes(item.id)),
+)
+
+function updateVisibleTurnstileIds(ids: number[]) {
+  visibleTurnstileIds.value = ids
+}
 
 function selectTurnstile(id: number) {
   selectedTurnstileId.value = id
@@ -171,7 +180,7 @@ function goBack() {
     flex-direction: column;
     gap: 10px;
     overflow: hidden;
-    padding: 44px 0 8px;
+    padding: 24px 0 8px;
   }
 
   &__right {
@@ -187,7 +196,7 @@ function goBack() {
   &__back {
     position: absolute;
     left: calc(40px + #{$panel-left-w} + 24px);
-    top: 44px;
+    top: 24px;
     z-index: 12;
     width: 105px;
     height: 40px;
