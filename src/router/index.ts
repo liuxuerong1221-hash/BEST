@@ -33,6 +33,16 @@ const router = createRouter({
       name: 'access-barrier',
       component: () => import('@/views/AccessBarrierView.vue'),
     },
+    {
+      path: '/security',
+      name: 'security',
+      component: () => import('@/views/SecurityView.vue'),
+    },
+    {
+      path: '/energy',
+      name: 'energy',
+      component: () => import('@/views/EnergyView.vue'),
+    },
   ],
 })
 

@@ -31,8 +31,8 @@ interface Tab {
 const tabs: Tab[] = [
   { key: 'overview', label: '综合态势', routeName: 'dashboard' },
   { key: 'access',   label: '通行态势', routeName: 'access' },
-  { key: 'security', label: '安全态势' },
-  { key: 'energy',   label: '设备能耗' },
+  { key: 'security', label: '安全态势', routeName: 'security' },
+  { key: 'energy',   label: '设备能耗', routeName: 'energy' },
 ]
 
 const router = useRouter()

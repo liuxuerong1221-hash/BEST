@@ -153,6 +153,7 @@ src/
 - option 使用 `computed`。
 - 按需注册 ECharts 模块，禁止全量 `import * as echarts from 'echarts'`。
 - 标题、图例、筛选器走 `BasePanel` 的 `actions` slot。
+- 有量纲的数值型图表（能耗、用量、人数等）必须在 y 轴顶部显示单位，走 `yAxis.name` + `nameTextStyle.align: 'left'`，并通过负 `padding` 将单位文字贴紧 y 轴左侧，避免顶部留空或溢出面板。
 
 ---
 
