@@ -37,7 +37,22 @@
       "Bash(ls -la \"C:/Users/Administrator/.d2c/\" 2>/dev/null || echo \"目录不存在\")",
       "Read(//c/Users/Administrator/.d2c/**)",
       "Bash(npx -y @mastergo/magic-mcp --token=mg_c70d716e7bf9451da133db9b14d08662 getDsl --fileId=191345533201804 --layerId=202-6503)",
-      "Bash(MASTERGO_BASE_URL=\"https://mastergo.iflytek.com\" npx -y @mastergo/magic-mcp --token=mg_c70d716e7bf9451da133db9b14d08662 --help)"
+      "Bash(MASTERGO_BASE_URL=\"https://mastergo.iflytek.com\" npx -y @mastergo/magic-mcp --token=mg_c70d716e7bf9451da133db9b14d08662 --help)",
+      "Bash(npm list *)",
+      "Bash(ls \"C:/Users/Administrator/Desktop/html-files/\")",
+      "Read(//c/Users/Administrator/Desktop/html-files/**)",
+      "Bash(cp \"C:/Users/Administrator/Desktop/html-files/asset/icons/svg_0060344e.svg\" \"C:/Users/Administrator/Desktop/CC_PROJECT/BEST_park/src/assets/images/lighting-ring-bg.svg\")",
+      "Bash(cp \"C:/Users/Administrator/Desktop/html-files/asset/icons/svg_06b300f6.svg\" \"C:/Users/Administrator/Desktop/CC_PROJECT/BEST_park/src/assets/images/lighting-ring-track.svg\")",
+      "Bash(cp \"C:/Users/Administrator/Desktop/html-files/asset/icons/svg_0060a3ae.svg\" \"C:/Users/Administrator/Desktop/CC_PROJECT/BEST_park/src/assets/images/lighting-ring-arc.svg\")",
+      "Bash(cp \"C:/Users/Administrator/Desktop/html-files/asset/icons/svg_067774d1.svg\" \"C:/Users/Administrator/Desktop/CC_PROJECT/BEST_park/src/assets/images/lighting-icon-open.svg\")",
+      "Bash(cp \"C:/Users/Administrator/Desktop/html-files/asset/icons/svg_069732d3.svg\" \"C:/Users/Administrator/Desktop/CC_PROJECT/BEST_park/src/assets/images/lighting-icon-close.svg\")",
+      "Bash(ping -n 2 github.com)",
+      "Bash(git fetch *)",
+      "Bash(git count-objects *)",
+      "Bash(git -c http.proxy= -c https.proxy= push origin main --verbose)",
+      "Bash(git ls-tree *)",
+      "Bash(sort -k4 -n -r)",
+      "Bash(git rm *)"
     ]
   },
   "enableAllProjectMcpServers": true,

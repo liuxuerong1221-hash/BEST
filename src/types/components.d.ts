@@ -68,6 +68,7 @@ declare module 'vue' {
     IconVisitor: typeof import('./../components/icons/IconVisitor.vue')['default']
     IntrusionAlertBar: typeof import('./../components/common/IntrusionAlertBar.vue')['default']
     KeyMonitoringPanel: typeof import('./../components/panels/KeyMonitoringPanel.vue')['default']
+    LightingMonitorPanel: typeof import('./../components/panels/LightingMonitorPanel.vue')['default']
     MapMarker: typeof import('./../components/common/MapMarker.vue')['default']
     MapPinMarker: typeof import('./../components/common/MapPinMarker.vue')['default']
     MeetingListPanel: typeof import('./../components/panels/MeetingListPanel.vue')['default']

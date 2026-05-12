@@ -40,14 +40,7 @@
       <!-- 右侧 -->
       <aside class="energy__right">
         <TodayEnergyStats />
-        <DeviceMonitorPanel
-          title="照明监测"
-          tone="cyan"
-          :icon-component="IconLightBulb"
-          :total="248"
-          :online="234"
-          :fault="14"
-        />
+        <LightingMonitorPanel />
         <BuildingDevicePanel />
       </aside>
     </main>
@@ -69,9 +62,8 @@ import type { EnergyEntryKind } from '@/components/common/EnergyFloatingEntries.
 import TodayEnergyStats    from '@/components/panels/TodayEnergyStats.vue'
 import EnergyCompareChart  from '@/components/charts/EnergyCompareChart.vue'
 import EnergyTrendChart    from '@/components/charts/EnergyTrendChart.vue'
-import DeviceMonitorPanel  from '@/components/panels/DeviceMonitorPanel.vue'
+import LightingMonitorPanel from '@/components/panels/LightingMonitorPanel.vue'
 import BuildingDevicePanel from '@/components/panels/BuildingDevicePanel.vue'
-import IconLightBulb       from '@/components/icons/IconLightBulb.vue'
 
 const router = useRouter()
 
