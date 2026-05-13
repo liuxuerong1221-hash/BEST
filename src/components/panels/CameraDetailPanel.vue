@@ -37,6 +37,44 @@
       </button>
     </div>
 
+    <!-- 球机专属：PTZ 控制 -->
+    <div v-if="device.type === '球机'" class="camera-detail__ptz">
+      <!-- 3×3 方向按钮网格 -->
+      <div class="ptz-grid">
+        <button
+          v-for="d in ptzDirs" :key="d.key"
+          class="ptz-btn"
+          :class="{ 'ptz-btn--center': d.key === 'talk', 'ptz-btn--on': activePtzDir === d.key }"
+          @mousedown="d.key !== 'talk' ? startPtz(d.key) : undefined"
+          @mouseup="stopPtz" @mouseleave="stopPtz"
+        >
+          <span v-if="d.key === 'talk'">喊话</span>
+          <svg v-else viewBox="0 0 24 24" fill="none" class="ptz-btn__icon">
+            <g :transform="`rotate(${d.angle}, 12, 12)`">
+              <path d="M6,15 L12,9 L18,15"
+                    stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 焦点 / 焦距 / 光圈 控制按钮组 -->
+      <div class="ptz-controls">
+        <div v-for="c in ptzCtrls" :key="c.label" class="ptz-ctrl-row">
+          <button class="ptz-ctrl-btn" :class="{'ptz-ctrl-btn--on': activePtzDir===c.nearKey}"
+                  @mousedown="startPtz(c.nearKey)" @mouseup="stopPtz" @mouseleave="stopPtz">
+            {{ c.nearLabel }}
+          </button>
+          <span class="ptz-ctrl-label">{{ c.label }}</span>
+          <button class="ptz-ctrl-btn" :class="{'ptz-ctrl-btn--on': activePtzDir===c.farKey}"
+                  @mousedown="startPtz(c.farKey)" @mouseup="stopPtz" @mouseleave="stopPtz">
+            {{ c.farLabel }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- 基础信息 -->
     <div class="camera-detail__info">
       <span class="camera-detail__info-label">基础信息</span>
@@ -54,12 +92,18 @@
 
       <div class="camera-detail__info-row">
         <span class="camera-detail__info-text">类型：{{ device.type }}</span>
+        <span v-if="device.type === '球机'" class="camera-detail__info-text">IP：{{ device.ip }}</span>
       </div>
     </div>
 
     <!-- 关闭按钮 -->
     <div class="camera-detail__footer">
-      <button class="camera-detail__close-btn" type="button" @click="emit('close')">关闭</button>
+      <button class="camera-detail__close-btn" type="button" @click="emit('close')">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path d="M9.57 8L15.73 1.86C16.15 1.44 16.15 0.75 15.73 0.31C15.32 -0.10 14.62 -0.10 14.19 0.31L8.02 6.48L1.86 0.31C1.44 -0.10 0.75 -0.10 0.31 0.31C-0.10 0.72 -0.10 1.42 0.31 1.86L6.48 8.02L0.31 14.19C-0.10 14.60 -0.10 15.30 0.31 15.73C0.72 16.15 1.42 16.15 1.86 15.73L8.02 9.57L14.19 15.73C14.60 16.15 15.30 16.15 15.73 15.73C16.15 15.32 16.15 14.62 15.73 14.19L9.57 8Z" fill="#FFFFFF"/>
+        </svg>
+        <span>关闭</span>
+      </button>
     </div>
   </section>
 
@@ -136,6 +180,30 @@ const emit = defineEmits<{
 const device = computed(() => props.device)
 const expanded = ref(false)
 
+// PTZ 控制（球机专属）
+const activePtzDir = ref<string | null>(null)
+
+const ptzDirs = [
+  { key: 'up-left',    angle: 315 },
+  { key: 'up',         angle: 0   },
+  { key: 'up-right',   angle: 45  },
+  { key: 'left',       angle: 270 },
+  { key: 'talk',       angle: 0   },
+  { key: 'right',      angle: 90  },
+  { key: 'down-left',  angle: 225 },
+  { key: 'down',       angle: 180 },
+  { key: 'down-right', angle: 135 },
+]
+
+const ptzCtrls = [
+  { label: '焦点', nearKey: 'focus-near', nearLabel: '前移', farKey: 'focus-far',  farLabel: '后移' },
+  { label: '焦距', nearKey: 'zoom-in',    nearLabel: '变大', farKey: 'zoom-out',   farLabel: '变小' },
+  { label: '光圈', nearKey: 'iris-open',  nearLabel: '扩大', farKey: 'iris-close', farLabel: '缩小' },
+]
+
+function startPtz(dir: string) { activePtzDir.value = dir }
+function stopPtz() { activePtzDir.value = null }
+
 function openExpand() { expanded.value = true }
 function closeExpand() { expanded.value = false }
 </script>
@@ -202,7 +270,7 @@ function closeExpand() { expanded.value = false }
   &__feed {
     position: relative;
     width: 100%;
-    height: 240px;
+    height: 200px;
     border-radius: $radius-sm;
     overflow: hidden;
     flex-shrink: 0;
@@ -257,6 +325,13 @@ function closeExpand() { expanded.value = false }
 
     &:hover { opacity: 0.75; }
     svg { width: 100%; height: 100%; }
+  }
+
+  // 球机 PTZ 区
+  &__ptz {
+    display: flex;
+    align-items: center;
+    gap: 14px;
   }
 
   // 基础信息
@@ -322,6 +397,7 @@ function closeExpand() { expanded.value = false }
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 6px;
     border: 1px solid rgba(0, 174, 255, 0.5);
     background: linear-gradient(0deg, rgba(1, 158, 244, 0.5) -19%, rgba(14, 33, 56, 0) 100%);
     color: $color-text-1;
@@ -329,28 +405,132 @@ function closeExpand() { expanded.value = false }
     font-weight: 600;
     border-radius: $radius-sm;
     cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease;
 
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(0deg, rgba(1, 158, 244, 0.5) -19%, rgba(14, 33, 56, 0) 100%);
-      opacity: 0;
-      transition: opacity 0.2s ease;
+    svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
     }
 
-    &:hover::before { opacity: 1; }
+    &:hover {
+      background: linear-gradient(0deg, rgba(1, 158, 244, 0.7) -19%, rgba(14, 33, 56, 0.2) 100%);
+    }
   }
+}
+
+// PTZ 3×3 方向网格
+.ptz-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 36px);
+  grid-template-rows: repeat(3, 36px);
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.ptz-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 174, 255, 0.35);
+  background: rgba(6, 18, 48, 0.9);
+  color: rgba(160, 220, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
+
+  &:hover {
+    background: rgba(0, 174, 255, 0.18);
+    border-color: rgba(0, 174, 255, 0.65);
+    box-shadow: 0 0 8px rgba(0, 174, 255, 0.25);
+  }
+
+  &--on {
+    background: rgba(0, 174, 255, 0.28);
+    border-color: $color-primary;
+    box-shadow: 0 0 10px rgba(0, 174, 255, 0.5);
+    color: #fff;
+  }
+
+  &--center {
+    background: $color-primary;
+    border-color: $color-primary;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: 0 0 12px rgba(0, 174, 255, 0.5);
+
+    &:hover {
+      background: rgba(0, 174, 255, 0.85);
+      border-color: #fff;
+    }
+  }
+
+  &__icon {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+// 焦点/焦距/光圈 控制组
+.ptz-controls {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ptz-ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 36px;
+}
+
+.ptz-ctrl-btn {
+  flex: 1;
+  height: 100%;
+  border: 1px solid rgba(0, 174, 255, 0.4);
+  background: rgba(0, 174, 255, 0.2);
+  color: $color-text-1;
+  font-size: $font-size-xxs;
+  font-weight: 600;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  transition: background 0.12s, box-shadow 0.12s;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(0, 174, 255, 0.35);
+    box-shadow: 0 0 6px rgba(0, 174, 255, 0.3);
+  }
+
+  &--on {
+    background: rgba(0, 174, 255, 0.55);
+    border-color: $color-primary;
+    box-shadow: 0 0 10px rgba(0, 174, 255, 0.45);
+  }
+}
+
+.ptz-ctrl-label {
+  width: 26px;
+  text-align: center;
+  font-size: 10px;
+  color: $color-text-2;
+  flex-shrink: 0;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 @keyframes feed-scan {
   0%   { transform: translateY(-100%); opacity: 0; }
   10%  { opacity: 1; }
   90%  { opacity: 1; }
-  100% { transform: translateY(240px); opacity: 0; }
+  100% { transform: translateY(200px); opacity: 0; }
 }
 
 // 放大弹窗

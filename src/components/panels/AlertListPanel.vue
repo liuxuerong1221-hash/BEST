@@ -15,6 +15,10 @@
         v-for="alert in filteredAlerts"
         :key="alert.id"
         class="alert-list__item"
+        role="button"
+        tabindex="0"
+        @click="handleAlert(alert)"
+        @keydown.enter="handleAlert(alert)"
       >
         <div class="alert-list__thumb" aria-hidden="true">
           <div class="alert-list__thumb-grid" />
@@ -33,17 +37,27 @@
               :class="alert.status === '已处理' ? 'alert-list__value--success' : 'alert-list__value--danger'"
             >{{ alert.status }}</span>
           </div>
-          <div class="alert-list__row">
+          <div
+            class="alert-list__row"
+            @mouseenter="handleTipEnter($event, alert.location)"
+            @mouseleave="handleTipLeave"
+          >
             <span class="alert-list__label">告警地点：</span>
             <span class="alert-list__value alert-list__value--primary">{{ alert.location }}</span>
           </div>
-          <div class="alert-list__row">
+          <div
+            class="alert-list__row"
+            @mouseenter="handleTipEnter($event, alert.time)"
+            @mouseleave="handleTipLeave"
+          >
             <span class="alert-list__label">告警时间：</span>
             <span class="alert-list__value alert-list__value--primary">{{ alert.time }}</span>
           </div>
         </div>
 
-        <button class="alert-list__btn" type="button" @click="handleAlert(alert)">去处理</button>
+        <button class="alert-list__btn" type="button" @click.stop="handleAlert(alert)">
+          去处理
+        </button>
 
         <div class="alert-list__glow" aria-hidden="true">
           <div class="alert-list__glow-fill" />
@@ -51,6 +65,15 @@
         </div>
       </article>
     </div>
+
+    <!-- 文字溢出提示气泡 -->
+    <Teleport to="body">
+      <div
+        v-if="tooltip.visible"
+        class="alert-list__tooltip"
+        :style="{ top: `${tooltip.y}px`, left: `${tooltip.x}px` }"
+      >{{ tooltip.text }}</div>
+    </Teleport>
 
     <!-- 状态下拉 -->
     <Teleport to="body">
@@ -75,6 +98,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
 import BasePanel from '@/components/common/BasePanel.vue'
 import DatePicker from '@/components/common/DatePicker.vue'
 
@@ -93,10 +117,13 @@ const statusOptions = [
 ] as const
 type StatusFilter = typeof statusOptions[number]['value']
 
+const router = useRouter()
+
 const statusFilter = ref<StatusFilter>('all')
 const date = ref('2026-4-20')
 const statusMenuOpen = ref(false)
 const statusMenuPos = ref({ top: 0, left: 0 })
+const tooltip = ref({ visible: false, text: '', x: 0, y: 0 })
 
 const statusLabel = computed(() => {
   return statusOptions.find(s => s.value === statusFilter.value)?.label ?? '全部状态'
@@ -135,9 +162,20 @@ function selectStatus(value: StatusFilter) {
   statusMenuOpen.value = false
 }
 
+function handleTipEnter(event: MouseEvent, text: string) {
+  const row = event.currentTarget as HTMLElement
+  const valueEl = row.querySelector('.alert-list__value') as HTMLElement | null
+  if (!valueEl || valueEl.scrollWidth <= valueEl.clientWidth) return
+  const rect = row.getBoundingClientRect()
+  tooltip.value = { visible: true, text, x: rect.left, y: rect.top }
+}
+
+function handleTipLeave() {
+  tooltip.value.visible = false
+}
+
 function handleAlert(alert: Alert) {
-  // 去处理占位:此处可接后端/跳转详情
-  console.log('处理告警', alert.id)
+  router.push({ name: 'security-alert', params: { id: alert.id } })
 }
 
 function onDocClick(e: MouseEvent) {
@@ -223,6 +261,10 @@ onBeforeUnmount(() => {
     grid-template-columns: 130px 1fr;
     gap: 10px;
     align-items: center;
+    cursor: pointer;
+    transition: border-color 0.18s;
+
+    &:hover { border-color: rgba(0, 174, 255, 0.35); }
   }
 
   &__thumb {
@@ -272,6 +314,7 @@ onBeforeUnmount(() => {
     font-size: $font-size-xxs;
     line-height: 1.2;
     white-space: nowrap;
+
   }
 
   &__label {
@@ -303,11 +346,9 @@ onBeforeUnmount(() => {
     font-size: $font-size-xxs;
     cursor: pointer;
     z-index: 2;
-    transition: background 0.18s;
+    transition: opacity 0.18s;
 
-    &:hover {
-      background: $color-primary-bright;
-    }
+    &:hover { opacity: 0.75; }
   }
 
   &__glow {
@@ -335,6 +376,21 @@ onBeforeUnmount(() => {
     width: 2px;
     background: linear-gradient(180deg, transparent 0%, rgba(255, 72, 72, 0.8) 50%, transparent 100%);
   }
+}
+
+.alert-list__tooltip {
+  position: fixed;
+  transform: translateY(calc(-100% - 6px));
+  padding: 4px 10px;
+  background: rgba(5, 25, 49, 0.95);
+  border: 1px solid $color-border;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  color: $color-text-1;
+  font-size: $font-size-xxs;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 9999;
 }
 
 .alert-status-menu {

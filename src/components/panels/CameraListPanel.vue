@@ -23,15 +23,15 @@
       <label class="search-input">
         <input v-model="keyword" class="search-input__input" placeholder="请输入关键词搜索" />
         <svg class="search-input__icon" viewBox="0 0 18 18" fill="none">
-          <circle cx="8" cy="8" r="5.5" stroke="#4DF2FF" stroke-width="1.4"/>
-          <path d="M12.5 12.5L16 16" stroke="#4DF2FF" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="8" cy="8" r="5.5" stroke="#00AEFF" stroke-width="1.4"/>
+          <path d="M12.5 12.5L16 16" stroke="#00AEFF" stroke-width="1.4" stroke-linecap="round"/>
         </svg>
       </label>
 
       <div class="filter-select" @click="toggleKeyFilter">
         <span class="filter-select__text">{{ keyFilterLabel }}</span>
         <svg class="filter-select__caret" :class="{ 'filter-select__caret--open': keyFilterOpen }" viewBox="0 0 12 12" fill="none">
-          <path d="M2 4.5L6 8.5L10 4.5" stroke="#4DF2FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 4.5L6 8.5L10 4.5" stroke="#00AEFF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <ul v-if="keyFilterOpen" class="filter-select__menu" @click.stop>
           <li v-for="opt in keyFilterOptions" :key="opt.value"
@@ -44,7 +44,7 @@
       <div class="filter-select filter-select--sm" @click="toggleStatusFilter">
         <span class="filter-select__text">{{ statusFilterLabel }}</span>
         <svg class="filter-select__caret" :class="{ 'filter-select__caret--open': statusFilterOpen }" viewBox="0 0 12 12" fill="none">
-          <path d="M2 4.5L6 8.5L10 4.5" stroke="#4DF2FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 4.5L6 8.5L10 4.5" stroke="#00AEFF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <ul v-if="statusFilterOpen" class="filter-select__menu" @click.stop>
           <li v-for="opt in statusFilterOptions" :key="opt.value"
@@ -120,7 +120,7 @@
       <div class="filter-select filter-select--page-size" @click="togglePageSize">
         <span class="filter-select__text">{{ pageSize }}条/页</span>
         <svg class="filter-select__caret" :class="{ 'filter-select__caret--open': pageSizeOpen }" viewBox="0 0 12 12" fill="none">
-          <path d="M2 4.5L6 8.5L10 4.5" stroke="#4DF2FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 4.5L6 8.5L10 4.5" stroke="#00AEFF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <ul v-if="pageSizeOpen" class="filter-select__menu filter-select__menu--up" @click.stop>
           <li v-for="s in pageSizeOptions" :key="s"
@@ -556,7 +556,7 @@ watch(pagedList, list => {
   padding: 0;
 
   &--on {
-    background: linear-gradient(90deg, #0AAFCC 0%, #28DCB9 100%);
+    background: linear-gradient(90deg, #0077CC 0%, #00AEFF 100%);
   }
 
   &__thumb {
@@ -610,7 +610,7 @@ watch(pagedList, list => {
     color: #fff !important;
   }
 
-  &--arrow { color: #4DF2FF; border-color: rgba(77, 242, 255, 0.4); }
+  &--arrow { color: #00AEFF; border-color: rgba(0, 174, 255, 0.4); }
 }
 
 // 跳至

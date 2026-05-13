@@ -93,7 +93,6 @@ const activeTab = ref<Tab>('week')
     gap: 6px;
     padding: 14px 12px;
     border-radius: 6px;
-    border: 1px solid transparent;
     position: relative;
     overflow: hidden;
     align-self: stretch;
@@ -101,13 +100,17 @@ const activeTab = ref<Tab>('week')
     &--done {
       background-image: url('@/assets/images/left-左.png');
       background-size: 100% 100%;
-      border-color: rgba(40, 220, 185, 0.3);
+      border-top: 1px solid rgba(40, 220, 185, 0.3);
+      border-bottom: 1px solid rgba(40, 220, 185, 0.3);
+      border-right: 1px solid rgba(40, 220, 185, 0.3);
     }
 
     &--pending {
       background-image: url('@/assets/images/left-右.png');
       background-size: 100% 100%;
-      border-color: rgba(255, 200, 20, 0.28);
+      border-top: 1px solid rgba(255, 200, 20, 0.28);
+      border-bottom: 1px solid rgba(255, 200, 20, 0.28);
+      border-left: 1px solid rgba(255, 200, 20, 0.28);
     }
   }
 
@@ -174,6 +177,7 @@ const activeTab = ref<Tab>('week')
     font-size: $font-size-xxs;
     color: $color-text-1;
     opacity: 0.6;
+    white-space: nowrap;
   }
 
   &__card-bar {
