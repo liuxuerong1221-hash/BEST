@@ -32,7 +32,7 @@
         <div class="alert-handling__ring-particles" aria-hidden="true">
           <span v-for="n in 8" :key="n" />
         </div>
-        <img class="alert-handling__ring-img" src="@/assets/images/icon-shield-3d.png.png" alt="" />
+        <img class="alert-handling__ring-img" :src="shieldDone" alt="" />
       </div>
 
       <!-- 右：未处理 -->
