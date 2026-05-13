@@ -44,8 +44,9 @@ const activeTab = computed<TabKey>(() => {
   const exactMatch = tabs.find(t => t.routeName === routeName)
   if (exactMatch) return exactMatch.key
 
-  // 前缀匹配：access-gate、access-turnstile 等都归属 access
+  // 前缀匹配：access-gate、access-turnstile 等都归属 access；security-camera 等归属 security
   if (routeName?.startsWith('access')) return 'access'
+  if (routeName?.startsWith('security')) return 'security'
 
   return 'overview'
 })

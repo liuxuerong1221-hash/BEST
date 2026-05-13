@@ -3,7 +3,7 @@
     <div v-if="visible" class="intrusion-alert" role="alert">
       <!-- 警示图标（同心圆 + 三角） -->
       <div class="intrusion-alert__icon" aria-hidden="true">
-        <span class="intrusion-alert__ring intrusion-alert__ring--outer" />
+<span class="intrusion-alert__ring intrusion-alert__ring--outer" />
         <span class="intrusion-alert__ring intrusion-alert__ring--mid" />
         <span class="intrusion-alert__ring intrusion-alert__ring--inner" />
         <svg class="intrusion-alert__glyph" viewBox="0 0 20 18" fill="none">

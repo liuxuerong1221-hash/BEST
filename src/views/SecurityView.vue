@@ -18,7 +18,10 @@
         <KeyMonitoringPanel />
       </aside>
 
-      <!-- 中间:浮层入口 + 入侵告警 + 地图区 + 指南针 / 楼层 -->
+      <!-- 浮动入口：与通行态势同层级，绝对定位于 body -->
+      <SecurityFloatingEntries class="security__floating-entries" />
+
+      <!-- 中间:入侵告警 + 地图区 + 指南针 / 楼层 -->
       <section class="security__center">
         <IntrusionAlertBar class="security__alert" />
         <div class="security__map">
@@ -47,6 +50,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import SecurityFloatingEntries from '@/components/common/SecurityFloatingEntries.vue'
 import AppHeader            from '@/components/common/AppHeader.vue'
 import BottomNav            from '@/components/common/BottomNav.vue'
 import Compass              from '@/components/common/Compass.vue'
@@ -136,6 +140,13 @@ const selectedFloor = ref('1F')
     flex: 1;
     width: 100%;
     position: relative;
+  }
+
+  &__floating-entries {
+    position: absolute;
+    left: calc(40px + #{$panel-left-w} + 24px);
+    top: 24px;
+    z-index: 12;
   }
 
   &__map-controls {

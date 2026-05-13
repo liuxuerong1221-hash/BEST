@@ -39,6 +39,11 @@ const router = createRouter({
       component: () => import('@/views/SecurityView.vue'),
     },
     {
+      path: '/security/camera',
+      name: 'security-camera',
+      component: () => import('@/views/SecurityCameraView.vue'),
+    },
+    {
       path: '/energy',
       name: 'energy',
       component: () => import('@/views/EnergyView.vue'),

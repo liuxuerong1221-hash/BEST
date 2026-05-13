@@ -28,7 +28,10 @@
           </div>
           <div class="alert-list__row">
             <span class="alert-list__label">状态：</span>
-            <span class="alert-list__value alert-list__value--danger">{{ alert.status }}</span>
+            <span
+              class="alert-list__value"
+              :class="alert.status === '已处理' ? 'alert-list__value--success' : 'alert-list__value--danger'"
+            >{{ alert.status }}</span>
           </div>
           <div class="alert-list__row">
             <span class="alert-list__label">告警地点：</span>
@@ -281,7 +284,8 @@ onBeforeUnmount(() => {
     overflow: hidden;
     text-overflow: ellipsis;
 
-    &--danger { color: #FF1414; }
+    &--danger  { color: #FF1414; }
+    &--success { color: #28DCB9; }
     &--primary { color: #00AEFF; }
   }
 
