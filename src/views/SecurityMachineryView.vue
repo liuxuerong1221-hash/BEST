@@ -43,7 +43,7 @@
           <img class="security-mach__pin-icon" src="@/assets/images/机房打点.svg" alt="" />
           <span class="security-mach__pin-label">{{ pin.name }}</span>
         </div>
-        <!-- 空调打点（可点击弹窗） -->
+        <!-- 空调打点（可点击） -->
         <AcMapMarker
           v-for="pin in acPins"
           :key="'ac-' + pin.id"
@@ -53,9 +53,19 @@
           :active="acDetailVisible && selectedAcDevice?.name === acDeviceData[pin.id]?.name"
           @select="selectAcPin(pin.id)"
         />
+        <!-- UPS打点（可点击） -->
+        <UpsMapMarker
+          v-for="pin in upsPins"
+          :key="'ups-' + pin.id"
+          :x="pin.x"
+          :y="pin.y"
+          :label="pin.label"
+          :active="upsDetailVisible && selectedUpsDevice?.name === upsDeviceData[pin.id]?.name"
+          @select="selectUpsPin(pin.id)"
+        />
         <!-- 其他设备打点 -->
         <component
-          v-for="pin in nonAcPins"
+          v-for="pin in otherPins"
           :key="'device-' + pin.id"
           :is="markerMap[pin.type]"
           :x="pin.x"
@@ -64,9 +74,18 @@
         />
       </section>
 
-      <!-- 右侧：空调详情面板 -->
-      <aside v-if="acDetailVisible && selectedAcDevice" class="security-mach__right">
-        <AcDetailPanel :device="selectedAcDevice" @close="closeAcDetail" />
+      <!-- 右侧：设备详情面板 -->
+      <aside v-if="activePanel" class="security-mach__right">
+        <AcDetailPanel
+          v-if="acDetailVisible && selectedAcDevice"
+          :device="selectedAcDevice"
+          @close="closeDetail"
+        />
+        <UpsDetailPanel
+          v-if="upsDetailVisible && selectedUpsDevice"
+          :device="selectedUpsDevice"
+          @close="closeDetail"
+        />
       </aside>
     </main>
   </div>
@@ -83,7 +102,8 @@ import AcMapMarker         from '@/components/common/AcMapMarker.vue'
 import FreshAirMapMarker   from '@/components/common/FreshAirMapMarker.vue'
 import UpsMapMarker        from '@/components/common/UpsMapMarker.vue'
 import PowerDistMapMarker  from '@/components/common/PowerDistMapMarker.vue'
-import AcDetailPanel, { type AcDevice } from '@/components/panels/AcDetailPanel.vue'
+import AcDetailPanel,  { type AcDevice }  from '@/components/panels/AcDetailPanel.vue'
+import UpsDetailPanel, { type UpsDevice } from '@/components/panels/UpsDetailPanel.vue'
 
 const router = useRouter()
 function goBack() { router.push({ name: 'security' }) }
@@ -132,21 +152,42 @@ const acDeviceData: Record<number, AcDevice> = {
   2: { name: '精密空调2', ip: '192.168.1.102', location: '机房B区南侧', status: 'normal', supplyTemp: 23, returnTemp: 24, supplyHumidity: 40, returnHumidity: 38 },
 }
 
+// UPS设备详情数据
+const upsDeviceData: Record<number, UpsDevice> = {
+  5: { name: 'UPS主机1', location: '机房1', ip: '192.168.1.201', status: 'normal', power: 18, powerMode: '电池供电', batteryLevel: 76.3, batteryTemp: 35.6, voltageB: 222, voltageA: 218, voltageC: 215 },
+  6: { name: 'UPS主机2', location: '机房2', ip: '192.168.1.202', status: 'normal', power: 20, powerMode: '市电供电', batteryLevel: 91.0, batteryTemp: 28.4, voltageB: 220, voltageA: 221, voltageC: 219 },
+}
+
+type PanelType = 'ac' | 'ups' | null
+
+const activePanel      = ref<PanelType>(null)
 const selectedAcDevice = ref<AcDevice | null>(null)
-const acDetailVisible   = ref(false)
+const selectedUpsDevice = ref<UpsDevice | null>(null)
+
+const acDetailVisible  = computed(() => activePanel.value === 'ac' && !!selectedAcDevice.value)
+const upsDetailVisible = computed(() => activePanel.value === 'ups' && !!selectedUpsDevice.value)
 
 function selectAcPin(pinId: number) {
-  selectedAcDevice.value = acDeviceData[pinId] ?? null
-  acDetailVisible.value  = !!selectedAcDevice.value
+  selectedAcDevice.value  = acDeviceData[pinId] ?? null
+  selectedUpsDevice.value = null
+  activePanel.value = selectedAcDevice.value ? 'ac' : null
 }
 
-function closeAcDetail() {
-  acDetailVisible.value  = false
-  selectedAcDevice.value = null
+function selectUpsPin(pinId: number) {
+  selectedUpsDevice.value = upsDeviceData[pinId] ?? null
+  selectedAcDevice.value  = null
+  activePanel.value = selectedUpsDevice.value ? 'ups' : null
 }
 
-const acPins         = computed(() => devicePins.filter(p => p.type === 'ac'))
-const nonAcPins      = computed(() => devicePins.filter(p => p.type !== 'ac'))
+function closeDetail() {
+  activePanel.value       = null
+  selectedAcDevice.value  = null
+  selectedUpsDevice.value = null
+}
+
+const acPins       = computed(() => devicePins.filter(p => p.type === 'ac'))
+const upsPins      = computed(() => devicePins.filter(p => p.type === 'ups'))
+const otherPins    = computed(() => devicePins.filter(p => p.type !== 'ac' && p.type !== 'ups'))
 </script>
 
 <style lang="scss" scoped>
