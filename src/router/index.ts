@@ -54,6 +54,11 @@ const router = createRouter({
       component: () => import('@/views/SecurityMachineryView.vue'),
     },
     {
+      path: '/security/machinery/cabinet',
+      name: 'security-cabinet',
+      component: () => import('@/views/SecurityCabinetView.vue'),
+    },
+    {
       path: '/security/alert/:id',
       name: 'security-alert',
       component: () => import('@/views/AlertDetailView.vue'),

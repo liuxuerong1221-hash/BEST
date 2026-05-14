@@ -31,71 +31,97 @@
         <span class="security-mach__back-text">返回</span>
       </button>
 
-      <!-- 中间：打点区 -->
+      <!-- 中间：传感器状态 + 打点区 -->
       <section class="security-mach__center">
-        <!-- 机柜打点（原始圆形图标） -->
-        <div
-          v-for="pin in mapPins"
-          :key="'cabinet-' + pin.id"
-          class="security-mach__pin"
-          :style="{ left: pin.x + 'px', top: pin.y + 'px' }"
-        >
-          <img class="security-mach__pin-icon" src="@/assets/images/机房打点.svg" alt="" />
-          <span class="security-mach__pin-label">{{ pin.name }}</span>
+        <!-- 传感器状态卡片 -->
+        <div class="security-mach__sensors">
+          <div class="security-mach__sensor-card" v-for="s in sensors" :key="s.id">
+            <div class="security-mach__sensor-icon">
+              <img :src="s.icon" :alt="s.label" />
+            </div>
+            <div class="security-mach__sensor-info">
+              <template v-if="s.type === 'status'">
+                <span class="security-mach__sensor-label">{{ s.label }}</span>
+                <span class="security-mach__sensor-badge" :class="`security-mach__sensor-badge--${s.status}`">
+                  {{ s.status === 'normal' ? '正常' : '告警' }}
+                </span>
+              </template>
+              <template v-else>
+                <span v-for="(row, i) in s.rows" :key="i" class="security-mach__sensor-row">
+                  <span class="security-mach__sensor-key">{{ row.key }}</span>
+                  <span class="security-mach__sensor-val">{{ row.val }}</span>
+                </span>
+              </template>
+            </div>
+          </div>
         </div>
-        <!-- 空调打点（可点击） -->
-        <AcMapMarker
-          v-for="pin in acPins"
-          :key="'ac-' + pin.id"
-          :x="pin.x"
-          :y="pin.y"
-          :label="pin.label"
-          :active="acDetailVisible && selectedAcDevice?.name === acDeviceData[pin.id]?.name"
-          :alert="pin.alert"
-          @select="selectAcPin(pin.id)"
-        />
-        <!-- UPS打点（可点击） -->
-        <UpsMapMarker
-          v-for="pin in upsPins"
-          :key="'ups-' + pin.id"
-          :x="pin.x"
-          :y="pin.y"
-          :label="pin.label"
-          :active="upsDetailVisible && selectedUpsDevice?.name === upsDeviceData[pin.id]?.name"
-          :alert="pin.alert"
-          @select="selectUpsPin(pin.id)"
-        />
-        <!-- 新风机打点（可点击） -->
-        <FreshAirMapMarker
-          v-for="pin in freshAirPins"
-          :key="'fa-' + pin.id"
-          :x="pin.x"
-          :y="pin.y"
-          :label="pin.label"
-          :active="freshAirDetailVisible && selectedFreshAirDevice?.location === freshAirDeviceData[pin.id]?.location"
-          :alert="pin.alert"
-          @select="selectFreshAirPin(pin.id)"
-        />
-        <!-- 动力配电柜打点（可点击） -->
-        <PowerDistMapMarker
-          v-for="pin in powerDistPins"
-          :key="'pd-' + pin.id"
-          :x="pin.x"
-          :y="pin.y"
-          :label="pin.label"
-          :active="powerDistDetailVisible && selectedPowerDistDevice?.name === powerDistDeviceData[pin.id]?.name"
-          :alert="pin.alert"
-          @select="selectPowerDistPin(pin.id)"
-        />
-        <!-- 其他设备打点 -->
-        <component
-          v-for="pin in otherPins"
-          :key="'device-' + pin.id"
-          :is="markerMap[pin.type]"
-          :x="pin.x"
-          :y="pin.y"
-          :label="pin.label"
-        />
+        <!-- 打点区域（传感器卡片下方） -->
+        <div class="security-mach__pins-area">
+          <!-- 机柜打点（原始圆形图标） -->
+          <div
+            v-for="pin in mapPins"
+            :key="'cabinet-' + pin.id"
+            class="security-mach__pin"
+            :style="{ left: pin.x + 'px', top: pin.y + 'px' }"
+            @click="router.push({ name: 'security-cabinet', query: { name: pin.name } })"
+          >
+            <span class="security-mach__pin-label">{{ pin.name }}</span>
+            <img class="security-mach__pin-icon" src="@/assets/images/机房打点.svg" alt="" />
+          </div>
+          <!-- 空调打点（可点击） -->
+          <AcMapMarker
+            v-for="pin in acPins"
+            :key="'ac-' + pin.id"
+            :x="pin.x"
+            :y="pin.y"
+            :label="pin.label"
+            :active="acDetailVisible && selectedAcDevice?.name === acDeviceData[pin.id]?.name"
+            :alert="pin.alert"
+            @select="selectAcPin(pin.id)"
+          />
+          <!-- UPS打点（可点击） -->
+          <UpsMapMarker
+            v-for="pin in upsPins"
+            :key="'ups-' + pin.id"
+            :x="pin.x"
+            :y="pin.y"
+            :label="pin.label"
+            :active="upsDetailVisible && selectedUpsDevice?.name === upsDeviceData[pin.id]?.name"
+            :alert="pin.alert"
+            @select="selectUpsPin(pin.id)"
+          />
+          <!-- 新风机打点（可点击） -->
+          <FreshAirMapMarker
+            v-for="pin in freshAirPins"
+            :key="'fa-' + pin.id"
+            :x="pin.x"
+            :y="pin.y"
+            :label="pin.label"
+            :active="freshAirDetailVisible && selectedFreshAirDevice?.location === freshAirDeviceData[pin.id]?.location"
+            :alert="pin.alert"
+            @select="selectFreshAirPin(pin.id)"
+          />
+          <!-- 动力配电柜打点（可点击） -->
+          <PowerDistMapMarker
+            v-for="pin in powerDistPins"
+            :key="'pd-' + pin.id"
+            :x="pin.x"
+            :y="pin.y"
+            :label="pin.label"
+            :active="powerDistDetailVisible && selectedPowerDistDevice?.name === powerDistDeviceData[pin.id]?.name"
+            :alert="pin.alert"
+            @select="selectPowerDistPin(pin.id)"
+          />
+          <!-- 其他设备打点 -->
+          <component
+            v-for="pin in otherPins"
+            :key="'device-' + pin.id"
+            :is="markerMap[pin.type]"
+            :x="pin.x"
+            :y="pin.y"
+            :label="pin.label"
+          />
+        </div>
       </section>
 
       <!-- 右侧：设备详情面板 -->
@@ -144,6 +170,10 @@ import AcDetailPanel,        { type AcDevice }        from '@/components/panels/
 import UpsDetailPanel,       { type UpsDevice }       from '@/components/panels/UpsDetailPanel.vue'
 import FreshAirDetailPanel,  { type FreshAirDevice }  from '@/components/panels/FreshAirDetailPanel.vue'
 import PowerDistDetailPanel, { type PowerDistDevice } from '@/components/panels/PowerDistDetailPanel.vue'
+import smokeIcon from '@/assets/images/烟感.svg'
+import leakIcon  from '@/assets/images/漏水.svg'
+import tempIcon  from '@/assets/images/温度 2.svg'
+import h2Icon    from '@/assets/images/氢气浓度.svg'
 
 const router = useRouter()
 function goBack() { router.push({ name: 'security' }) }
@@ -265,6 +295,13 @@ function closeDetail() {
   clearAll()
 }
 
+const sensors = [
+  { id: 1, type: 'status', label: '烟感',     icon: smokeIcon, status: 'normal' },
+  { id: 2, type: 'status', label: '漏水',     icon: leakIcon,  status: 'normal' },
+  { id: 3, type: 'rows',   label: '温湿度',   icon: tempIcon,  rows: [{ key: '温度：', val: '20℃' }, { key: '湿度：', val: '20%' }] },
+  { id: 4, type: 'rows',   label: '氢气浓度', icon: h2Icon,    rows: [{ key: '氢气浓度：', val: '25%' }] },
+]
+
 const acPins        = computed(() => devicePins.filter(p => p.type === 'ac'))
 const upsPins       = computed(() => devicePins.filter(p => p.type === 'ups'))
 const freshAirPins  = computed(() => devicePins.filter(p => p.type === 'fresh-air'))
@@ -324,11 +361,103 @@ const otherPins     = computed(() => devicePins.filter(p => !['ac', 'ups', 'fres
     flex-direction: column;
     gap: 8px;
     overflow: hidden;
-    padding: 24px 0 8px;
+    padding: 24px 0 24px;
   }
 
   &__center {
     position: relative;
+  }
+
+  // 打点容器，偏移至传感器卡片下方
+  &__pins-area {
+    position: absolute;
+    top: 110px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  // 传感器状态卡片行
+  &__sensors {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 15;
+  }
+
+  &__sensor-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 17px 20px;
+    background: linear-gradient(117deg, rgba(8, 38, 74, 0.352) 0%, rgba(3, 21, 43, 0.368) 97%);
+    border: 1px solid rgba(11, 182, 255, 0.3);
+    border-radius: $radius-sm;
+    backdrop-filter: blur(6px);
+    min-width: 140px;
+  }
+
+  &__sensor-icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    img { width: 44px; height: 44px; object-fit: contain; transform-origin: center; }
+  }
+
+  &__sensor-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__sensor-label {
+    font-size: $font-size-xs;
+    color: $color-text-2;
+    line-height: 1;
+  }
+
+  &__sensor-badge {
+    font-size: $font-size-xs;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    line-height: 1.4;
+    white-space: nowrap;
+
+    &--normal {
+      color: #0CF92C;
+      background: rgba(12, 249, 44, 0.12);
+    }
+
+    &--alert {
+      color: #FF4848;
+      background: rgba(255, 72, 72, 0.15);
+    }
+  }
+
+  &__sensor-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  &__sensor-key {
+    font-size: $font-size-xs;
+    color: $color-text-2;
+    white-space: nowrap;
+  }
+
+  &__sensor-val {
+    font-size: $font-size-xs;
+    font-weight: 600;
+    color: $color-text-1;
   }
 
   &__right {
@@ -349,11 +478,11 @@ const otherPins     = computed(() => devicePins.filter(p => !['ac', 'ups', 'fres
     transform: translate(-50%, -100%);
     cursor: pointer;
     z-index: 5;
+  }
 
-    &:hover &__pin-label {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  &__pin:hover &__pin-label {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 
   &__pin-icon {
@@ -364,18 +493,27 @@ const otherPins     = computed(() => devicePins.filter(p => !['ac', 'ups', 'fres
   }
 
   &__pin-label {
-    margin-top: 4px;
-    padding: 3px 10px;
-    background: rgba(2, 37, 79, 0.85);
-    border: 1px solid rgba(0, 174, 255, 0.6);
-    border-radius: 4px;
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    min-width: 96px;
+    height: 24px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(77, 242, 255, 0.55);
+    border-radius: 12px;
+    background: rgba(5, 25, 49, 0.86);
+    box-shadow: 0 0 12px rgba(0, 174, 255, 0.28);
+    color: $color-text-1;
     font-size: $font-size-xxs;
-    color: $color-primary-bright;
+    line-height: 1;
     white-space: nowrap;
     opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
     pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
   }
 
   &__back {
