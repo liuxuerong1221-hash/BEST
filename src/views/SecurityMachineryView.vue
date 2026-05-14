@@ -63,6 +63,16 @@
           :active="upsDetailVisible && selectedUpsDevice?.name === upsDeviceData[pin.id]?.name"
           @select="selectUpsPin(pin.id)"
         />
+        <!-- 新风机打点（可点击） -->
+        <FreshAirMapMarker
+          v-for="pin in freshAirPins"
+          :key="'fa-' + pin.id"
+          :x="pin.x"
+          :y="pin.y"
+          :label="pin.label"
+          :active="freshAirDetailVisible && selectedFreshAirDevice?.location === freshAirDeviceData[pin.id]?.location"
+          @select="selectFreshAirPin(pin.id)"
+        />
         <!-- 其他设备打点 -->
         <component
           v-for="pin in otherPins"
@@ -86,6 +96,11 @@
           :device="selectedUpsDevice"
           @close="closeDetail"
         />
+        <FreshAirDetailPanel
+          v-if="freshAirDetailVisible && selectedFreshAirDevice"
+          :device="selectedFreshAirDevice"
+          @close="closeDetail"
+        />
       </aside>
     </main>
   </div>
@@ -102,8 +117,9 @@ import AcMapMarker         from '@/components/common/AcMapMarker.vue'
 import FreshAirMapMarker   from '@/components/common/FreshAirMapMarker.vue'
 import UpsMapMarker        from '@/components/common/UpsMapMarker.vue'
 import PowerDistMapMarker  from '@/components/common/PowerDistMapMarker.vue'
-import AcDetailPanel,  { type AcDevice }  from '@/components/panels/AcDetailPanel.vue'
-import UpsDetailPanel, { type UpsDevice } from '@/components/panels/UpsDetailPanel.vue'
+import AcDetailPanel,       { type AcDevice }       from '@/components/panels/AcDetailPanel.vue'
+import UpsDetailPanel,      { type UpsDevice }      from '@/components/panels/UpsDetailPanel.vue'
+import FreshAirDetailPanel, { type FreshAirDevice } from '@/components/panels/FreshAirDetailPanel.vue'
 
 const router = useRouter()
 function goBack() { router.push({ name: 'security' }) }
@@ -158,36 +174,55 @@ const upsDeviceData: Record<number, UpsDevice> = {
   6: { name: 'UPS主机2', location: '机房2', ip: '192.168.1.202', status: 'normal', power: 20, powerMode: '市电供电', batteryLevel: 91.0, batteryTemp: 28.4, voltageInputA: 220, voltageOutputA: 221, voltageInputB: 222, voltageOutputB: 220, voltageInputC: 221, voltageOutputC: 219 },
 }
 
-type PanelType = 'ac' | 'ups' | null
+// 新风机设备详情数据
+const freshAirDeviceData: Record<number, FreshAirDevice> = {
+  3: { name: '新风机', location: '机房1', ip: '192.168.1.101', status: 'normal', temperature: 65, humidity: 66 },
+  4: { name: '新风机', location: '机房2', ip: '192.168.1.102', status: 'normal', temperature: 62, humidity: 60 },
+}
 
-const activePanel      = ref<PanelType>(null)
-const selectedAcDevice = ref<AcDevice | null>(null)
-const selectedUpsDevice = ref<UpsDevice | null>(null)
+type PanelType = 'ac' | 'ups' | 'fresh-air' | null
 
-const acDetailVisible  = computed(() => activePanel.value === 'ac' && !!selectedAcDevice.value)
-const upsDetailVisible = computed(() => activePanel.value === 'ups' && !!selectedUpsDevice.value)
+const activePanel           = ref<PanelType>(null)
+const selectedAcDevice      = ref<AcDevice | null>(null)
+const selectedUpsDevice     = ref<UpsDevice | null>(null)
+const selectedFreshAirDevice = ref<FreshAirDevice | null>(null)
+
+const acDetailVisible       = computed(() => activePanel.value === 'ac'         && !!selectedAcDevice.value)
+const upsDetailVisible      = computed(() => activePanel.value === 'ups'        && !!selectedUpsDevice.value)
+const freshAirDetailVisible = computed(() => activePanel.value === 'fresh-air'  && !!selectedFreshAirDevice.value)
 
 function selectAcPin(pinId: number) {
-  selectedAcDevice.value  = acDeviceData[pinId] ?? null
-  selectedUpsDevice.value = null
+  selectedAcDevice.value       = acDeviceData[pinId] ?? null
+  selectedUpsDevice.value      = null
+  selectedFreshAirDevice.value = null
   activePanel.value = selectedAcDevice.value ? 'ac' : null
 }
 
 function selectUpsPin(pinId: number) {
-  selectedUpsDevice.value = upsDeviceData[pinId] ?? null
-  selectedAcDevice.value  = null
+  selectedUpsDevice.value      = upsDeviceData[pinId] ?? null
+  selectedAcDevice.value       = null
+  selectedFreshAirDevice.value = null
   activePanel.value = selectedUpsDevice.value ? 'ups' : null
 }
 
+function selectFreshAirPin(pinId: number) {
+  selectedFreshAirDevice.value = freshAirDeviceData[pinId] ?? null
+  selectedAcDevice.value       = null
+  selectedUpsDevice.value      = null
+  activePanel.value = selectedFreshAirDevice.value ? 'fresh-air' : null
+}
+
 function closeDetail() {
-  activePanel.value       = null
-  selectedAcDevice.value  = null
-  selectedUpsDevice.value = null
+  activePanel.value            = null
+  selectedAcDevice.value       = null
+  selectedUpsDevice.value      = null
+  selectedFreshAirDevice.value = null
 }
 
 const acPins       = computed(() => devicePins.filter(p => p.type === 'ac'))
 const upsPins      = computed(() => devicePins.filter(p => p.type === 'ups'))
-const otherPins    = computed(() => devicePins.filter(p => p.type !== 'ac' && p.type !== 'ups'))
+const freshAirPins = computed(() => devicePins.filter(p => p.type === 'fresh-air'))
+const otherPins    = computed(() => devicePins.filter(p => !['ac', 'ups', 'fresh-air'].includes(p.type)))
 </script>
 
 <style lang="scss" scoped>
