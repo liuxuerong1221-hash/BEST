@@ -85,11 +85,11 @@
 import { computed } from 'vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
-import { LineChart } from 'echarts/charts'
-import { GridComponent, TooltipComponent } from 'echarts/components'
+import { BarChart } from 'echarts/charts'
+import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
 
-use([CanvasRenderer, LineChart, GridComponent, TooltipComponent])
+use([CanvasRenderer, BarChart, GridComponent, TooltipComponent, LegendComponent])
 
 export interface UpsDevice {
   name: string
@@ -100,9 +100,12 @@ export interface UpsDevice {
   powerMode: string
   batteryLevel: number
   batteryTemp: number
-  voltageB: number
-  voltageA: number
-  voltageC: number
+  voltageInputA: number
+  voltageOutputA: number
+  voltageInputB: number
+  voltageOutputB: number
+  voltageInputC: number
+  voltageOutputC: number
 }
 
 const props = defineProps<{ device: UpsDevice }>()
@@ -115,51 +118,61 @@ const tempPercent = computed(() => {
 
 const voltageOption = computed(() => ({
   backgroundColor: 'transparent',
-  grid: { top: 30, right: 12, bottom: 28, left: 44 },
+  legend: {
+    top: 4,
+    right: 0,
+    icon: 'rect',
+    itemWidth: 14,
+    itemHeight: 8,
+    itemGap: 12,
+    textStyle: { color: '#8FAAC3', fontSize: 11 },
+    data: ['输入', '输出'],
+  },
+  grid: { top: 36, right: 8, bottom: 28, left: 44 },
   tooltip: {
     trigger: 'axis',
     backgroundColor: 'rgba(5, 25, 49, 0.9)',
     borderColor: 'rgba(0, 174, 255, 0.3)',
     textStyle: { color: '#E8F4FF', fontSize: 12 },
-    formatter: (params: any[]) => params.map((p: any) => `${p.name}：${p.value}V`).join('<br/>'),
+    formatter: (params: any[]) =>
+      params.map((p: any) => `${p.seriesName}：${p.value}V`).join('<br/>'),
   },
   xAxis: {
     type: 'category',
-    data: ['B相', 'A相', 'C相'],
+    data: ['A相', 'B相', 'C相'],
     axisLine: { lineStyle: { color: 'rgba(0,174,255,0.2)' } },
     axisTick: { show: false },
-    axisLabel: { color: '#8FAAC3', fontSize: 12 },
+    axisLabel: { color: '#8FAAC3', fontSize: 11 },
   },
   yAxis: {
     type: 'value',
     min: 180,
-    max: 230,
+    max: 235,
     interval: 10,
     name: '(V)',
     nameTextStyle: { color: '#8FAAC3', fontSize: 11, align: 'left', padding: [0, 0, 0, -30] },
     axisLine: { show: false },
     axisTick: { show: false },
     axisLabel: { color: '#8FAAC3', fontSize: 11 },
-    splitLine: { lineStyle: { color: 'rgba(0,174,255,0.12)', type: 'solid' } },
+    splitLine: { lineStyle: { color: 'rgba(0,174,255,0.12)' } },
   },
-  series: [{
-    type: 'line',
-    data: [props.device.voltageB, props.device.voltageA, props.device.voltageC],
-    smooth: true,
-    symbol: 'circle',
-    symbolSize: 6,
-    lineStyle: { color: '#00AEFF', width: 2 },
-    itemStyle: { color: '#00AEFF' },
-    areaStyle: {
-      color: {
-        type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-        colorStops: [
-          { offset: 0, color: 'rgba(0,174,255,0.18)' },
-          { offset: 1, color: 'rgba(0,174,255,0)' },
-        ],
-      },
+  series: [
+    {
+      name: '输入',
+      type: 'bar',
+      barMaxWidth: 20,
+      barGap: '20%',
+      data: [props.device.voltageInputA, props.device.voltageInputB, props.device.voltageInputC],
+      itemStyle: { color: '#00AEFF', borderRadius: [2, 2, 0, 0] },
     },
-  }],
+    {
+      name: '输出',
+      type: 'bar',
+      barMaxWidth: 20,
+      data: [props.device.voltageOutputA, props.device.voltageOutputB, props.device.voltageOutputC],
+      itemStyle: { color: '#7BE000', borderRadius: [2, 2, 0, 0] },
+    },
+  ],
 }))
 </script>
 

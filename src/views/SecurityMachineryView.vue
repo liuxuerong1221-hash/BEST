@@ -154,8 +154,8 @@ const acDeviceData: Record<number, AcDevice> = {
 
 // UPS设备详情数据
 const upsDeviceData: Record<number, UpsDevice> = {
-  5: { name: 'UPS主机1', location: '机房1', ip: '192.168.1.201', status: 'normal', power: 18, powerMode: '电池供电', batteryLevel: 76.3, batteryTemp: 35.6, voltageB: 222, voltageA: 218, voltageC: 215 },
-  6: { name: 'UPS主机2', location: '机房2', ip: '192.168.1.202', status: 'normal', power: 20, powerMode: '市电供电', batteryLevel: 91.0, batteryTemp: 28.4, voltageB: 220, voltageA: 221, voltageC: 219 },
+  5: { name: 'UPS主机1', location: '机房1', ip: '192.168.1.201', status: 'normal', power: 18, powerMode: '电池供电', batteryLevel: 76.3, batteryTemp: 35.6, voltageInputA: 228, voltageOutputA: 232, voltageInputB: 229, voltageOutputB: 222, voltageInputC: 231, voltageOutputC: 208 },
+  6: { name: 'UPS主机2', location: '机房2', ip: '192.168.1.202', status: 'normal', power: 20, powerMode: '市电供电', batteryLevel: 91.0, batteryTemp: 28.4, voltageInputA: 220, voltageOutputA: 221, voltageInputB: 222, voltageOutputB: 220, voltageInputC: 221, voltageOutputC: 219 },
 }
 
 type PanelType = 'ac' | 'ups' | null
