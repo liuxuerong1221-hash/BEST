@@ -59,7 +59,7 @@
 
     <!-- 关闭按钮 -->
     <div class="camera-detail__footer">
-      <button class="camera-detail__close-btn" type="button" @click="emit('close')">关闭</button>
+      <PanelCloseButton :width="160" @close="emit('close')" />
     </div>
   </section>
 
@@ -106,6 +106,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import PanelCloseButton from '@/components/common/PanelCloseButton.vue'
 
 type DeviceStatus = 'online' | 'offline'
 
@@ -316,34 +317,7 @@ function closeExpand() { expanded.value = false }
     margin-top: 22px;
   }
 
-  &__close-btn {
-    width: 160px;
-    height: 36px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(0, 174, 255, 0.5);
-    background: linear-gradient(0deg, rgba(1, 158, 244, 0.5) -19%, rgba(14, 33, 56, 0) 100%);
-    color: $color-text-1;
-    font-size: $font-size-sm;
-    font-weight: 600;
-    border-radius: $radius-sm;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.2s ease;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(0deg, rgba(1, 158, 244, 0.5) -19%, rgba(14, 33, 56, 0) 100%);
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-
-    &:hover::before { opacity: 1; }
-  }
+  &__close-btn { display: none; }
 }
 
 @keyframes feed-scan {
