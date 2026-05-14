@@ -79,16 +79,15 @@ defineEmits<{ close: [] }>()
 
 <style lang="scss" scoped>
 .ac-detail {
-  width: 400px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0;
-  background: rgba(5, 25, 49, 0.92);
+  background: rgba(5, 25, 49, 0.64);
   border: 1px solid #0B2C52;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 174, 255, 0.08);
-  backdrop-filter: blur(12px);
+  box-sizing: border-box;
 
   &__header {
     display: flex;

@@ -62,14 +62,12 @@
           :y="pin.y"
           :label="pin.label"
         />
-
-        <!-- 空调详情弹窗 -->
-        <Transition name="ac-detail-fade">
-          <div v-if="acDetailVisible && selectedAcDevice" class="security-mach__detail-float">
-            <AcDetailPanel :device="selectedAcDevice" @close="closeAcDetail" />
-          </div>
-        </Transition>
       </section>
+
+      <!-- 右侧：空调详情面板 -->
+      <aside v-if="acDetailVisible && selectedAcDevice" class="security-mach__right">
+        <AcDetailPanel :device="selectedAcDevice" @close="closeAcDetail" />
+      </aside>
     </main>
   </div>
 </template>
@@ -192,7 +190,7 @@ const nonAcPins      = computed(() => devicePins.filter(p => p.type !== 'ac'))
     position: relative;
     z-index: 10;
     display: grid;
-    grid-template-columns: $panel-left-w 1fr;
+    grid-template-columns: $panel-left-w 1fr $panel-right-w;
     height: calc($screen-height - $header-h);
     padding: 0 40px;
     gap: 8px;
@@ -210,10 +208,13 @@ const nonAcPins      = computed(() => devicePins.filter(p => p.type !== 'ac'))
     position: relative;
   }
 
-  &__detail-float {
-    position: absolute;
-    top: 24px;
-    right: 24px;
+  &__right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: hidden;
+    padding: 24px 0 8px;
+    position: relative;
     z-index: 20;
   }
 
@@ -300,15 +301,5 @@ const nonAcPins      = computed(() => devicePins.filter(p => p.type !== 'ac'))
 
 @media (prefers-reduced-motion: reduce) {
   .security-mach__back { transition: none; }
-}
-
-.ac-detail-fade-enter-active,
-.ac-detail-fade-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-.ac-detail-fade-enter-from,
-.ac-detail-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-8px);
 }
 </style>
