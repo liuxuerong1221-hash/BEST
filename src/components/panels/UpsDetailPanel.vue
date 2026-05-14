@@ -126,7 +126,10 @@ const voltageOption = computed(() => ({
     itemHeight: 8,
     itemGap: 12,
     textStyle: { color: '#8FAAC3', fontSize: 11 },
-    data: ['输入', '输出'],
+    data: [
+      { name: '输入', itemStyle: { color: '#00AEFF' } },
+      { name: '输出', itemStyle: { color: '#2ED0B0' } },
+    ],
   },
   grid: { top: 36, right: 8, bottom: 28, left: 44 },
   tooltip: {
@@ -160,17 +163,25 @@ const voltageOption = computed(() => ({
     {
       name: '输入',
       type: 'bar',
-      barMaxWidth: 20,
-      barGap: '20%',
+      barWidth: 14,
+      barGap: '30%',
       data: [props.device.voltageInputA, props.device.voltageInputB, props.device.voltageInputC],
-      itemStyle: { color: '#00AEFF', borderRadius: [2, 2, 0, 0] },
+      itemStyle: {
+        borderRadius: [2, 2, 0, 0],
+        color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+          colorStops: [{ offset: 0, color: '#00AEFF' }, { offset: 1, color: 'rgba(0,174,255,0.08)' }] },
+      },
     },
     {
       name: '输出',
       type: 'bar',
-      barMaxWidth: 20,
+      barWidth: 14,
       data: [props.device.voltageOutputA, props.device.voltageOutputB, props.device.voltageOutputC],
-      itemStyle: { color: '#7BE000', borderRadius: [2, 2, 0, 0] },
+      itemStyle: {
+        borderRadius: [2, 2, 0, 0],
+        color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+          colorStops: [{ offset: 0, color: '#2ED0B0' }, { offset: 1, color: 'rgba(46,208,176,0.08)' }] },
+      },
     },
   ],
 }))
