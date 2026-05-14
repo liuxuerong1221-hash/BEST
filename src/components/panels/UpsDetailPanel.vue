@@ -35,8 +35,8 @@
         <span class="ups-detail__field">功率：<em>{{ device.power }}Kw</em></span>
         <span class="ups-detail__field">
           运行状态：
-          <em :class="`ups-detail__status--${device.status}`">
-            {{ device.status === 'normal' ? '正常' : '故障' }}
+          <em :class="alert ? 'ups-detail__status--alert' : `ups-detail__status--${device.status}`">
+            {{ alert ? '告警' : (device.status === 'normal' ? '正常' : '故障') }}
           </em>
         </span>
       </div>
@@ -108,7 +108,7 @@ export interface UpsDevice {
   voltageOutputC: number
 }
 
-const props = defineProps<{ device: UpsDevice }>()
+const props = defineProps<{ device: UpsDevice; alert?: boolean }>()
 defineEmits<{ close: [] }>()
 
 const tempPercent = computed(() => {
@@ -278,7 +278,8 @@ const voltageOption = computed(() => ({
   }
 
   &__status--normal,
-  &__status--fault {
+  &__status--fault,
+  &__status--alert {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -292,6 +293,7 @@ const voltageOption = computed(() => ({
   }
   &__status--normal { color: #0CF92C; background: rgba(12, 249, 44, 0.2); }
   &__status--fault  { color: #FF1414; background: rgba(255, 72, 72, 0.2); }
+  &__status--alert  { color: #FF4848; background: rgba(255, 72, 72, 0.2); }
 
   &__divider {
     height: 1px;

@@ -10,10 +10,9 @@
     @keydown.space.prevent="$emit('select')"
   >
     <span
-      v-if="label || alert"
+      v-if="label && !alert"
       class="map-pin-marker__label"
-      :class="{ 'map-pin-marker__label--alert': alert }"
-    >{{ alert ? '告警' : label }}</span>
+    >{{ label }}</span>
 
     <!-- 主体：圆形 + 三角指针 -->
     <div class="map-pin-marker__body" :class="{ 'map-pin-marker__body--alert': alert }">
@@ -46,8 +45,8 @@
 
     <!-- 地面光圈：双层椭圆 -->
     <svg class="map-pin-marker__base" viewBox="0 0 49 24" fill="none">
-      <ellipse cx="24.5" cy="12" rx="24.2" ry="11.7" fill="rgba(10, 15, 21, 0.502)" fill-opacity="0.8" stroke="#00AEFF" stroke-width="0.6"/>
-      <ellipse cx="24.5" cy="12" rx="18.2" ry="7.7" fill="rgba(10, 15, 21, 0.502)" stroke="#00AEFF" stroke-width="0.6"/>
+      <ellipse cx="24.5" cy="12" rx="24.2" ry="11.7" fill="rgba(10, 15, 21, 0.502)" fill-opacity="0.8" :stroke="alert ? 'rgba(255,68,68,0.7)' : '#00AEFF'" stroke-width="0.6"/>
+      <ellipse cx="24.5" cy="12" rx="18.2" ry="7.7" fill="rgba(10, 15, 21, 0.502)" :stroke="alert ? 'rgba(255,68,68,0.7)' : '#00AEFF'" stroke-width="0.6"/>
     </svg>
 
     <!-- 涟漪扩散（仅激活时显示） -->
@@ -118,15 +117,6 @@ defineExpose({ uid })
     pointer-events: none;
     transition: opacity 0.18s ease, transform 0.18s ease;
 
-    &--alert {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-      border-color: rgba(255, 68, 68, 0.7);
-      background: rgba(60, 5, 5, 0.9);
-      box-shadow: 0 0 12px rgba(255, 20, 20, 0.35);
-      color: #FF4848;
-      font-weight: 600;
-    }
   }
 
   &__body {
@@ -175,6 +165,15 @@ defineExpose({ uid })
     }
   }
 
+  &--alert &__ripple {
+    border-color: rgba(255, 68, 68, 0.55);
+    animation: pin-marker-ripple-alert 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+
+    &--delayed {
+      animation-delay: 1.2s;
+    }
+  }
+
   &--active &__body {
     filter: drop-shadow(0 0 14px rgba(77, 242, 255, 0.85));
     animation-duration: 1.6s;
@@ -211,6 +210,12 @@ defineExpose({ uid })
 }
 
 @keyframes pin-marker-ripple {
+  0%   { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
+  20%  { opacity: 0.7; }
+  100% { opacity: 0; transform: translate(-50%, 0) scale(1.8); }
+}
+
+@keyframes pin-marker-ripple-alert {
   0%   { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
   20%  { opacity: 0.7; }
   100% { opacity: 0; transform: translate(-50%, 0) scale(1.8); }

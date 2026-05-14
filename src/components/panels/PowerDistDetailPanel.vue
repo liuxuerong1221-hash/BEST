@@ -37,8 +37,8 @@
       <div class="pd-detail__row">
         <span class="pd-detail__field">
           运行状态：
-          <em :class="`pd-detail__status--${device.status}`">
-            {{ device.status === 'normal' ? '正常' : '故障' }}
+          <em :class="alert ? 'pd-detail__status--alert' : `pd-detail__status--${device.status}`">
+            {{ alert ? '告警' : (device.status === 'normal' ? '正常' : '故障') }}
           </em>
         </span>
         <span class="pd-detail__field">负载：<em>{{ device.load }}kw</em></span>
@@ -96,7 +96,7 @@ export interface PowerDistDevice {
   currentC: number
 }
 
-const props = defineProps<{ device: PowerDistDevice }>()
+const props = defineProps<{ device: PowerDistDevice; alert?: boolean }>()
 defineEmits<{ close: [] }>()
 
 const chartTab = ref<string>('voltage')
@@ -251,7 +251,8 @@ const chartOption = computed(() => {
   }
 
   &__status--normal,
-  &__status--fault {
+  &__status--fault,
+  &__status--alert {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -265,6 +266,7 @@ const chartOption = computed(() => {
   }
   &__status--normal { color: #0CF92C; background: rgba(12, 249, 44, 0.2); }
   &__status--fault  { color: #FF1414; background: rgba(255, 72, 72, 0.2); }
+  &__status--alert  { color: #FF4848; background: rgba(255, 72, 72, 0.2); }
 
   &__divider {
     height: 1px;

@@ -103,21 +103,25 @@
         <AcDetailPanel
           v-if="acDetailVisible && selectedAcDevice"
           :device="selectedAcDevice"
+          :alert="selectedPinAlert"
           @close="closeDetail"
         />
         <UpsDetailPanel
           v-if="upsDetailVisible && selectedUpsDevice"
           :device="selectedUpsDevice"
+          :alert="selectedPinAlert"
           @close="closeDetail"
         />
         <FreshAirDetailPanel
           v-if="freshAirDetailVisible && selectedFreshAirDevice"
           :device="selectedFreshAirDevice"
+          :alert="selectedPinAlert"
           @close="closeDetail"
         />
         <PowerDistDetailPanel
           v-if="powerDistDetailVisible && selectedPowerDistDevice"
           :device="selectedPowerDistDevice"
+          :alert="selectedPinAlert"
           @close="closeDetail"
         />
       </aside>
@@ -209,6 +213,7 @@ const freshAirDeviceData: Record<number, FreshAirDevice> = {
 type PanelType = 'ac' | 'ups' | 'fresh-air' | 'power-dist' | null
 
 const activePanel              = ref<PanelType>(null)
+const selectedPinAlert         = ref(false)
 const selectedAcDevice         = ref<AcDevice | null>(null)
 const selectedUpsDevice        = ref<UpsDevice | null>(null)
 const selectedFreshAirDevice   = ref<FreshAirDevice | null>(null)
@@ -224,29 +229,34 @@ function clearAll() {
   selectedUpsDevice.value       = null
   selectedFreshAirDevice.value  = null
   selectedPowerDistDevice.value = null
+  selectedPinAlert.value        = false
 }
 
 function selectAcPin(pinId: number) {
   clearAll()
   selectedAcDevice.value = acDeviceData[pinId] ?? null
+  selectedPinAlert.value = devicePins.find(p => p.id === pinId)?.alert ?? false
   activePanel.value = selectedAcDevice.value ? 'ac' : null
 }
 
 function selectUpsPin(pinId: number) {
   clearAll()
   selectedUpsDevice.value = upsDeviceData[pinId] ?? null
+  selectedPinAlert.value = devicePins.find(p => p.id === pinId)?.alert ?? false
   activePanel.value = selectedUpsDevice.value ? 'ups' : null
 }
 
 function selectFreshAirPin(pinId: number) {
   clearAll()
   selectedFreshAirDevice.value = freshAirDeviceData[pinId] ?? null
+  selectedPinAlert.value = devicePins.find(p => p.id === pinId)?.alert ?? false
   activePanel.value = selectedFreshAirDevice.value ? 'fresh-air' : null
 }
 
 function selectPowerDistPin(pinId: number) {
   clearAll()
   selectedPowerDistDevice.value = powerDistDeviceData[pinId] ?? null
+  selectedPinAlert.value = devicePins.find(p => p.id === pinId)?.alert ?? false
   activePanel.value = selectedPowerDistDevice.value ? 'power-dist' : null
 }
 
