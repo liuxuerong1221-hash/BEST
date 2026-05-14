@@ -189,7 +189,7 @@ defineEmits<{ close: [] }>()
   }
 
   &__status--normal {
-    color: $color-success;
+    color: #0CF92C;
     background: rgba(12, 249, 44, 0.2);
   }
 

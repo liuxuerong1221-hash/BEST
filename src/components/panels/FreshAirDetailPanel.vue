@@ -172,7 +172,7 @@ defineEmits<{ close: [] }>()
     font-style: normal;
     border-radius: $radius-md;
   }
-  &__status--normal { color: $color-success; background: rgba(12, 249, 44, 0.2); }
+  &__status--normal { color: #0CF92C; background: rgba(12, 249, 44, 0.2); }
   &__status--fault  { color: #FF1414; background: rgba(255, 72, 72, 0.2); }
 
   &__divider {
