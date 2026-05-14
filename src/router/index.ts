@@ -48,6 +48,41 @@ const router = createRouter({
       name: 'energy',
       component: () => import('@/views/EnergyView.vue'),
     },
+    {
+      path: '/energy/meter-elec',
+      name: 'energy-meter-elec',
+      component: () => import('@/views/EnergyMeterElecView.vue'),
+    },
+    {
+      path: '/energy/meter-water',
+      name: 'energy-meter-water',
+      component: () => import('@/views/EnergyMeterWaterView.vue'),
+    },
+    {
+      path: '/energy/lighting',
+      name: 'energy-lighting',
+      component: () => import('@/views/EnergyLightingView.vue'),
+    },
+    {
+      path: '/energy/broadcast',
+      name: 'energy-broadcast',
+      component: () => import('@/views/EnergyBroadcastView.vue'),
+    },
+    {
+      path: '/energy/building',
+      name: 'energy-building',
+      component: () => import('@/views/EnergyBuildingView.vue'),
+    },
+    {
+      path: '/energy/camera',
+      name: 'energy-camera',
+      component: () => import('@/views/EnergyCameraView.vue'),
+    },
+    {
+      path: '/energy/display-screen',
+      name: 'energy-display-screen',
+      component: () => import('@/views/EnergyDisplayScreenView.vue'),
+    },
   ],
 })
 

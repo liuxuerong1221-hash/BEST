@@ -71,13 +71,13 @@ const selectedFloor = ref('1F')
 
 function onEntrySelect(kind: EnergyEntryKind) {
   const routeMap: Record<EnergyEntryKind, string> = {
-    camera: 'security',
-    'meter-elec': 'energy',
-    'meter-water': 'energy',
-    building: 'energy',
-    lighting: 'energy',
-    broadcast: 'energy',
-    display: 'energy',
+    camera: 'energy-camera',
+    'meter-elec': 'energy-meter-elec',
+    'meter-water': 'energy-meter-water',
+    building: 'energy-building',
+    lighting: 'energy-lighting',
+    broadcast: 'energy-broadcast',
+    display: 'energy-display-screen',
   }
   const target = routeMap[kind]
   if (target && target !== router.currentRoute.value.name) {
