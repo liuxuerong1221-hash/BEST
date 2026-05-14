@@ -95,13 +95,13 @@ const mapPins = [
   { id: 3,  name: '机柜C', x: 500,  y: 110 },
   { id: 4,  name: '机柜D', x: 680,  y: 260 },
   { id: 5,  name: '机柜E', x: 860,  y: 100 },
-  { id: 6,  name: '机柜F', x: 1050, y: 200 },
-  { id: 7,  name: '机柜G', x: 1220, y: 130 },
+  { id: 6,  name: '机柜F', x: 920,  y: 195 },
+  { id: 7,  name: '机柜G', x: 860,  y: 145 },
   { id: 8,  name: '机柜H', x: 240,  y: 370 },
   { id: 9,  name: '机柜I', x: 480,  y: 430 },
   { id: 10, name: '机柜J', x: 760,  y: 360 },
-  { id: 11, name: '机柜K', x: 980,  y: 440 },
-  { id: 12, name: '机柜L', x: 1180, y: 360 },
+  { id: 11, name: '机柜K', x: 960,  y: 430 },
+  { id: 12, name: '机柜L', x: 900,  y: 375 },
 ]
 
 // 设备打点（MapPinMarker 样式）
@@ -112,11 +112,11 @@ const devicePins: DevicePin[] = [
   { id: 1, label: '精密空调-1',   x: 280,  y: 165, type: 'ac'         },
   { id: 2, label: '精密空调-2',   x: 730,  y: 175, type: 'ac'         },
   { id: 3, label: '新风机-1',     x: 550,  y: 325, type: 'fresh-air'  },
-  { id: 4, label: '新风机-2',     x: 1030, y: 265, type: 'fresh-air'  },
+  { id: 4, label: '新风机-2',     x: 820,  y: 295, type: 'fresh-air'  },
   { id: 5, label: 'UPS主机-1',   x: 390,  y: 490, type: 'ups'        },
   { id: 6, label: 'UPS主机-2',   x: 850,  y: 465, type: 'ups'        },
   { id: 7, label: '动力配电柜-1', x: 185,  y: 500, type: 'power-dist' },
-  { id: 8, label: '动力配电柜-2', x: 1165, y: 480, type: 'power-dist' },
+  { id: 8, label: '动力配电柜-2', x: 940,  y: 495, type: 'power-dist' },
 ]
 
 const markerMap = {
