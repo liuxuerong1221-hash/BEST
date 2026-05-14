@@ -39,9 +39,9 @@
           class="security-mach__pin"
           :style="{ left: pin.x + 'px', top: pin.y + 'px' }"
         >
+          <span class="security-mach__pin-label">{{ pin.name }}</span>
           <div class="security-mach__pin-pulse" />
           <img class="security-mach__pin-icon" src="@/assets/images/icon-machinery-pin.svg" alt="" />
-          <span class="security-mach__pin-label">{{ pin.name }}</span>
         </div>
       </section>
     </main>
@@ -126,7 +126,6 @@ const mapPins = [
 
   &__center {
     position: relative;
-    overflow: hidden;
   }
 
   &__pin {
@@ -134,21 +133,23 @@ const mapPins = [
     display: flex;
     flex-direction: column;
     align-items: center;
+    // 以尾针尖为锚点
     transform: translate(-50%, -100%);
-    cursor: default;
+    cursor: pointer;
     z-index: 5;
+  }
 
-    &:hover .security-mach__pin-label {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  &__pin:hover &__pin-label {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   &__pin-pulse {
     position: absolute;
-    top: 50%;
+    // 脉冲中心对齐圆形部分（label高度偏移补偿）
+    bottom: 12.5px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     width: 56px;
     height: 56px;
     border-radius: 50%;
@@ -165,17 +166,18 @@ const mapPins = [
   }
 
   &__pin-label {
-    margin-top: 4px;
-    padding: 2px 8px;
-    background: rgba(2, 37, 79, 0.75);
-    border: 1px solid rgba(0, 174, 255, 0.5);
+    margin-bottom: 6px;
+    padding: 3px 10px;
+    background: rgba(2, 37, 79, 0.85);
+    border: 1px solid rgba(0, 174, 255, 0.6);
     border-radius: 4px;
     font-size: $font-size-xxs;
     color: $color-primary-bright;
     white-space: nowrap;
     opacity: 0;
-    transform: translateY(4px);
-    transition: opacity 0.2s, transform 0.2s;
+    transform: translateY(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
   }
 
   &__back {
