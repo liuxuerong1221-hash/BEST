@@ -51,6 +51,7 @@
           :y="pin.y"
           :label="pin.label"
           :active="acDetailVisible && selectedAcDevice?.name === acDeviceData[pin.id]?.name"
+          :alert="pin.alert"
           @select="selectAcPin(pin.id)"
         />
         <!-- UPS打点（可点击） -->
@@ -61,6 +62,7 @@
           :y="pin.y"
           :label="pin.label"
           :active="upsDetailVisible && selectedUpsDevice?.name === upsDeviceData[pin.id]?.name"
+          :alert="pin.alert"
           @select="selectUpsPin(pin.id)"
         />
         <!-- 新风机打点（可点击） -->
@@ -71,6 +73,7 @@
           :y="pin.y"
           :label="pin.label"
           :active="freshAirDetailVisible && selectedFreshAirDevice?.location === freshAirDeviceData[pin.id]?.location"
+          :alert="pin.alert"
           @select="selectFreshAirPin(pin.id)"
         />
         <!-- 动力配电柜打点（可点击） -->
@@ -81,6 +84,7 @@
           :y="pin.y"
           :label="pin.label"
           :active="powerDistDetailVisible && selectedPowerDistDevice?.name === powerDistDeviceData[pin.id]?.name"
+          :alert="pin.alert"
           @select="selectPowerDistPin(pin.id)"
         />
         <!-- 其他设备打点 -->
@@ -158,17 +162,17 @@ const mapPins = [
 
 // 设备打点（MapPinMarker 样式）
 type DevicePinType = 'ac' | 'fresh-air' | 'ups' | 'power-dist'
-interface DevicePin { id: number; label: string; x: number; y: number; type: DevicePinType }
+interface DevicePin { id: number; label: string; x: number; y: number; type: DevicePinType; alert?: boolean }
 
 const devicePins: DevicePin[] = [
-  { id: 1, label: '精密空调-1',   x: 280,  y: 165, type: 'ac'         },
-  { id: 2, label: '精密空调-2',   x: 730,  y: 175, type: 'ac'         },
-  { id: 3, label: '新风机-1',     x: 550,  y: 325, type: 'fresh-air'  },
-  { id: 4, label: '新风机-2',     x: 820,  y: 295, type: 'fresh-air'  },
-  { id: 5, label: 'UPS主机-1',   x: 390,  y: 490, type: 'ups'        },
-  { id: 6, label: 'UPS主机-2',   x: 850,  y: 465, type: 'ups'        },
-  { id: 7, label: '动力配电柜-1', x: 185,  y: 500, type: 'power-dist' },
-  { id: 8, label: '动力配电柜-2', x: 940,  y: 495, type: 'power-dist' },
+  { id: 1, label: '精密空调-1',   x: 280,  y: 165, type: 'ac',         alert: false },
+  { id: 2, label: '精密空调-2',   x: 730,  y: 175, type: 'ac',         alert: true  },
+  { id: 3, label: '新风机-1',     x: 550,  y: 325, type: 'fresh-air',  alert: true  },
+  { id: 4, label: '新风机-2',     x: 820,  y: 295, type: 'fresh-air',  alert: false },
+  { id: 5, label: 'UPS主机-1',   x: 390,  y: 490, type: 'ups',        alert: false },
+  { id: 6, label: 'UPS主机-2',   x: 850,  y: 465, type: 'ups',        alert: true  },
+  { id: 7, label: '动力配电柜-1', x: 185,  y: 500, type: 'power-dist', alert: true  },
+  { id: 8, label: '动力配电柜-2', x: 940,  y: 495, type: 'power-dist', alert: false },
 ]
 
 const markerMap = {

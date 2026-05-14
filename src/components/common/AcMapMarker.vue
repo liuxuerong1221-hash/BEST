@@ -1,5 +1,5 @@
 <template>
-  <MapPinMarker :x="x" :y="y" :label="label" :active="active" @select="$emit('select')">
+  <MapPinMarker :x="x" :y="y" :label="label" :active="active" :alert="alert" @select="$emit('select')">
     <template #icon="{ gradientId }">
       <defs>
         <linearGradient :id="gradientId" x1="20" y1="10" x2="20" y2="30" gradientUnits="userSpaceOnUse">
@@ -21,6 +21,6 @@
 <script setup lang="ts">
 import MapPinMarker from './MapPinMarker.vue'
 
-defineProps<{ x: number; y: number; label?: string; active?: boolean }>()
+defineProps<{ x: number; y: number; label?: string; active?: boolean; alert?: boolean }>()
 defineEmits<{ select: [] }>()
 </script>
