@@ -39,7 +39,6 @@
           class="security-mach__pin"
           :style="{ left: pin.x + 'px', top: pin.y + 'px' }"
         >
-          <div class="security-mach__pin-pulse" />
           <img class="security-mach__pin-icon" src="@/assets/images/icon-machinery-pin.svg" alt="" />
           <span class="security-mach__pin-label">{{ pin.name }}</span>
         </div>
@@ -144,21 +143,7 @@ const mapPins = [
     transform: translateY(0);
   }
 
-  &__pin-pulse {
-    position: absolute;
-    // 脉冲中心对齐圆形部分（label高度偏移补偿）
-    bottom: 12.5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: rgba(0, 174, 255, 0.15);
-    animation: mach-pin-pulse 2.4s ease-out infinite;
-    pointer-events: none;
-  }
-
-  &__pin-icon {
+&__pin-icon {
     width: 40px;
     height: 52.5px;
     display: block;
@@ -224,13 +209,7 @@ const mapPins = [
   }
 }
 
-@keyframes mach-pin-pulse {
-  0%   { transform: translate(-50%, -50%) scale(0.6); opacity: 0.8; }
-  100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .security-mach__back { transition: none; }
-  .security-mach__pin-pulse { animation: none; }
 }
 </style>
