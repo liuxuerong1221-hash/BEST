@@ -37,6 +37,44 @@
       </button>
     </div>
 
+    <!-- 球机专属：PTZ 控制 -->
+    <div v-if="device.type === '球机'" class="camera-detail__ptz">
+      <!-- 3×3 方向按钮网格 -->
+      <div class="ptz-grid">
+        <button
+          v-for="d in ptzDirs" :key="d.key"
+          class="ptz-btn"
+          :class="{ 'ptz-btn--center': d.key === 'talk', 'ptz-btn--on': activePtzDir === d.key }"
+          @mousedown="d.key !== 'talk' ? startPtz(d.key) : undefined"
+          @mouseup="stopPtz" @mouseleave="stopPtz"
+        >
+          <span v-if="d.key === 'talk'">喊话</span>
+          <svg v-else viewBox="0 0 24 24" fill="none" class="ptz-btn__icon">
+            <g :transform="`rotate(${d.angle}, 12, 12)`">
+              <path d="M6,15 L12,9 L18,15"
+                    stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 焦点 / 焦距 / 光圈 控制按钮组 -->
+      <div class="ptz-controls">
+        <div v-for="c in ptzCtrls" :key="c.label" class="ptz-ctrl-row">
+          <button class="ptz-ctrl-btn" :class="{'ptz-ctrl-btn--on': activePtzDir===c.nearKey}"
+                  @mousedown="startPtz(c.nearKey)" @mouseup="stopPtz" @mouseleave="stopPtz">
+            {{ c.nearLabel }}
+          </button>
+          <span class="ptz-ctrl-label">{{ c.label }}</span>
+          <button class="ptz-ctrl-btn" :class="{'ptz-ctrl-btn--on': activePtzDir===c.farKey}"
+                  @mousedown="startPtz(c.farKey)" @mouseup="stopPtz" @mouseleave="stopPtz">
+            {{ c.farLabel }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- 基础信息 -->
     <div class="camera-detail__info">
       <span class="camera-detail__info-label">基础信息</span>
@@ -54,6 +92,7 @@
 
       <div class="camera-detail__info-row">
         <span class="camera-detail__info-text">类型：{{ device.type }}</span>
+        <span v-if="device.type === '球机'" class="camera-detail__info-text">IP：{{ device.ip }}</span>
       </div>
     </div>
 
@@ -137,6 +176,30 @@ const emit = defineEmits<{
 const device = computed(() => props.device)
 const expanded = ref(false)
 
+// PTZ 控制（球机专属）
+const activePtzDir = ref<string | null>(null)
+
+const ptzDirs = [
+  { key: 'up-left',    angle: 315 },
+  { key: 'up',         angle: 0   },
+  { key: 'up-right',   angle: 45  },
+  { key: 'left',       angle: 270 },
+  { key: 'talk',       angle: 0   },
+  { key: 'right',      angle: 90  },
+  { key: 'down-left',  angle: 225 },
+  { key: 'down',       angle: 180 },
+  { key: 'down-right', angle: 135 },
+]
+
+const ptzCtrls = [
+  { label: '焦点', nearKey: 'focus-near', nearLabel: '前移', farKey: 'focus-far',  farLabel: '后移' },
+  { label: '焦距', nearKey: 'zoom-in',    nearLabel: '变大', farKey: 'zoom-out',   farLabel: '变小' },
+  { label: '光圈', nearKey: 'iris-open',  nearLabel: '扩大', farKey: 'iris-close', farLabel: '缩小' },
+]
+
+function startPtz(dir: string) { activePtzDir.value = dir }
+function stopPtz() { activePtzDir.value = null }
+
 function openExpand() { expanded.value = true }
 function closeExpand() { expanded.value = false }
 </script>
@@ -203,7 +266,7 @@ function closeExpand() { expanded.value = false }
   &__feed {
     position: relative;
     width: 100%;
-    height: 240px;
+    height: 200px;
     border-radius: $radius-sm;
     overflow: hidden;
     flex-shrink: 0;
@@ -258,6 +321,13 @@ function closeExpand() { expanded.value = false }
 
     &:hover { opacity: 0.75; }
     svg { width: 100%; height: 100%; }
+  }
+
+  // 球机 PTZ 区
+  &__ptz {
+    display: flex;
+    align-items: center;
+    gap: 14px;
   }
 
   // 基础信息
@@ -320,11 +390,118 @@ function closeExpand() { expanded.value = false }
   &__close-btn { display: none; }
 }
 
+// PTZ 3×3 方向网格
+.ptz-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 36px);
+  grid-template-rows: repeat(3, 36px);
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.ptz-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 174, 255, 0.35);
+  background: rgba(6, 18, 48, 0.9);
+  color: rgba(160, 220, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
+
+  &:hover {
+    background: rgba(0, 174, 255, 0.18);
+    border-color: rgba(0, 174, 255, 0.65);
+    box-shadow: 0 0 8px rgba(0, 174, 255, 0.25);
+  }
+
+  &--on {
+    background: rgba(0, 174, 255, 0.28);
+    border-color: $color-primary;
+    box-shadow: 0 0 10px rgba(0, 174, 255, 0.5);
+    color: #fff;
+  }
+
+  &--center {
+    background: $color-primary;
+    border-color: $color-primary;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: 0 0 12px rgba(0, 174, 255, 0.5);
+
+    &:hover {
+      background: rgba(0, 174, 255, 0.85);
+      border-color: #fff;
+    }
+  }
+
+  &__icon {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+// 焦点/焦距/光圈 控制组
+.ptz-controls {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ptz-ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 36px;
+}
+
+.ptz-ctrl-btn {
+  flex: 1;
+  height: 100%;
+  border: 1px solid rgba(0, 174, 255, 0.4);
+  background: rgba(0, 174, 255, 0.2);
+  color: $color-text-1;
+  font-size: $font-size-xxs;
+  font-weight: 600;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  transition: background 0.12s, box-shadow 0.12s;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(0, 174, 255, 0.35);
+    box-shadow: 0 0 6px rgba(0, 174, 255, 0.3);
+  }
+
+  &--on {
+    background: rgba(0, 174, 255, 0.55);
+    border-color: $color-primary;
+    box-shadow: 0 0 10px rgba(0, 174, 255, 0.45);
+  }
+}
+
+.ptz-ctrl-label {
+  width: 26px;
+  text-align: center;
+  font-size: 10px;
+  color: $color-text-2;
+  flex-shrink: 0;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
 @keyframes feed-scan {
   0%   { transform: translateY(-100%); opacity: 0; }
   10%  { opacity: 1; }
   90%  { opacity: 1; }
-  100% { transform: translateY(240px); opacity: 0; }
+  100% { transform: translateY(200px); opacity: 0; }
 }
 
 // 放大弹窗

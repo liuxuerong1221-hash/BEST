@@ -32,7 +32,7 @@
         <div class="alert-handling__ring-particles" aria-hidden="true">
           <span v-for="n in 8" :key="n" />
         </div>
-        <img class="alert-handling__ring-img" :src="shieldDone" alt="" />
+        <img class="alert-handling__ring-img" src="@/assets/images/icon-shield-3d.png" alt="" />
       </div>
 
       <!-- 右：未处理 -->
@@ -69,9 +69,8 @@ import shieldPending from '@/assets/images/icon/icon-shield-pending.svg?url'
 const tabs = [
   { value: 'week', label: '近一周' },
   { value: 'month', label: '近一个月' },
-] as const
-type Tab = typeof tabs[number]['value']
-const activeTab = ref<Tab>('week')
+]
+const activeTab = ref('week')
 </script>
 
 <style lang="scss" scoped>
@@ -93,7 +92,6 @@ const activeTab = ref<Tab>('week')
     gap: 6px;
     padding: 14px 12px;
     border-radius: 6px;
-    border: 1px solid transparent;
     position: relative;
     overflow: hidden;
     align-self: stretch;
@@ -101,13 +99,17 @@ const activeTab = ref<Tab>('week')
     &--done {
       background-image: url('@/assets/images/left-左.png');
       background-size: 100% 100%;
-      border-color: rgba(40, 220, 185, 0.3);
+      border-top: 1px solid rgba(40, 220, 185, 0.3);
+      border-bottom: 1px solid rgba(40, 220, 185, 0.3);
+      border-right: 1px solid rgba(40, 220, 185, 0.3);
     }
 
     &--pending {
       background-image: url('@/assets/images/left-右.png');
       background-size: 100% 100%;
-      border-color: rgba(255, 200, 20, 0.28);
+      border-top: 1px solid rgba(255, 200, 20, 0.28);
+      border-bottom: 1px solid rgba(255, 200, 20, 0.28);
+      border-left: 1px solid rgba(255, 200, 20, 0.28);
     }
   }
 
@@ -174,6 +176,7 @@ const activeTab = ref<Tab>('week')
     font-size: $font-size-xxs;
     color: $color-text-1;
     opacity: 0.6;
+    white-space: nowrap;
   }
 
   &__card-bar {

@@ -9,22 +9,25 @@
     @keydown.enter.prevent="$emit('select')"
     @keydown.space.prevent="$emit('select')"
   >
-    <span v-if="label" class="map-pin-marker__label">{{ label }}</span>
+    <span
+      v-if="label && !alert"
+      class="map-pin-marker__label"
+    >{{ label }}</span>
 
     <!-- 主体：圆形 + 三角指针 -->
-    <div class="map-pin-marker__body">
+    <div class="map-pin-marker__body" :class="{ 'map-pin-marker__body--alert': alert }">
       <svg class="map-pin-marker__pin" viewBox="0 0 40 52.5" fill="none">
         <defs>
           <linearGradient :id="`pin-stroke-${uid}`" x1="20" y1="0" x2="20" y2="40" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#0C84FF"/>
-            <stop offset="1" stop-color="#1DEAFF"/>
+            <stop :stop-color="alert ? '#FF4848' : '#0C84FF'"/>
+            <stop offset="1" :stop-color="alert ? '#FF1414' : '#1DEAFF'"/>
           </linearGradient>
           <linearGradient :id="`pin-tri-${uid}`" x1="7.25" y1="42" x2="7.25" y2="52.5" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#0C84FF"/>
-            <stop offset="1" stop-color="#1DEAFF"/>
+            <stop :stop-color="alert ? '#FF4848' : '#0C84FF'"/>
+            <stop offset="1" :stop-color="alert ? '#FF1414' : '#1DEAFF'"/>
           </linearGradient>
         </defs>
-        <circle cx="20" cy="20" r="19.5" fill="rgba(2, 37, 79, 0.6)" :stroke="`url(#pin-stroke-${uid})`"/>
+        <circle cx="20" cy="20" r="19.5" :fill="alert ? 'rgba(79, 2, 2, 0.7)' : 'rgba(2, 37, 79, 0.6)'" :stroke="`url(#pin-stroke-${uid})`"/>
         <!-- 中心图标通过 slot 插入，接收 iconGradientId 作为渐变色 ID -->
         <slot name="icon" :gradient-id="`pin-icon-${uid}`">
           <!-- 默认渐变定义 -->
@@ -42,8 +45,8 @@
 
     <!-- 地面光圈：双层椭圆 -->
     <svg class="map-pin-marker__base" viewBox="0 0 49 24" fill="none">
-      <ellipse cx="24.5" cy="12" rx="24.2" ry="11.7" fill="rgba(10, 15, 21, 0.502)" fill-opacity="0.8" stroke="#00AEFF" stroke-width="0.6"/>
-      <ellipse cx="24.5" cy="12" rx="18.2" ry="7.7" fill="rgba(10, 15, 21, 0.502)" stroke="#00AEFF" stroke-width="0.6"/>
+      <ellipse cx="24.5" cy="12" rx="24.2" ry="11.7" fill="rgba(10, 15, 21, 0.502)" fill-opacity="0.8" :stroke="alert ? 'rgba(255,68,68,0.7)' : '#00AEFF'" stroke-width="0.6"/>
+      <ellipse cx="24.5" cy="12" rx="18.2" ry="7.7" fill="rgba(10, 15, 21, 0.502)" :stroke="alert ? 'rgba(255,68,68,0.7)' : '#00AEFF'" stroke-width="0.6"/>
     </svg>
 
     <!-- 涟漪扩散（仅激活时显示） -->
@@ -62,6 +65,8 @@ const props = withDefaults(defineProps<{
   label?: string
   /** 是否为当前激活点 */
   active?: boolean
+  /** 是否告警状态（红色） */
+  alert?: boolean
   /** 定位单位：'px' 或 '%' */
   unit?: 'px' | '%'
 }>(), {
@@ -111,6 +116,7 @@ defineExpose({ uid })
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.18s ease, transform 0.18s ease;
+
   }
 
   &__body {
@@ -121,6 +127,10 @@ defineExpose({ uid })
     height: 52.5px;
     filter: drop-shadow(0 0 8px rgba(0, 174, 255, 0.45));
     animation: pin-marker-float 3s ease-in-out infinite;
+
+    &--alert {
+      filter: drop-shadow(0 0 10px rgba(255, 20, 20, 0.7));
+    }
   }
 
   &__pin {
@@ -149,6 +159,15 @@ defineExpose({ uid })
     opacity: 0;
     pointer-events: none;
     animation: none;
+
+    &--delayed {
+      animation-delay: 1.2s;
+    }
+  }
+
+  &--alert &__ripple {
+    border-color: rgba(255, 68, 68, 0.55);
+    animation: pin-marker-ripple-alert 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 
     &--delayed {
       animation-delay: 1.2s;
@@ -191,6 +210,12 @@ defineExpose({ uid })
 }
 
 @keyframes pin-marker-ripple {
+  0%   { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
+  20%  { opacity: 0.7; }
+  100% { opacity: 0; transform: translate(-50%, 0) scale(1.8); }
+}
+
+@keyframes pin-marker-ripple-alert {
   0%   { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
   20%  { opacity: 0.7; }
   100% { opacity: 0; transform: translate(-50%, 0) scale(1.8); }

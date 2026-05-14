@@ -58,12 +58,6 @@
         </svg>
         <span class="app-header__username">{{ user.name }}</span>
       </div>
-      <button class="app-header__logout" type="button" aria-label="退出登录">
-        <svg viewBox="0 0 20 20" aria-hidden="true">
-          <path d="M10.62 5.75a.7.7 0 0 0-1.4 0v1.84a.7.7 0 0 0 1.4 0V5.75Zm2.63.36a.7.7 0 1 0-.84 1.12 3.85 3.85 0 1 1-4.98 0 .7.7 0 1 0-.84-1.12 5.25 5.25 0 1 0 6.66 0Z" />
-          <path d="M4.58 1.25h10.84a3.33 3.33 0 0 1 3.33 3.33v10.84a3.33 3.33 0 0 1-3.33 3.33H4.58a3.33 3.33 0 0 1-3.33-3.33V4.58a3.33 3.33 0 0 1 3.33-3.33Zm0 1.4a1.93 1.93 0 0 0-1.93 1.93v10.84c0 1.07.86 1.93 1.93 1.93h10.84c1.07 0 1.93-.86 1.93-1.93V4.58a1.93 1.93 0 0 0-1.93-1.93H4.58Z" />
-        </svg>
-      </button>
     </div>
   </header>
 </template>
@@ -261,21 +255,5 @@ onUnmounted(() => clearInterval(timer))
     white-space: nowrap;
   }
 
-  &__logout {
-    width: 20px;
-    height: 20px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: $color-primary;
-    cursor: pointer;
-
-    svg {
-      fill: currentColor;
-    }
-  }
 }
 </style>
