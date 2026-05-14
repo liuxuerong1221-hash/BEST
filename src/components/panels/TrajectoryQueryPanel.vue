@@ -8,7 +8,7 @@
 
     <!-- 工具栏 -->
     <div class="tq__toolbar">
-      <DatePicker v-model="date" />
+      <DatePicker v-model="date" direction="down" />
       <label class="tq__search">
         <input
           v-model="keyword"

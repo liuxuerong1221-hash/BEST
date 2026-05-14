@@ -64,8 +64,10 @@ import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 
 const props = withDefaults(defineProps<{
   modelValue: string
+  direction?: 'up' | 'down'
 }>(), {
   modelValue: '',
+  direction: 'up',
 })
 
 const emit = defineEmits<{
@@ -136,8 +138,9 @@ function updatePopupPos() {
   const popupWidth = 280
   const popupHeight = 320
 
-  // 固定在选择框上方8px
-  const top = r.top - popupHeight - 8
+  const top = props.direction === 'down'
+    ? r.bottom + 8
+    : r.top - popupHeight - 8
   let left = r.left
 
   const maxLeft = window.innerWidth - popupWidth - 8
