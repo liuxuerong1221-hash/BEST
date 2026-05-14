@@ -31,8 +31,19 @@
         <span class="security-mach__back-text">返回</span>
       </button>
 
-      <!-- 中间留空（背景透出） -->
-      <section class="security-mach__center" />
+      <!-- 中间：机房打点示意 -->
+      <section class="security-mach__center">
+        <div
+          v-for="pin in mapPins"
+          :key="pin.id"
+          class="security-mach__pin"
+          :style="{ left: pin.x + 'px', top: pin.y + 'px' }"
+        >
+          <div class="security-mach__pin-pulse" />
+          <img class="security-mach__pin-icon" src="@/assets/images/icon-machinery-pin.svg" alt="" />
+          <span class="security-mach__pin-label">{{ pin.name }}</span>
+        </div>
+      </section>
     </main>
   </div>
 </template>
@@ -46,6 +57,16 @@ import MachineryAlertRecordPanel from '@/components/panels/MachineryAlertRecordP
 
 const router = useRouter()
 function goBack() { router.push({ name: 'security' }) }
+
+const mapPins = [
+  { id: 1, name: '机房A', x: 160,  y: 120 },
+  { id: 2, name: '机房B', x: 480,  y: 260 },
+  { id: 3, name: '机房C', x: 760,  y: 100 },
+  { id: 4, name: '机房D', x: 980,  y: 320 },
+  { id: 5, name: '机房E', x: 580,  y: 460 },
+  { id: 6, name: '机房F', x: 280,  y: 400 },
+  { id: 7, name: '机房G', x: 860,  y: 500 },
+]
 </script>
 
 <style lang="scss" scoped>
@@ -104,7 +125,57 @@ function goBack() { router.push({ name: 'security' }) }
   }
 
   &__center {
-    // 空白区域，透出背景
+    position: relative;
+    overflow: hidden;
+  }
+
+  &__pin {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translate(-50%, -100%);
+    cursor: default;
+    z-index: 5;
+
+    &:hover .security-mach__pin-label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &__pin-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(0, 174, 255, 0.15);
+    animation: mach-pin-pulse 2.4s ease-out infinite;
+    pointer-events: none;
+  }
+
+  &__pin-icon {
+    width: 40px;
+    height: 52.5px;
+    display: block;
+    filter: drop-shadow(0 0 8px rgba(0, 174, 255, 0.6));
+  }
+
+  &__pin-label {
+    margin-top: 4px;
+    padding: 2px 8px;
+    background: rgba(2, 37, 79, 0.75);
+    border: 1px solid rgba(0, 174, 255, 0.5);
+    border-radius: 4px;
+    font-size: $font-size-xxs;
+    color: $color-primary-bright;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.2s, transform 0.2s;
   }
 
   &__back {
@@ -151,7 +222,13 @@ function goBack() { router.push({ name: 'security' }) }
   }
 }
 
+@keyframes mach-pin-pulse {
+  0%   { transform: translate(-50%, -50%) scale(0.6); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .security-mach__back { transition: none; }
+  .security-mach__pin-pulse { animation: none; }
 }
 </style>
