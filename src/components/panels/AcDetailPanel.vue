@@ -167,6 +167,9 @@ defineEmits<{ close: [] }>()
 
     em {
       font-style: normal;
+    }
+
+    em:not([class]) {
       color: $color-text-1;
     }
   }
