@@ -56,21 +56,17 @@ import MachineryMonitorPanel     from '@/components/panels/MachineryMonitorPanel
 import MachineryAlertTrendPanel  from '@/components/panels/MachineryAlertTrendPanel.vue'
 import MachineryAlertRecordPanel from '@/components/panels/MachineryAlertRecordPanel.vue'
 
-import acIcon           from '@/assets/images/空调.svg?url'
-import acAlertIcon      from '@/assets/images/空调-告警.svg?url'
-import leakIcon         from '@/assets/images/漏水.svg?url'
-import tempIcon         from '@/assets/images/温度.svg?url'
-import tempAlertIcon    from '@/assets/images/温度-报警.svg?url'
-import smokeIcon        from '@/assets/images/烟感.svg?url'
-import smokeAlertIcon   from '@/assets/images/烟感-报警.svg?url'
-import uspIcon          from '@/assets/images/USP.svg?url'
-import uspAlertIcon     from '@/assets/images/USP-告警.svg?url'
-import freshAirIcon     from '@/assets/images/新风机.svg?url'
-import freshAirAlertIcon from '@/assets/images/新风机-告警.svg?url'
-import powerDistIcon    from '@/assets/images/动力配电柜.svg?url'
-import powerDistAlertIcon from '@/assets/images/动力配电柜-告警.svg?url'
+import acIcon        from '@/assets/images/空调.svg?url'
+import acAlertIcon   from '@/assets/images/空调-告警.svg?url'
+import leakIcon      from '@/assets/images/漏水.svg?url'
+import tempIcon      from '@/assets/images/温度.svg?url'
+import tempAlertIcon from '@/assets/images/温度-报警.svg?url'
+import smokeIcon     from '@/assets/images/烟感.svg?url'
+import smokeAlertIcon from '@/assets/images/烟感-报警.svg?url'
+import uspIcon       from '@/assets/images/USP.svg?url'
+import uspAlertIcon  from '@/assets/images/USP-告警.svg?url'
 
-type DeviceType = 'ac' | 'smoke' | 'ups' | 'temp' | 'leak' | 'fresh-air' | 'power-dist'
+type DeviceType = 'ac' | 'smoke' | 'ups' | 'temp' | 'leak'
 
 interface MapPin {
   id: number
@@ -81,13 +77,11 @@ interface MapPin {
 }
 
 const deviceIcons: Record<DeviceType, { normal: string; alert: string }> = {
-  ac:         { normal: acIcon,        alert: acAlertIcon },
-  smoke:      { normal: smokeIcon,     alert: smokeAlertIcon },
-  ups:        { normal: uspIcon,       alert: uspAlertIcon },
-  temp:       { normal: tempIcon,      alert: tempAlertIcon },
-  leak:       { normal: leakIcon,      alert: leakIcon },
-  'fresh-air':  { normal: freshAirIcon,  alert: freshAirAlertIcon },
-  'power-dist': { normal: powerDistIcon, alert: powerDistAlertIcon },
+  ac:    { normal: acIcon,    alert: acAlertIcon },
+  smoke: { normal: smokeIcon, alert: smokeAlertIcon },
+  ups:   { normal: uspIcon,   alert: uspAlertIcon },
+  temp:  { normal: tempIcon,  alert: tempAlertIcon },
+  leak:  { normal: leakIcon,  alert: leakIcon },
 }
 
 const router = useRouter()
@@ -105,28 +99,13 @@ function pinIcon(pin: MapPin): string {
 }
 
 const mapPins: MapPin[] = [
-  // 原有机柜打点
-  { id: 1,  name: '机柜A',   x: 160,  y: 120,  deviceType: 'ac'         },
-  { id: 2,  name: '机柜B',   x: 480,  y: 260,  deviceType: 'smoke'      },
-  { id: 3,  name: '机柜C',   x: 760,  y: 100,  deviceType: 'ups'        },
-  { id: 4,  name: '机柜D',   x: 980,  y: 320,  deviceType: 'temp'       },
-  { id: 5,  name: '机柜E',   x: 580,  y: 460,  deviceType: 'ac'         },
-  { id: 6,  name: '机柜F',   x: 280,  y: 400,  deviceType: 'leak'       },
-  { id: 7,  name: '机柜G',   x: 860,  y: 500,  deviceType: 'smoke'      },
-  // 空调
-  { id: 8,  name: '空调-1',  x: 340,  y: 195,  deviceType: 'ac'         },
-  { id: 9,  name: '空调-2',  x: 1080, y: 430,  deviceType: 'ac'         },
-  // UPS 主机
-  { id: 10, name: 'UPS主机-1', x: 1200, y: 140, deviceType: 'ups'       },
-  { id: 11, name: 'UPS主机-2', x: 660,  y: 555, deviceType: 'ups'       },
-  // 新风机
-  { id: 12, name: '新风机-1', x: 110,  y: 510,  deviceType: 'fresh-air' },
-  { id: 13, name: '新风机-2', x: 500,  y: 90,   deviceType: 'fresh-air' },
-  { id: 14, name: '新风机-3', x: 1110, y: 270,  deviceType: 'fresh-air' },
-  // 动力配电柜
-  { id: 15, name: '配电柜-1', x: 210,  y: 255,  deviceType: 'power-dist'},
-  { id: 16, name: '配电柜-2', x: 820,  y: 385,  deviceType: 'power-dist'},
-  { id: 17, name: '配电柜-3', x: 1210, y: 530,  deviceType: 'power-dist'},
+  { id: 1, name: '机柜A', x: 160,  y: 120,  deviceType: 'ac'    },
+  { id: 2, name: '机柜B', x: 480,  y: 260,  deviceType: 'smoke' },
+  { id: 3, name: '机柜C', x: 760,  y: 100,  deviceType: 'ups'   },
+  { id: 4, name: '机柜D', x: 980,  y: 320,  deviceType: 'temp'  },
+  { id: 5, name: '机柜E', x: 580,  y: 460,  deviceType: 'ac'    },
+  { id: 6, name: '机柜F', x: 280,  y: 400,  deviceType: 'leak'  },
+  { id: 7, name: '机柜G', x: 860,  y: 500,  deviceType: 'smoke' },
 ]
 </script>
 
