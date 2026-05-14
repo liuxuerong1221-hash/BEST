@@ -31,7 +31,7 @@
         <span class="security-mach__back-text">返回</span>
       </button>
 
-      <!-- 中间：机房打点示意 -->
+      <!-- 中间：机柜打点示意 -->
       <section class="security-mach__center">
         <div
           v-for="pin in mapPins"
@@ -39,9 +39,9 @@
           class="security-mach__pin"
           :style="{ left: pin.x + 'px', top: pin.y + 'px' }"
         >
-          <span class="security-mach__pin-label">{{ pin.name }}</span>
           <div class="security-mach__pin-pulse" />
           <img class="security-mach__pin-icon" src="@/assets/images/icon-machinery-pin.svg" alt="" />
+          <span class="security-mach__pin-label">{{ pin.name }}</span>
         </div>
       </section>
     </main>
@@ -59,13 +59,13 @@ const router = useRouter()
 function goBack() { router.push({ name: 'security' }) }
 
 const mapPins = [
-  { id: 1, name: '机房A', x: 160,  y: 120 },
-  { id: 2, name: '机房B', x: 480,  y: 260 },
-  { id: 3, name: '机房C', x: 760,  y: 100 },
-  { id: 4, name: '机房D', x: 980,  y: 320 },
-  { id: 5, name: '机房E', x: 580,  y: 460 },
-  { id: 6, name: '机房F', x: 280,  y: 400 },
-  { id: 7, name: '机房G', x: 860,  y: 500 },
+  { id: 1, name: '机柜A', x: 160,  y: 120 },
+  { id: 2, name: '机柜B', x: 480,  y: 260 },
+  { id: 3, name: '机柜C', x: 760,  y: 100 },
+  { id: 4, name: '机柜D', x: 980,  y: 320 },
+  { id: 5, name: '机柜E', x: 580,  y: 460 },
+  { id: 6, name: '机柜F', x: 280,  y: 400 },
+  { id: 7, name: '机柜G', x: 860,  y: 500 },
 ]
 </script>
 
@@ -166,7 +166,7 @@ const mapPins = [
   }
 
   &__pin-label {
-    margin-bottom: 6px;
+    margin-top: 4px;
     padding: 3px 10px;
     background: rgba(2, 37, 79, 0.85);
     border: 1px solid rgba(0, 174, 255, 0.6);
@@ -175,7 +175,7 @@ const mapPins = [
     color: $color-primary-bright;
     white-space: nowrap;
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(-4px);
     transition: opacity 0.2s ease, transform 0.2s ease;
     pointer-events: none;
   }
