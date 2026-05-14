@@ -32,7 +32,7 @@
         <div class="alert-handling__ring-particles" aria-hidden="true">
           <span v-for="n in 8" :key="n" />
         </div>
-        <img class="alert-handling__ring-img" :src="shieldDone" alt="" />
+        <img class="alert-handling__ring-img" src="@/assets/images/icon-shield-3d.png" alt="" />
       </div>
 
       <!-- 右：未处理 -->
@@ -69,9 +69,8 @@ import shieldPending from '@/assets/images/icon/icon-shield-pending.svg?url'
 const tabs = [
   { value: 'week', label: '近一周' },
   { value: 'month', label: '近一个月' },
-] as const
-type Tab = typeof tabs[number]['value']
-const activeTab = ref<Tab>('week')
+]
+const activeTab = ref('week')
 </script>
 
 <style lang="scss" scoped>
