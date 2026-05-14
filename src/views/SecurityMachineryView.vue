@@ -31,17 +31,27 @@
         <span class="security-mach__back-text">返回</span>
       </button>
 
-      <!-- 中间：机柜打点 -->
+      <!-- 中间：打点区 -->
       <section class="security-mach__center">
+        <!-- 机柜打点（原始圆形图标） -->
         <div
           v-for="pin in mapPins"
-          :key="pin.id"
+          :key="'cabinet-' + pin.id"
           class="security-mach__pin"
           :style="{ left: pin.x + 'px', top: pin.y + 'px' }"
         >
           <img class="security-mach__pin-icon" src="@/assets/images/机房打点.svg" alt="" />
           <span class="security-mach__pin-label">{{ pin.name }}</span>
         </div>
+        <!-- 设备打点（MapPinMarker 样式） -->
+        <component
+          v-for="pin in devicePins"
+          :key="'device-' + pin.id"
+          :is="markerMap[pin.type]"
+          :x="pin.x"
+          :y="pin.y"
+          :label="pin.label"
+        />
       </section>
     </main>
   </div>
@@ -49,14 +59,19 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import AppHeader from '@/components/common/AppHeader.vue'
+import AppHeader           from '@/components/common/AppHeader.vue'
 import MachineryMonitorPanel     from '@/components/panels/MachineryMonitorPanel.vue'
 import MachineryAlertTrendPanel  from '@/components/panels/MachineryAlertTrendPanel.vue'
 import MachineryAlertRecordPanel from '@/components/panels/MachineryAlertRecordPanel.vue'
+import AcMapMarker         from '@/components/common/AcMapMarker.vue'
+import FreshAirMapMarker   from '@/components/common/FreshAirMapMarker.vue'
+import UpsMapMarker        from '@/components/common/UpsMapMarker.vue'
+import PowerDistMapMarker  from '@/components/common/PowerDistMapMarker.vue'
 
 const router = useRouter()
 function goBack() { router.push({ name: 'security' }) }
 
+// 机柜打点（原始样式）
 const mapPins = [
   { id: 1,  name: '机柜A', x: 150,  y: 130 },
   { id: 2,  name: '机柜B', x: 340,  y: 200 },
@@ -71,6 +86,28 @@ const mapPins = [
   { id: 11, name: '机柜K', x: 980,  y: 440 },
   { id: 12, name: '机柜L', x: 1180, y: 360 },
 ]
+
+// 设备打点（MapPinMarker 样式）
+type DevicePinType = 'ac' | 'fresh-air' | 'ups' | 'power-dist'
+interface DevicePin { id: number; label: string; x: number; y: number; type: DevicePinType }
+
+const devicePins: DevicePin[] = [
+  { id: 1, label: '精密空调-1',   x: 280,  y: 165, type: 'ac'         },
+  { id: 2, label: '精密空调-2',   x: 730,  y: 175, type: 'ac'         },
+  { id: 3, label: '新风机-1',     x: 550,  y: 325, type: 'fresh-air'  },
+  { id: 4, label: '新风机-2',     x: 1030, y: 265, type: 'fresh-air'  },
+  { id: 5, label: 'UPS主机-1',   x: 390,  y: 490, type: 'ups'        },
+  { id: 6, label: 'UPS主机-2',   x: 850,  y: 465, type: 'ups'        },
+  { id: 7, label: '动力配电柜-1', x: 185,  y: 500, type: 'power-dist' },
+  { id: 8, label: '动力配电柜-2', x: 1165, y: 480, type: 'power-dist' },
+]
+
+const markerMap = {
+  'ac':         AcMapMarker,
+  'fresh-air':  FreshAirMapMarker,
+  'ups':        UpsMapMarker,
+  'power-dist': PowerDistMapMarker,
+} as const
 </script>
 
 <style lang="scss" scoped>
