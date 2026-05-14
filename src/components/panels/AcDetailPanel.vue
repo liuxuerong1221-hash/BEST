@@ -171,8 +171,29 @@ defineEmits<{ close: [] }>()
     }
   }
 
-  &__status--normal { color: #0CF92C; }
-  &__status--fault  { color: #FF4444; }
+  &__status--normal,
+  &__status--fault {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 64px;
+    height: 28px;
+    padding: 2px 10px;
+    font-size: $font-size-sm;
+    font-weight: bold;
+    font-style: normal;
+    border-radius: $radius-md;
+  }
+
+  &__status--normal {
+    color: $color-success;
+    background: rgba(12, 249, 44, 0.2);
+  }
+
+  &__status--fault {
+    color: #FF1414;
+    background: rgba(255, 72, 72, 0.2);
+  }
 
   &__divider {
     height: 1px;
