@@ -50,20 +50,11 @@
     <!-- 电压/电流图表 -->
     <div class="pd-detail__section pd-detail__section--chart">
       <div class="pd-detail__chart-header">
-        <div class="pd-detail__tabs">
-          <button
-            class="pd-detail__tab"
-            :class="{ 'pd-detail__tab--active': chartTab === 'voltage' }"
-            type="button"
-            @click="chartTab = 'voltage'"
-          >电压</button>
-          <button
-            class="pd-detail__tab"
-            :class="{ 'pd-detail__tab--active': chartTab === 'current' }"
-            type="button"
-            @click="chartTab = 'current'"
-          >电流</button>
-        </div>
+        <SegmentedTabs
+          v-model="chartTab"
+          :options="tabOptions"
+          :item-width="52"
+        />
       </div>
       <v-chart class="pd-detail__chart" :option="chartOption" autoresize />
     </div>
@@ -82,6 +73,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import SegmentedTabs from '@/components/common/SegmentedTabs.vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart } from 'echarts/charts'
@@ -107,7 +99,11 @@ export interface PowerDistDevice {
 const props = defineProps<{ device: PowerDistDevice }>()
 defineEmits<{ close: [] }>()
 
-const chartTab = ref<'voltage' | 'current'>('voltage')
+const chartTab = ref<string>('voltage')
+const tabOptions = [
+  { label: '电压', value: 'voltage' },
+  { label: '电流', value: 'current' },
+]
 
 const chartOption = computed(() => {
   const isVoltage = chartTab.value === 'voltage'
@@ -279,39 +275,9 @@ const chartOption = computed(() => {
     flex-shrink: 0;
   }
 
-  // 图表头部（tab切换）
   &__chart-header {
     display: flex;
     justify-content: flex-end;
-  }
-
-  &__tabs {
-    display: flex;
-    border: 1px solid rgba(0, 174, 255, 0.4);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  &__tab {
-    padding: 4px 14px;
-    font-size: $font-size-sm;
-    font-family: $font-body;
-    color: $color-text-2;
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-
-    &--active {
-      background: $color-primary;
-      color: #fff;
-      font-weight: 600;
-    }
-
-    &:not(&--active):hover {
-      background: rgba(0, 174, 255, 0.12);
-      color: $color-text-1;
-    }
   }
 
   &__chart {
