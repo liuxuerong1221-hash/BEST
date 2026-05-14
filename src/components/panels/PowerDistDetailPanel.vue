@@ -149,13 +149,11 @@ const chartOption = computed(() => {
       data,
       itemStyle: {
         borderRadius: [2, 2, 0, 0],
-        color: {
-          type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-          colorStops: [
-            { offset: 0, color: '#00AEFF' },
-            { offset: 1, color: 'rgba(0,174,255,0.08)' },
-          ],
-        },
+        color: isVoltage
+          ? { type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [{ offset: 0, color: '#00AEFF' }, { offset: 1, color: 'rgba(0,174,255,0.08)' }] }
+          : { type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [{ offset: 0, color: '#2ED0B0' }, { offset: 1, color: 'rgba(46,208,176,0.08)' }] },
       },
     }],
   }
