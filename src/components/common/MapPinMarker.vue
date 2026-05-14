@@ -10,8 +10,9 @@
     @keydown.space.prevent="$emit('select')"
   >
     <span
-      v-if="label && !alert"
+      v-if="label"
       class="map-pin-marker__label"
+      :class="{ 'map-pin-marker__label--alert': alert }"
     >{{ label }}</span>
 
     <!-- 主体：圆形 + 三角指针 -->
@@ -117,6 +118,12 @@ defineExpose({ uid })
     pointer-events: none;
     transition: opacity 0.18s ease, transform 0.18s ease;
 
+    &--alert {
+      border-color: rgba(255, 68, 68, 0.7);
+      background: rgba(60, 5, 5, 0.9);
+      box-shadow: 0 0 12px rgba(255, 20, 20, 0.35);
+      color: #FF4848;
+    }
   }
 
   &__body {

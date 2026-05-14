@@ -142,7 +142,7 @@ const levelFilter = ref<LevelFilter>('all')
 const levelMenuOpen = ref(false)
 const levelMenuPos  = ref({ top: 0, left: 0 })
 const page          = ref(1)
-const pageSize      = 6
+const pageSize      = 4
 const selectedId    = ref<number | null>(null)
 
 const deviceTypeMap: Record<string, string> = {
