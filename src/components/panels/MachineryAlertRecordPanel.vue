@@ -42,6 +42,8 @@
             v-for="row in pagedRows"
             :key="row.id"
             class="mach-record__tr"
+            :class="{ 'mach-record__tr--selected': row.id === selectedId }"
+            @click="clickRow(row)"
           >
             <span class="mach-record__cell--ellipsis" :title="row.name">{{ row.name }}</span>
             <span class="mach-record__cell--ellipsis" :title="row.device">{{ row.device }}</span>
@@ -106,6 +108,10 @@ interface AlertRow {
   clearTime: string
 }
 
+const emit = defineEmits<{
+  'select-device-type': [type: string | null]
+}>()
+
 const levelText: Record<Level, string> = { urgent: '紧急', important: '重要', normal: '一般', hint: '提示' }
 
 const levelOptions = [
@@ -137,6 +143,24 @@ const levelMenuOpen = ref(false)
 const levelMenuPos  = ref({ top: 0, left: 0 })
 const page          = ref(1)
 const pageSize      = 6
+const selectedId    = ref<number | null>(null)
+
+const deviceTypeMap: Record<string, string> = {
+  '烟感探测器': 'smoke',
+  '温湿度传感器': 'temp',
+  'UPS电源': 'ups',
+  '精密空调': 'ac',
+}
+
+function clickRow(row: AlertRow) {
+  if (selectedId.value === row.id) {
+    selectedId.value = null
+    emit('select-device-type', null)
+  } else {
+    selectedId.value = row.id
+    emit('select-device-type', deviceTypeMap[row.device] ?? null)
+  }
+}
 
 const levelLabel = computed(() => levelOptions.find(o => o.value === levelFilter.value)?.label ?? '告警级别')
 
@@ -314,6 +338,12 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
     &:nth-child(odd):not(&--head) { background: rgba(0,174,255,0.04); }
     &:hover:not(&--head) {
       background: rgba(0,174,255,0.14);
+      color: $color-text-1;
+      box-shadow: inset 2px 0 0 $color-primary-bright;
+    }
+
+    &--selected {
+      background: rgba(77, 242, 255, 0.12) !important;
       color: $color-text-1;
       box-shadow: inset 2px 0 0 $color-primary-bright;
     }

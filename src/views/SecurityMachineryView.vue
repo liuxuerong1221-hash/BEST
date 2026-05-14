@@ -11,7 +11,7 @@
       <aside class="security-mach__left">
         <MachineryMonitorPanel />
         <MachineryAlertTrendPanel />
-        <MachineryAlertRecordPanel />
+        <MachineryAlertRecordPanel @select-device-type="onSelectDeviceType" />
       </aside>
 
       <!-- 返回 -->
@@ -37,9 +37,10 @@
           v-for="pin in mapPins"
           :key="pin.id"
           class="security-mach__pin"
+          :class="{ 'security-mach__pin--alert': selectedDeviceType === pin.deviceType }"
           :style="{ left: pin.x + 'px', top: pin.y + 'px' }"
         >
-          <img class="security-mach__pin-icon" src="@/assets/images/icon-machinery-pin.svg" alt="" />
+          <img class="security-mach__pin-icon" :src="pinIcon(pin)" alt="" />
           <span class="security-mach__pin-label">{{ pin.name }}</span>
         </div>
       </section>
@@ -48,23 +49,63 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/common/AppHeader.vue'
 import MachineryMonitorPanel     from '@/components/panels/MachineryMonitorPanel.vue'
 import MachineryAlertTrendPanel  from '@/components/panels/MachineryAlertTrendPanel.vue'
 import MachineryAlertRecordPanel from '@/components/panels/MachineryAlertRecordPanel.vue'
 
+import acIcon        from '@/assets/images/空调.svg?url'
+import acAlertIcon   from '@/assets/images/空调-告警.svg?url'
+import leakIcon      from '@/assets/images/漏水.svg?url'
+import tempIcon      from '@/assets/images/温度.svg?url'
+import tempAlertIcon from '@/assets/images/温度-报警.svg?url'
+import smokeIcon     from '@/assets/images/烟感.svg?url'
+import smokeAlertIcon from '@/assets/images/烟感-报警.svg?url'
+import uspIcon       from '@/assets/images/USP.svg?url'
+import uspAlertIcon  from '@/assets/images/USP-告警.svg?url'
+
+type DeviceType = 'ac' | 'smoke' | 'ups' | 'temp' | 'leak'
+
+interface MapPin {
+  id: number
+  name: string
+  x: number
+  y: number
+  deviceType: DeviceType
+}
+
+const deviceIcons: Record<DeviceType, { normal: string; alert: string }> = {
+  ac:    { normal: acIcon,    alert: acAlertIcon },
+  smoke: { normal: smokeIcon, alert: smokeAlertIcon },
+  ups:   { normal: uspIcon,   alert: uspAlertIcon },
+  temp:  { normal: tempIcon,  alert: tempAlertIcon },
+  leak:  { normal: leakIcon,  alert: leakIcon },
+}
+
 const router = useRouter()
 function goBack() { router.push({ name: 'security' }) }
 
-const mapPins = [
-  { id: 1, name: '机柜A', x: 160,  y: 120 },
-  { id: 2, name: '机柜B', x: 480,  y: 260 },
-  { id: 3, name: '机柜C', x: 760,  y: 100 },
-  { id: 4, name: '机柜D', x: 980,  y: 320 },
-  { id: 5, name: '机柜E', x: 580,  y: 460 },
-  { id: 6, name: '机柜F', x: 280,  y: 400 },
-  { id: 7, name: '机柜G', x: 860,  y: 500 },
+const selectedDeviceType = ref<string | null>(null)
+
+function onSelectDeviceType(type: string | null) {
+  selectedDeviceType.value = type
+}
+
+function pinIcon(pin: MapPin): string {
+  const icons = deviceIcons[pin.deviceType]
+  return selectedDeviceType.value === pin.deviceType ? icons.alert : icons.normal
+}
+
+const mapPins: MapPin[] = [
+  { id: 1, name: '机柜A', x: 160,  y: 120,  deviceType: 'ac'    },
+  { id: 2, name: '机柜B', x: 480,  y: 260,  deviceType: 'smoke' },
+  { id: 3, name: '机柜C', x: 760,  y: 100,  deviceType: 'ups'   },
+  { id: 4, name: '机柜D', x: 980,  y: 320,  deviceType: 'temp'  },
+  { id: 5, name: '机柜E', x: 580,  y: 460,  deviceType: 'ac'    },
+  { id: 6, name: '机柜F', x: 280,  y: 400,  deviceType: 'leak'  },
+  { id: 7, name: '机柜G', x: 860,  y: 500,  deviceType: 'smoke' },
 ]
 </script>
 
@@ -138,16 +179,27 @@ const mapPins = [
     z-index: 5;
   }
 
-  &__pin:hover &__pin-label {
+  &__pin:hover &__pin-label,
+  &__pin--alert &__pin-label {
     opacity: 1;
     transform: translateY(0);
   }
 
-&__pin-icon {
-    width: 40px;
-    height: 52.5px;
+  &__pin--alert {
+    z-index: 10;
+  }
+
+  &__pin-icon {
+    width: 44px;
+    height: 44px;
     display: block;
+    object-fit: contain;
     filter: drop-shadow(0 0 8px rgba(0, 174, 255, 0.6));
+
+    .security-mach__pin--alert & {
+      filter: drop-shadow(0 0 14px rgba(255, 68, 68, 0.9));
+      animation: pin-alert-glow 1.4s ease-in-out infinite;
+    }
   }
 
   &__pin-label {
@@ -163,6 +215,12 @@ const mapPins = [
     transform: translateY(-4px);
     transition: opacity 0.2s ease, transform 0.2s ease;
     pointer-events: none;
+
+    .security-mach__pin--alert & {
+      border-color: rgba(255, 68, 68, 0.7);
+      background: rgba(60, 8, 8, 0.9);
+      color: #FF6666;
+    }
   }
 
   &__back {
@@ -211,5 +269,11 @@ const mapPins = [
 
 @media (prefers-reduced-motion: reduce) {
   .security-mach__back { transition: none; }
+  .security-mach__pin-icon { animation: none !important; }
+}
+
+@keyframes pin-alert-glow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 68, 68, 0.6)); }
+  50%       { filter: drop-shadow(0 0 20px rgba(255, 68, 68, 1)); }
 }
 </style>
