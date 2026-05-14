@@ -43,21 +43,39 @@
           <img class="security-mach__pin-icon" src="@/assets/images/机房打点.svg" alt="" />
           <span class="security-mach__pin-label">{{ pin.name }}</span>
         </div>
-        <!-- 设备打点（MapPinMarker 样式） -->
+        <!-- 空调打点（可点击弹窗） -->
+        <AcMapMarker
+          v-for="pin in acPins"
+          :key="'ac-' + pin.id"
+          :x="pin.x"
+          :y="pin.y"
+          :label="pin.label"
+          :active="acDetailVisible && selectedAcDevice?.name === acDeviceData[pin.id]?.name"
+          @select="selectAcPin(pin.id)"
+        />
+        <!-- 其他设备打点 -->
         <component
-          v-for="pin in devicePins"
+          v-for="pin in nonAcPins"
           :key="'device-' + pin.id"
           :is="markerMap[pin.type]"
           :x="pin.x"
           :y="pin.y"
           :label="pin.label"
         />
+
+        <!-- 空调详情弹窗 -->
+        <Transition name="ac-detail-fade">
+          <div v-if="acDetailVisible && selectedAcDevice" class="security-mach__detail-float">
+            <AcDetailPanel :device="selectedAcDevice" @close="closeAcDetail" />
+          </div>
+        </Transition>
       </section>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader           from '@/components/common/AppHeader.vue'
 import MachineryMonitorPanel     from '@/components/panels/MachineryMonitorPanel.vue'
@@ -67,6 +85,7 @@ import AcMapMarker         from '@/components/common/AcMapMarker.vue'
 import FreshAirMapMarker   from '@/components/common/FreshAirMapMarker.vue'
 import UpsMapMarker        from '@/components/common/UpsMapMarker.vue'
 import PowerDistMapMarker  from '@/components/common/PowerDistMapMarker.vue'
+import AcDetailPanel, { type AcDevice } from '@/components/panels/AcDetailPanel.vue'
 
 const router = useRouter()
 function goBack() { router.push({ name: 'security' }) }
@@ -108,6 +127,28 @@ const markerMap = {
   'ups':        UpsMapMarker,
   'power-dist': PowerDistMapMarker,
 } as const
+
+// 空调设备详情数据
+const acDeviceData: Record<number, AcDevice> = {
+  1: { name: '精密空调1', ip: '192.168.1.101', location: '机房A区北侧', status: 'normal', supplyTemp: 25, returnTemp: 25, supplyHumidity: 35, returnHumidity: 35 },
+  2: { name: '精密空调2', ip: '192.168.1.102', location: '机房B区南侧', status: 'normal', supplyTemp: 23, returnTemp: 24, supplyHumidity: 40, returnHumidity: 38 },
+}
+
+const selectedAcDevice = ref<AcDevice | null>(null)
+const acDetailVisible   = ref(false)
+
+function selectAcPin(pinId: number) {
+  selectedAcDevice.value = acDeviceData[pinId] ?? null
+  acDetailVisible.value  = !!selectedAcDevice.value
+}
+
+function closeAcDetail() {
+  acDetailVisible.value  = false
+  selectedAcDevice.value = null
+}
+
+const acPins         = computed(() => devicePins.filter(p => p.type === 'ac'))
+const nonAcPins      = computed(() => devicePins.filter(p => p.type !== 'ac'))
 </script>
 
 <style lang="scss" scoped>
@@ -167,6 +208,14 @@ const markerMap = {
 
   &__center {
     position: relative;
+  }
+
+  &__detail-float {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
   }
 
   &__pin {
@@ -252,5 +301,15 @@ const markerMap = {
 
 @media (prefers-reduced-motion: reduce) {
   .security-mach__back { transition: none; }
+}
+
+.ac-detail-fade-enter-active,
+.ac-detail-fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.ac-detail-fade-enter-from,
+.ac-detail-fade-leave-to {
+  opacity: 0;
+  transform: translate(-50%, calc(-50% + 8px));
 }
 </style>
