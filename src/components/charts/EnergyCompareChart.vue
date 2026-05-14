@@ -21,11 +21,21 @@
           <div class="energy-compare-chart__ratios">
             <span class="energy-compare-chart__ratio">
               同期同比:
-              <em class="energy-compare-chart__ratio-val">{{ waterData.yoy }}%</em>
+              <em class="energy-compare-chart__ratio-val" :class="getTrendClass(waterData.yoy)">
+                <svg class="energy-compare-chart__arrow" viewBox="0 0 12 12" :class="getTrendArrowClass(waterData.yoy)">
+                  <path d="M6 3 L9 7 L3 7 Z" />
+                </svg>
+                {{ Math.abs(waterData.yoy) }}%
+              </em>
             </span>
             <span class="energy-compare-chart__ratio">
               同期环比:
-              <em class="energy-compare-chart__ratio-val">{{ waterData.mom }}%</em>
+              <em class="energy-compare-chart__ratio-val" :class="getTrendClass(waterData.mom)">
+                <svg class="energy-compare-chart__arrow" viewBox="0 0 12 12" :class="getTrendArrowClass(waterData.mom)">
+                  <path d="M6 3 L9 7 L3 7 Z" />
+                </svg>
+                {{ Math.abs(waterData.mom) }}%
+              </em>
             </span>
           </div>
           <div class="energy-compare-chart__bars">
@@ -62,11 +72,21 @@
           <div class="energy-compare-chart__ratios">
             <span class="energy-compare-chart__ratio">
               同期同比:
-              <em class="energy-compare-chart__ratio-val">{{ elecData.yoy }}%</em>
+              <em class="energy-compare-chart__ratio-val" :class="getTrendClass(elecData.yoy)">
+                <svg class="energy-compare-chart__arrow" viewBox="0 0 12 12" :class="getTrendArrowClass(elecData.yoy)">
+                  <path d="M6 3 L9 7 L3 7 Z" />
+                </svg>
+                {{ Math.abs(elecData.yoy) }}%
+              </em>
             </span>
             <span class="energy-compare-chart__ratio">
               同期环比:
-              <em class="energy-compare-chart__ratio-val">{{ elecData.mom }}%</em>
+              <em class="energy-compare-chart__ratio-val" :class="getTrendClass(elecData.mom)">
+                <svg class="energy-compare-chart__arrow" viewBox="0 0 12 12" :class="getTrendArrowClass(elecData.mom)">
+                  <path d="M6 3 L9 7 L3 7 Z" />
+                </svg>
+                {{ Math.abs(elecData.mom) }}%
+              </em>
             </span>
           </div>
           <div class="energy-compare-chart__bars">
@@ -135,12 +155,12 @@ interface CompareData {
 
 const dataMap: Record<RangeKey, { water: CompareData; elec: CompareData }> = {
   month: {
-    water: { yoy: 11.9, mom: 11, prev: 2189.98, curr: 15690.98 },
-    elec:  { yoy: 11.9, mom: 11, prev: 2189.98, curr: 15690.98 },
+    water: { yoy: 11.9, mom: -8.5, prev: 2189.98, curr: 15690.98 },
+    elec:  { yoy: -5.2, mom: 11, prev: 2189.98, curr: 15690.98 },
   },
   year: {
     water: { yoy: 8.5, mom: 6.2, prev: 26800.5, curr: 29120.3 },
-    elec:  { yoy: 12.3, mom: 9.1, prev: 185600, curr: 208400 },
+    elec:  { yoy: 12.3, mom: -3.8, prev: 185600, curr: 208400 },
   },
 }
 
@@ -163,6 +183,18 @@ const elecCurrPercent = computed(() => {
   const max = Math.max(elecData.value.prev, elecData.value.curr)
   return max > 0 ? (elecData.value.curr / max) * 100 : 0
 })
+
+function getTrendClass(value: number) {
+  if (value > 0) return 'energy-compare-chart__ratio-val--up'
+  if (value < 0) return 'energy-compare-chart__ratio-val--down'
+  return ''
+}
+
+function getTrendArrowClass(value: number) {
+  if (value > 0) return 'energy-compare-chart__arrow--up'
+  if (value < 0) return 'energy-compare-chart__arrow--down'
+  return ''
+}
 </script>
 
 <style lang="scss" scoped>
@@ -234,6 +266,31 @@ const elecCurrPercent = computed(() => {
     font-weight: 600;
     color: $color-text-1;
     font-family: $font-number;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    &--up {
+      color: #ff4d4f;
+    }
+
+    &--down {
+      color: #52c41a;
+    }
+  }
+
+  &__arrow {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+
+    &--up {
+      transform: rotate(0deg);
+    }
+
+    &--down {
+      transform: rotate(180deg);
+    }
   }
 
   &__bars {
