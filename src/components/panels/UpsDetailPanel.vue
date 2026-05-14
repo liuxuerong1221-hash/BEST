@@ -249,10 +249,8 @@ const voltageOption = computed(() => ({
     font-size: $font-size-sm;
     color: $color-text-2;
     line-height: 1.6;
-    em {
-      font-style: normal;
-      color: $color-text-1;
-    }
+    em { font-style: normal; }
+    em:not([class]) { color: $color-text-1; }
   }
 
   &__status--normal,
