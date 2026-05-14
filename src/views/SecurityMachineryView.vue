@@ -212,9 +212,8 @@ const nonAcPins      = computed(() => devicePins.filter(p => p.type !== 'ac'))
 
   &__detail-float {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 24px;
+    right: 24px;
     z-index: 20;
   }
 
@@ -310,6 +309,6 @@ const nonAcPins      = computed(() => devicePins.filter(p => p.type !== 'ac'))
 .ac-detail-fade-enter-from,
 .ac-detail-fade-leave-to {
   opacity: 0;
-  transform: translate(-50%, calc(-50% + 8px));
+  transform: translateY(-8px);
 }
 </style>
