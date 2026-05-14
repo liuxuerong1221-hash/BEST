@@ -31,8 +31,18 @@
         <span class="security-mach__back-text">返回</span>
       </button>
 
-      <!-- 中间背景区 -->
-      <section class="security-mach__center" />
+      <!-- 中间：机柜打点 -->
+      <section class="security-mach__center">
+        <div
+          v-for="pin in mapPins"
+          :key="pin.id"
+          class="security-mach__pin"
+          :style="{ left: pin.x + 'px', top: pin.y + 'px' }"
+        >
+          <img class="security-mach__pin-icon" src="@/assets/images/机房打点.svg" alt="" />
+          <span class="security-mach__pin-label">{{ pin.name }}</span>
+        </div>
+      </section>
     </main>
   </div>
 </template>
@@ -46,6 +56,21 @@ import MachineryAlertRecordPanel from '@/components/panels/MachineryAlertRecordP
 
 const router = useRouter()
 function goBack() { router.push({ name: 'security' }) }
+
+const mapPins = [
+  { id: 1,  name: '机柜A', x: 150,  y: 130 },
+  { id: 2,  name: '机柜B', x: 340,  y: 200 },
+  { id: 3,  name: '机柜C', x: 500,  y: 110 },
+  { id: 4,  name: '机柜D', x: 680,  y: 260 },
+  { id: 5,  name: '机柜E', x: 860,  y: 100 },
+  { id: 6,  name: '机柜F', x: 1050, y: 200 },
+  { id: 7,  name: '机柜G', x: 1220, y: 130 },
+  { id: 8,  name: '机柜H', x: 240,  y: 370 },
+  { id: 9,  name: '机柜I', x: 480,  y: 430 },
+  { id: 10, name: '机柜J', x: 760,  y: 360 },
+  { id: 11, name: '机柜K', x: 980,  y: 440 },
+  { id: 12, name: '机柜L', x: 1180, y: 360 },
+]
 </script>
 
 <style lang="scss" scoped>
@@ -105,6 +130,43 @@ function goBack() { router.push({ name: 'security' }) }
 
   &__center {
     position: relative;
+  }
+
+  &__pin {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translate(-50%, -100%);
+    cursor: pointer;
+    z-index: 5;
+
+    &:hover &__pin-label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &__pin-icon {
+    width: 40px;
+    height: 52.5px;
+    display: block;
+    filter: drop-shadow(0 0 8px rgba(0, 174, 255, 0.5));
+  }
+
+  &__pin-label {
+    margin-top: 4px;
+    padding: 3px 10px;
+    background: rgba(2, 37, 79, 0.85);
+    border: 1px solid rgba(0, 174, 255, 0.6);
+    border-radius: 4px;
+    font-size: $font-size-xxs;
+    color: $color-primary-bright;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
   }
 
   &__back {
