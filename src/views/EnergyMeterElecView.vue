@@ -232,6 +232,7 @@ function goBack() {
   &__right {
     position: relative;
     z-index: 20;
+    align-self: start;
   }
 
   &__center {

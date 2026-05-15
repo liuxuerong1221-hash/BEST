@@ -55,7 +55,7 @@
     <path transform="translate(33.73 0.93)" fill="rgba(255,255,255,0.4)"
       d="M0.47 16.80 L0.77 16.80 L0.77 0 L0.17 0 L0.17 16.80 L0.47 16.80 Z"/>
 
-    <!-- 信息发布屏图标（离线）：显示器 + 支架 + 离线斜线 -->
+    <!-- 信息发布屏图标（离线）：显示器 + 支架 -->
     <g transform="translate(25 3.5)">
       <rect x="0" y="0" width="18" height="12" rx="1.2" fill="url(#dscreen-offline-grad)"/>
       <rect x="1.5" y="1.5" width="15" height="9" rx="0.6" fill="#7F5300"/>
@@ -64,8 +64,6 @@
       <rect x="3" y="7.5" width="7" height="1" fill="#CF8905" opacity="0.3"/>
       <rect x="7.5" y="12" width="3" height="2.5" fill="url(#dscreen-offline-grad)"/>
       <rect x="5" y="14.5" width="8" height="1.5" rx="0.5" fill="url(#dscreen-offline-grad)"/>
-      <!-- 离线斜线 -->
-      <rect x="-1" y="7" width="20" height="1.7" rx="0.85" transform="rotate(-32 -1 7)" fill="url(#dscreen-offline-grad)"/>
     </g>
 
     <g transform="translate(13.7 9.33)" opacity="0.6">

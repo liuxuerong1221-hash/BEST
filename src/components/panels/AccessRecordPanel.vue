@@ -88,7 +88,6 @@
         <!-- 右：光效层（绝对定位，59x127） -->
         <div class="access-record__glow" aria-hidden="true">
           <div class="access-record__glow-fill" />
-          <div class="access-record__glow-bar" />
           <div class="access-record__glow-stripe" />
         </div>
 
@@ -591,25 +590,6 @@ $exit-glow:  linear-gradient(90deg, rgba(255, 72, 72, 0) 15%, rgba(255, 72, 72, 
 
   &__item--out &__glow-fill {
     background: $exit-glow;
-  }
-
-  // 右侧 2px 竖条（跟随卡片高度，上下留 1px）
-  &__glow-bar {
-    position: absolute;
-    left: 56px;
-    top: 1px;
-    bottom: 1px;
-    width: 2px;
-    background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.65) 50%, transparent 100%);
-    opacity: 0.65;
-  }
-
-  &__item--in &__glow-bar {
-    background: linear-gradient(180deg, transparent 0%, #35FF50 50%, transparent 100%);
-  }
-
-  &__item--out &__glow-bar {
-    background: linear-gradient(180deg, transparent 0%, #FF4848 50%, transparent 100%);
   }
 
   // 装饰性高光（跟随卡片高度，仅上下各留 3px）

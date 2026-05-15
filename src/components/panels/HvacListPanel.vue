@@ -9,7 +9,7 @@
         </svg>
       </label>
 
-      <div ref="typeFilterRef" class="filter-select" @click="toggleTypeFilter">
+      <div ref="typeFilterRef" class="filter-select" @click.stop="toggleTypeFilter">
         <span class="filter-select__text">{{ typeFilterLabel }}</span>
         <svg class="filter-select__caret" :class="{ 'filter-select__caret--open': typeFilterOpen }"
              viewBox="0 0 12 12" fill="none">
@@ -18,7 +18,7 @@
         </svg>
       </div>
 
-      <div ref="statusFilterRef" class="filter-select" @click="toggleStatusFilter">
+      <div ref="statusFilterRef" class="filter-select" @click.stop="toggleStatusFilter">
         <span class="filter-select__text">{{ statusFilterLabel }}</span>
         <svg class="filter-select__caret" :class="{ 'filter-select__caret--open': statusFilterOpen }"
              viewBox="0 0 12 12" fill="none">
@@ -35,7 +35,7 @@
         <li v-for="opt in typeFilterOptions" :key="opt.value"
             class="filter-menu-float__option"
             :class="{ 'filter-menu-float__option--active': typeFilter === opt.value }"
-            @click="selectTypeFilter(opt.value)">
+            @click.stop="selectTypeFilter(opt.value)">
           {{ opt.label }}
         </li>
       </ul>
@@ -44,7 +44,7 @@
         <li v-for="opt in statusFilterOptions" :key="opt.value"
             class="filter-menu-float__option"
             :class="{ 'filter-menu-float__option--active': statusFilter === opt.value }"
-            @click="selectStatusFilter(opt.value)">
+            @click.stop="selectStatusFilter(opt.value)">
           {{ opt.label }}
         </li>
       </ul>

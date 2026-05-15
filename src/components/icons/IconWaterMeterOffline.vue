@@ -65,7 +65,6 @@
       <rect x="11.5" y="3.1" width="1.2" height="1.4" fill="#7F5300"/>
       <path fill="#7F5300"
         d="M8 7.2 C 6.4 9.4 5.6 10.7 5.6 11.5 C 5.6 12.66 6.67 13.6 8 13.6 C 9.33 13.6 10.4 12.66 10.4 11.5 C 10.4 10.7 9.6 9.4 8 7.2 Z"/>
-      <rect x="-1.5" y="7.4" width="20" height="1.7" rx="0.85" transform="rotate(-32 -1.5 7.4)" fill="url(#water-offline-grad)"/>
     </g>
 
     <g transform="translate(13.7 9.33)" opacity="0.6">

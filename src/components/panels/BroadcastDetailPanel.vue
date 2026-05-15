@@ -116,8 +116,7 @@ function adjustVolume(delta: number) {
 <style lang="scss" scoped>
 .broadcast-detail {
   width: 100%;
-  height: 100%;
-  min-height: 0;
+  height: auto;
   background: rgba(5, 25, 49, 0.64);
   border: 1px solid #0B2C52;
   border-radius: 4px;
@@ -349,7 +348,6 @@ function adjustVolume(delta: number) {
   }
 
   &__footer {
-    margin-top: auto;
     display: flex;
     justify-content: center;
     padding-top: 10px;

@@ -71,8 +71,7 @@ const statusLabel = computed(() => (props.device.status === 'online' ? '正常' 
 <style lang="scss" scoped>
 .meter-detail {
   width: 100%;
-  height: 100%;
-  min-height: 0;
+  height: auto;
   background: rgba(5, 25, 49, 0.64);
   border: 1px solid #0B2C52;
   border-radius: 4px;
@@ -179,7 +178,6 @@ const statusLabel = computed(() => (props.device.status === 'online' ? '正常' 
   }
 
   &__footer {
-    margin-top: auto;
     display: flex;
     justify-content: center;
     padding-top: 10px;

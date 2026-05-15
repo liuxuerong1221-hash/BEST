@@ -64,7 +64,7 @@
     <path transform="translate(33.73 0.93)" fill="rgba(255,255,255,0.4)"
       d="M0.47 16.80 L0.77 16.80 L0.77 0 L0.17 0 L0.17 16.80 L0.47 16.80 Z"/>
 
-    <!-- 摄像头镜头图标（离线·黄色 + 斜线） -->
+    <!-- 摄像头镜头图标（离线·黄色） -->
     <g transform="translate(26 5)">
       <!-- 外圈 -->
       <circle cx="8" cy="8" r="7" stroke="url(#cam-offline-grad)" stroke-width="1" fill="none"/>
@@ -77,9 +77,6 @@
       <circle cx="8" cy="8" r="4.5" stroke="url(#cam-offline-grad)" stroke-width="0.8" fill="rgba(249,185,51,0.12)"/>
       <!-- 瞳孔 -->
       <circle cx="8" cy="8" r="2.4" fill="url(#cam-offline-grad)"/>
-      <!-- 斜线（表示离线） -->
-      <rect x="1.2" y="7.15" width="13.6" height="1.7" rx="0.85"
-        transform="rotate(45 8 8)" fill="url(#cam-offline-grad)"/>
     </g>
 
     <!-- 侧面投影 -->

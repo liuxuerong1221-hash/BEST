@@ -55,7 +55,7 @@
     <path transform="translate(33.73 0.93)" fill="rgba(255,255,255,0.4)"
       d="M0.47 16.80 L0.77 16.80 L0.77 0 L0.17 0 L0.17 16.80 L0.47 16.80 Z"/>
 
-    <!-- 电表图标（离线，黄色）：表体 + 闪电 + 表盘刻度 + 离线斜线 -->
+    <!-- 电表图标（离线，黄色）：表体 + 闪电 + 表盘刻度 -->
     <g transform="translate(26 4.5)">
       <path fill="url(#meter-offline-grad)"
         d="M1.2 0 L14.8 0 Q16 0 16 1.2 L16 14.8 Q16 16 14.8 16 L1.2 16 Q0 16 0 14.8 L0 1.2 Q0 0 1.2 0 Z M14 2 L2 2 L2 5.6 L14 5.6 L14 2 Z"/>
@@ -65,7 +65,6 @@
       <rect x="11.5" y="3.1" width="1.2" height="1.4" fill="#7F5300"/>
       <path fill="#7F5300"
         d="M6.2 7.3 L4.4 10.3 L6.8 10.95 L5.6 13.7 L9.2 10.1 L6.8 9.72 L8.1 7.3 L6.2 7.3 Z"/>
-      <rect x="-1.5" y="7.4" width="20" height="1.7" rx="0.85" transform="rotate(-32 -1.5 7.4)" fill="url(#meter-offline-grad)"/>
     </g>
 
     <g transform="translate(13.7 9.33)" opacity="0.6">
