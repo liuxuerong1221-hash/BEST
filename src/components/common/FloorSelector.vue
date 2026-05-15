@@ -4,7 +4,7 @@
 
       <!-- 标题 -->
       <div class="floor-selector__header" :class="{ 'floor-selector__header--no-border': !expanded }">
-        <span class="floor-selector__title">海南科技馆</span>
+        <span class="floor-selector__title">BEST园区</span>
       </div>
 
       <!-- 时间轴列表 -->
