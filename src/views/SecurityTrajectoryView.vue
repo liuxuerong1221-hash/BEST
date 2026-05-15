@@ -8,7 +8,7 @@
 
     <main class="security-traj__body">
       <aside class="security-traj__left">
-        <TrajectoryQueryPanel />
+        <TrajectoryQueryPanel v-model:selected-id="selectedId" />
       </aside>
 
       <!-- 返回 -->
@@ -34,7 +34,8 @@
           class="security-traj__ctrl-btn"
           :class="{ 'security-traj__ctrl-btn--active': playState === 'playing' }"
           type="button"
-          @click="playState = 'playing'"
+          :disabled="!canPlay"
+          @click="onPlay"
         >
           <span class="security-traj__ctrl-icon">
             <svg viewBox="0 0 40 40" fill="none">
@@ -54,7 +55,8 @@
           class="security-traj__ctrl-btn"
           :class="{ 'security-traj__ctrl-btn--active': playState === 'paused' }"
           type="button"
-          @click="playState = 'paused'"
+          :disabled="!canPlay"
+          @click="onPause"
         >
           <span class="security-traj__ctrl-icon">
             <svg viewBox="0 0 40 40" fill="none">
@@ -75,7 +77,8 @@
           class="security-traj__ctrl-btn"
           :class="{ 'security-traj__ctrl-btn--active': playState === 'idle' }"
           type="button"
-          @click="playState = 'idle'"
+          :disabled="!canPlay"
+          @click="onStop"
         >
           <span class="security-traj__ctrl-icon">
             <svg viewBox="0 0 40 40" fill="none">
@@ -93,7 +96,12 @@
       </div>
 
       <section class="security-traj__center">
-        <div class="security-traj__map" />
+        <TrajectoryMap
+          :waypoints="waypoints"
+          :play-state="playState"
+          class="security-traj__map"
+          @play-end="handlePlayEnd"
+        />
       </section>
     </main>
 
@@ -101,11 +109,15 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/common/AppHeader.vue'
 import TrajectoryQueryPanel from '@/components/panels/TrajectoryQueryPanel.vue'
-
-import { ref } from 'vue'
+import TrajectoryMap, { type Waypoint } from '@/components/panels/TrajectoryMap.vue'
+import {
+  getActivitiesForPerson,
+  LOCATION_COORDS,
+} from '@/data/trajectoryMockData'
 
 const router = useRouter()
 function goBack() {
@@ -114,6 +126,41 @@ function goBack() {
 
 type PlayState = 'idle' | 'playing' | 'paused'
 const playState = ref<PlayState>('idle')
+const selectedId = ref<number>(1)
+
+const activities = computed(() => getActivitiesForPerson(selectedId.value))
+
+const waypoints = computed<Waypoint[]>(() => {
+  const groups = new Map<string, ReturnType<typeof getActivitiesForPerson>>()
+  for (const a of activities.value) {
+    const list = groups.get(a.location) ?? []
+    list.push(a)
+    groups.set(a.location, list)
+  }
+  return [...groups.entries()].map(([location, rows]) => {
+    const coord = LOCATION_COORDS[location] ?? { x: 0.5, y: 0.5 }
+    const seqs = rows.map(r => r.seq)
+    const min = Math.min(...seqs)
+    const max = Math.max(...seqs)
+    return {
+      location,
+      x: coord.x,
+      y: coord.y,
+      seqRange: min === max ? String(min) : `${min}-${max}`,
+      firstTime: rows[0].time.slice(11, 16),
+    }
+  })
+})
+
+const canPlay = computed(() => waypoints.value.length >= 1)
+
+function onPlay()  { if (canPlay.value) playState.value = 'playing' }
+function onPause() { if (playState.value === 'playing') playState.value = 'paused' }
+function onStop()  { playState.value = 'idle' }
+
+function handlePlayEnd() {
+  playState.value = 'idle'
+}
 </script>
 
 <style lang="scss" scoped>
@@ -178,6 +225,17 @@ const playState = ref<PlayState>('idle')
   &__map {
     flex: 1;
     position: relative;
+  }
+
+  &__map-controls {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
   }
 
   &__back {
@@ -256,6 +314,16 @@ const playState = ref<PlayState>('idle')
 
     &:focus-visible {
       box-shadow: 0 0 0 2px rgba(77, 242, 255, 0.45);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &:disabled:hover {
+      transform: none;
+      filter: none;
     }
 
     &--active {
