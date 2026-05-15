@@ -137,6 +137,7 @@ declare module 'vue' {
     SegmentedTabs: typeof import('./../components/common/SegmentedTabs.vue')['default']
     StatsBar: typeof import('./../components/panels/StatsBar.vue')['default']
     TodayEnergyStats: typeof import('./../components/panels/TodayEnergyStats.vue')['default']
+    TrajectoryMap: typeof import('./../components/panels/TrajectoryMap.vue')['default']
     TrajectoryQueryPanel: typeof import('./../components/panels/TrajectoryQueryPanel.vue')['default']
     TurnstileListPanel: typeof import('./../components/panels/TurnstileListPanel.vue')['default']
     TurnstileMapMarker: typeof import('./../components/common/TurnstileMapMarker.vue')['default']
