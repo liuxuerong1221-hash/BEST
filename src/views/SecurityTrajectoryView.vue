@@ -6,6 +6,7 @@
       :waypoints="waypoints"
       :play-state="playState"
       @play-end="handlePlayEnd"
+      @pin-click="handlePinClick"
     />
     <img class="security-traj__frame security-traj__frame--left"  src="@/assets/images/left-左.png" alt="" />
     <img class="security-traj__frame security-traj__frame--right" src="@/assets/images/left-右.png" alt="" />
@@ -111,6 +112,41 @@
           />
         </div>
       </section>
+
+      <!-- 监控视频弹窗：右上角 -->
+      <Transition name="security-traj__monitor-fade">
+        <div v-if="activeWaypoint" class="security-traj__monitor" role="dialog" aria-label="实时监控">
+          <header class="security-traj__monitor-head">
+            <span class="security-traj__monitor-title">实时监控</span>
+            <button class="security-traj__monitor-close" type="button" aria-label="关闭" @click="closeMonitor">
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                <path d="M3 3L13 13M13 3L3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              </svg>
+            </button>
+          </header>
+          <div class="security-traj__monitor-video">
+            <div class="security-traj__monitor-scan" />
+            <span class="security-traj__monitor-rec">
+              <span class="security-traj__monitor-rec-dot" />REC
+            </span>
+            <span class="security-traj__monitor-stamp">{{ activeWaypoint.location }} · {{ activeWaypoint.firstTime }}</span>
+          </div>
+          <div class="security-traj__monitor-meta">
+            <p class="security-traj__monitor-row">
+              <span class="security-traj__monitor-key">位置</span>
+              <span class="security-traj__monitor-val">{{ activeWaypoint.location }}</span>
+            </p>
+            <p class="security-traj__monitor-row">
+              <span class="security-traj__monitor-key">时间</span>
+              <span class="security-traj__monitor-val">{{ activeWaypoint.firstTime }}</span>
+            </p>
+            <p class="security-traj__monitor-row">
+              <span class="security-traj__monitor-key">设备</span>
+              <span class="security-traj__monitor-val">{{ activeWaypoint.device }}</span>
+            </p>
+          </div>
+        </div>
+      </Transition>
     </main>
 
   </div>
@@ -163,6 +199,7 @@ const waypoints = computed<Waypoint[]>(() => {
       y: coord.y,
       seqRange: min === max ? String(min) : `${min}-${max}`,
       firstTime: rows[0].time.slice(11, 16),
+      device: rows[0].device,
     }
   })
 })
@@ -175,6 +212,14 @@ function onStop()  { playState.value = 'idle' }
 
 function handlePlayEnd() {
   playState.value = 'idle'
+}
+
+const activeWaypoint = ref<Waypoint | null>(null)
+function handlePinClick(w: Waypoint) {
+  activeWaypoint.value = w
+}
+function closeMonitor() {
+  activeWaypoint.value = null
 }
 </script>
 
@@ -247,6 +292,141 @@ function handlePlayEnd() {
     :deep(*) {
       pointer-events: auto;
     }
+  }
+
+  &__monitor {
+    position: absolute;
+    top: calc($header-h + 24px);
+    right: 56px;
+    z-index: 18;
+    width: 360px;
+    padding: 12px;
+    border: 1px solid rgba(77, 242, 255, 0.45);
+    border-radius: 10px;
+    background: rgba(5, 18, 36, 0.92);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45), 0 0 18px rgba(0, 174, 255, 0.25);
+    backdrop-filter: blur(4px);
+  }
+
+  &__monitor-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  &__monitor-title {
+    color: $color-text-1;
+    font-size: $font-size-sm;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  &__monitor-close {
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 174, 255, 0.12);
+    border: 1px solid rgba(0, 174, 255, 0.4);
+    border-radius: 4px;
+    color: $color-text-1;
+    cursor: pointer;
+    transition: background 0.18s ease;
+
+    &:hover {
+      background: rgba(0, 174, 255, 0.28);
+    }
+  }
+
+  &__monitor-video {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    border-radius: 6px;
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, rgba(11, 32, 60, 0.4) 0%, rgba(0, 8, 18, 0.9) 100%),
+      radial-gradient(circle at 30% 40%, rgba(0, 174, 255, 0.18), transparent 55%),
+      radial-gradient(circle at 70% 70%, rgba(77, 242, 255, 0.12), transparent 55%),
+      #02060d;
+  }
+
+  &__monitor-scan {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(77, 242, 255, 0.18) 49%,
+      rgba(77, 242, 255, 0.32) 50%,
+      rgba(77, 242, 255, 0.18) 51%,
+      transparent 100%
+    );
+    background-size: 100% 200%;
+    background-repeat: no-repeat;
+    animation: security-traj-scan 4.2s linear infinite;
+    pointer-events: none;
+  }
+
+  &__monitor-rec {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #FF5050;
+    font-size: $font-size-xxs;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  &__monitor-rec-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #FF5050;
+    box-shadow: 0 0 6px #FF5050;
+    animation: security-traj-rec-blink 1.2s ease-in-out infinite;
+  }
+
+  &__monitor-stamp {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: $font-size-xxs;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+  }
+
+  &__monitor-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 10px;
+  }
+
+  &__monitor-row {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: $font-size-xxs;
+  }
+
+  &__monitor-key {
+    color: $color-text-2;
+    width: 36px;
+    flex-shrink: 0;
+  }
+
+  &__monitor-val {
+    color: $color-text-1;
   }
 
   &__map-controls {
@@ -377,5 +557,28 @@ function handlePlayEnd() {
 
 @media (prefers-reduced-motion: reduce) {
   .security-traj__back { transition: none; }
+  .security-traj__monitor-scan,
+  .security-traj__monitor-rec-dot { animation: none; }
+}
+
+.security-traj__monitor-fade-enter-active,
+.security-traj__monitor-fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.security-traj__monitor-fade-enter-from,
+.security-traj__monitor-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+@keyframes security-traj-scan {
+  0%   { background-position: 0 -100%; }
+  100% { background-position: 0 100%; }
+}
+
+@keyframes security-traj-rec-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.25; }
 }
 </style>

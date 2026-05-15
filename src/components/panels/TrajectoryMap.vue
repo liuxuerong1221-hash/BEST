@@ -42,15 +42,54 @@
 
     <!-- 点位层（HTML 绝对定位，复用 MapPinMarker） -->
     <div class="trajectory-map__pins">
-      <MapPinMarker
+      <div
         v-for="(p, idx) in points"
         :key="`pin-${idx}`"
-        :x="p.x * 100"
-        :y="p.y * 100"
-        unit="%"
-        :label="`${p.location} · ${p.seqRange}  ${p.firstTime}`"
-        :active="idx === 0 || idx === points.length - 1"
-      />
+        class="trajectory-map__pin"
+        :style="{ left: `${p.x * 100}%`, top: `${p.y * 100}%` }"
+      >
+        <MapPinMarker
+          :x="0"
+          :y="0"
+          :active="idx === 0 || idx === points.length - 1"
+          @select="emit('pin-click', p)"
+        >
+          <template #icon="{ gradientId }">
+            <defs>
+              <linearGradient :id="gradientId" x1="20" y1="12" x2="20" y2="28" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FFFFFF" />
+                <stop offset="1" stop-color="#0083CC" />
+              </linearGradient>
+            </defs>
+            <!-- 摄像头 -->
+            <g v-if="p.device === '监控'" :fill="`url(#${gradientId})`">
+              <path d="M12 17h11v6H12z" />
+              <path d="M23 18.5l4-2v5l-4-2z" />
+              <circle cx="14" cy="15.5" r="1.2" />
+            </g>
+            <!-- 门禁设备 -->
+            <g v-else-if="p.device === '门禁设备'" :stroke="`url(#${gradientId})`" :fill="`url(#${gradientId})`">
+              <path d="M14 13h12v14H14z" fill="none" stroke-width="1.5" />
+              <circle cx="23" cy="20" r="1.3" stroke="none" />
+              <path d="M22 21h2v3h-2z" stroke="none" />
+            </g>
+            <!-- 摆闸/道闸 -->
+            <g v-else :fill="`url(#${gradientId})`">
+              <rect x="13" y="22" width="14" height="2.4" rx="1" />
+              <rect x="14" y="14" width="2.4" height="9" rx="1" />
+              <rect x="23.6" y="14" width="2.4" height="9" rx="1" />
+              <rect x="13" y="13" width="14" height="2" rx="1" />
+            </g>
+          </template>
+        </MapPinMarker>
+
+        <!-- hover 多行 tooltip -->
+        <div class="trajectory-map__tooltip" role="tooltip">
+          <p class="trajectory-map__tooltip-row trajectory-map__tooltip-row--title">{{ p.location }}</p>
+          <p class="trajectory-map__tooltip-row">时间：{{ p.firstTime }}</p>
+          <p class="trajectory-map__tooltip-row">设备：{{ p.device }}</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -65,6 +104,7 @@ export interface Waypoint {
   y: number
   seqRange: string
   firstTime: string
+  device: string
 }
 
 const props = defineProps<{
@@ -72,7 +112,10 @@ const props = defineProps<{
   playState: 'idle' | 'playing' | 'paused'
 }>()
 
-const emit = defineEmits<{ 'play-end': [] }>()
+const emit = defineEmits<{
+  'play-end': []
+  'pin-click': [waypoint: Waypoint]
+}>()
 
 const VIEWBOX_W = 1200
 const VIEWBOX_H = 720
@@ -206,6 +249,50 @@ onUnmounted(() => cancelRaf())
 
   > * {
     pointer-events: auto;
+  }
+}
+
+.trajectory-map__pin {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.trajectory-map__tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: 78px;
+  transform: translateX(-50%);
+  min-width: 140px;
+  padding: 8px 12px;
+  border: 1px solid rgba(77, 242, 255, 0.55);
+  border-radius: 8px;
+  background: rgba(5, 25, 49, 0.92);
+  box-shadow: 0 0 12px rgba(0, 174, 255, 0.32);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 5;
+}
+
+.trajectory-map__pin:hover .trajectory-map__tooltip,
+.trajectory-map__pin:focus-within .trajectory-map__tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.trajectory-map__tooltip-row {
+  margin: 0;
+  padding: 2px 0;
+  color: $color-text-2;
+  font-size: $font-size-xxs;
+  line-height: 1.4;
+
+  &--title {
+    color: $color-text-1;
+    font-weight: 600;
+    font-size: $font-size-xs;
   }
 }
 
