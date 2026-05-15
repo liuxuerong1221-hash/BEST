@@ -1,6 +1,6 @@
 <template>
   <Transition name="alert-bar">
-    <div v-if="visible" class="intrusion-alert" role="alert">
+    <div v-if="visible" class="intrusion-alert" role="alert" @click="goDetail">
       <!-- 警示图标（同心圆 + 三角） -->
       <div class="intrusion-alert__icon" aria-hidden="true">
 <span class="intrusion-alert__ring intrusion-alert__ring--outer" />
@@ -24,7 +24,7 @@
         class="intrusion-alert__close"
         type="button"
         aria-label="关闭告警"
-        @click="visible = false"
+        @click.stop="visible = false"
       >
         <svg viewBox="0 0 14 14" fill="none">
           <path d="M1 1L13 13M13 1L1 13" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
@@ -36,18 +36,26 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   type?: string
   time?: string
   location?: string
+  alertId?: number
 }>(), {
   type: '非法入侵',
   time: '2023-06-10  12:34:34',
   location: '北二门-1号门禁',
+  alertId: 1,
 })
 
 const visible = ref(true)
+const router = useRouter()
+
+function goDetail() {
+  router.push({ name: 'security-alert', params: { id: props.alertId } })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -60,6 +68,7 @@ const visible = ref(true)
   gap: 12px;
   border-radius: 8px;
   border: 1px solid #A22128;
+  cursor: pointer;
   background: linear-gradient(90deg, rgba(122, 17, 24, 0.92) -1%, rgba(75, 12, 18, 0.88) 44%, rgba(139, 23, 29, 0.94) 101%);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
 
@@ -71,6 +80,7 @@ const visible = ref(true)
     display: flex;
     align-items: center;
     justify-content: center;
+    animation: intrusion-heartbeat 1.4s ease-in-out infinite;
   }
 
   &__ring {
@@ -88,7 +98,6 @@ const visible = ref(true)
       inset: 6px;
       border-color: rgba(255, 119, 119, 0.55);
       background: radial-gradient(circle, rgba(255, 72, 72, 0.3) 0%, rgba(110, 12, 19, 0) 100%);
-      animation: intrusion-pulse 2s ease-in-out infinite;
     }
 
     &--inner {
@@ -163,9 +172,13 @@ const visible = ref(true)
   }
 }
 
-@keyframes intrusion-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.5; transform: scale(1.08); }
+@keyframes intrusion-heartbeat {
+  0%        { transform: scale(1); }
+  14%       { transform: scale(1.22); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.16); }
+  56%       { transform: scale(1); }
+  100%      { transform: scale(1); }
 }
 
 .alert-bar-enter-active,
@@ -180,6 +193,6 @@ const visible = ref(true)
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .intrusion-alert__ring--mid { animation: none; }
+  .intrusion-alert__icon { animation: none; }
 }
 </style>

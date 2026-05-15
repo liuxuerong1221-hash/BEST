@@ -311,7 +311,7 @@ function confirmHandle() {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    margin: 8px 0;
+    margin: 24px 0;
   }
 
   &__center {
@@ -336,7 +336,7 @@ function confirmHandle() {
     display: flex;
     flex-direction: column;
     padding: 0 16px 16px;
-    margin: 8px 0;
+    margin: 24px 0;
   }
 
 }
@@ -543,19 +543,21 @@ function confirmHandle() {
   align-items: center;
   gap: 8px;
 
-  /* 扩散波纹（三圈，错开延迟） */
+  /* 同心圆扩散波纹（三圈从图标大小同起点向外扩散） */
   &__ring {
     position: absolute;
     top: 50%;
     left: 50%;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
-    border: 1.5px solid rgba(255, 72, 72, 0.6);
+    border: 1.5px solid rgba(255, 72, 72, 0.8);
     transform: translate(-50%, -50%) scale(1);
     animation: pin-ring 2.4s ease-out infinite;
 
-    &--1 { width: 80px;  height: 80px;  animation-delay: 0s; }
-    &--2 { width: 80px;  height: 80px;  animation-delay: 0.8s; }
-    &--3 { width: 80px;  height: 80px;  animation-delay: 1.6s; }
+    &--1 { animation-delay: 0s; }
+    &--2 { animation-delay: 0.8s; }
+    &--3 { animation-delay: 1.6s; }
   }
 
   /* 底部红色光晕 */
@@ -802,9 +804,8 @@ function confirmHandle() {
 
 /* ═══ 动画 ═══════════════════════════════════════════ */
 @keyframes pin-ring {
-  0%   { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
-  70%  { opacity: 0; }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(2.8); }
+  0%   { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0;   transform: translate(-50%, -50%) scale(4); }
 }
 
 @keyframes cam-scan {

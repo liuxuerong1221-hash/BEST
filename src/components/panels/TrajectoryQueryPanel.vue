@@ -178,11 +178,11 @@ const activities = computed<MockActivity[]>(() =>
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   background: $color-bg-panel;
   border: 1px solid $color-border;
   border-radius: $radius-md;
-  padding: 16px 14px;
+  padding: 16px 14px 24px;
   overflow: hidden;
 
   // ── 标题 ──────────────────────────────────────────

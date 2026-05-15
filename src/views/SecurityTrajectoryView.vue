@@ -276,7 +276,7 @@ function closeMonitor() {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding: 24px 0 8px;
+    padding: 24px 0 16px;
   }
 
   &__center {
