@@ -119,40 +119,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import DatePicker from '@/components/common/DatePicker.vue'
+import {
+  mockPersons,
+  getActivitiesForPerson,
+  type MockPerson,
+  type MockActivity,
+} from '@/data/trajectoryMockData'
 
-interface Person {
-  id: number
-  name: string
-  gender: string
-  workId: string
-  role: 'employee' | 'visitor'
-  roleLabel: string
-}
-
-interface ActivityRow {
-  seq: number
-  time: string
-  location: string
-  device: string
-}
+const selectedId = defineModel<number>('selectedId', { default: 1 })
 
 const date = ref('2025-03-19')
 const keyword = ref('')
-const selectedId = ref(3)
 const currentPage = ref(1)
 const pageSize = 8
 const jumpPage = ref<number | null>(null)
 
-const persons: Person[] = Array.from({ length: 40 }, (_, i) => ({
-  id: i + 1,
-  name: ['前红军', '李明华', '王芳', '张伟', '刘强'][i % 5],
-  gender: i % 3 === 2 ? '女' : '男',
-  workId: String(2782782 + i * 3),
-  role: i % 7 === 3 ? 'visitor' : 'employee',
-  roleLabel: i % 7 === 3 ? '访客' : '员工',
-}))
+const persons: MockPerson[] = mockPersons
 
 const filteredPersons = computed(() => {
   const k = keyword.value.trim()
@@ -183,18 +167,9 @@ function doJump() {
   jumpPage.value = null
 }
 
-const activities: ActivityRow[] = [
-  { seq: 1,  time: '2022-01-01 12:21:21', location: '1号楼', device: '门禁设备' },
-  { seq: 2,  time: '2022-01-01 12:22:21', location: '1号楼', device: '摆闸' },
-  { seq: 3,  time: '2022-01-01 12:23:21', location: '1号楼', device: '监控' },
-  { seq: 4,  time: '2022-01-01 12:24:21', location: '1号楼', device: '监控' },
-  { seq: 5,  time: '2022-01-01 12:25:21', location: '1号楼', device: '门禁设备' },
-  { seq: 6,  time: '2022-01-01 12:26:21', location: '2号楼', device: '门禁设备' },
-  { seq: 7,  time: '2022-01-01 12:27:21', location: '2号楼', device: '门禁设备' },
-  { seq: 8,  time: '2022-01-01 12:28:21', location: '2号楼', device: '门禁设备' },
-  { seq: 9,  time: '2022-01-01 13:29:21', location: '2号楼', device: '门禁设备' },
-  { seq: 10, time: '2022-01-01 14:30:21', location: '2号楼', device: '门禁设备' },
-]
+const activities = computed<MockActivity[]>(() =>
+  getActivitiesForPerson(selectedId.value)
+)
 </script>
 
 <style lang="scss" scoped>
