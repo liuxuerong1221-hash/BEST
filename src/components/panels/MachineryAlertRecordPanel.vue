@@ -4,8 +4,8 @@
     <div class="mach-record__toolbar">
       <label class="mach-record__search">
         <svg class="mach-record__search-icon" viewBox="0 0 16 16" fill="none">
-          <circle cx="6.5" cy="6.5" r="5" stroke="#4DF2FF" stroke-width="1.2"/>
-          <path d="M10.5 10.5L14 14" stroke="#4DF2FF" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="6.5" cy="6.5" r="5" stroke="#00AEFF" stroke-width="1.2"/>
+          <path d="M10.5 10.5L14 14" stroke="#00AEFF" stroke-width="1.2" stroke-linecap="round"/>
         </svg>
         <input
           v-model="keyword"
@@ -18,7 +18,7 @@
       <div class="mach-record__select" @click="toggleLevelMenu">
         <span class="mach-record__select-text">{{ levelLabel }}</span>
         <svg class="mach-record__select-arrow" viewBox="0 0 10 6" fill="none">
-          <path d="M1 1L5 5L9 1" stroke="#4DF2FF" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M1 1L5 5L9 1" stroke="#00AEFF" stroke-width="1.2" stroke-linecap="round"/>
         </svg>
       </div>
 
@@ -233,9 +233,8 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
 
 <style lang="scss" scoped>
 .mach-record {
-  flex: 1;
-  min-height: 0;
   gap: 10px;
+  padding-bottom: 16px;
 
   &__toolbar {
     display: flex;
@@ -251,10 +250,13 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
     align-items: center;
     gap: 8px;
     padding: 0 10px;
-    background: rgba(0,174,255,0.06);
-    border: 1px solid $color-border;
+    background: rgba(8,39,76,0.6);
+    border: 1px solid rgba(0,174,255,0.4);
     border-radius: 4px;
     cursor: text;
+    transition: background 0.2s ease;
+
+    &:hover { background: rgba(8,39,76,0.8); }
   }
 
   &__search-icon { width: 14px; height: 14px; flex-shrink: 0; }
@@ -268,7 +270,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
     color: $color-text-1;
     font-family: $font-body;
 
-    &::placeholder { color: $color-text-3; }
+    &::placeholder { color: $color-text-1; }
   }
 
   &__select {
@@ -283,6 +285,9 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
     border-radius: 4px;
     cursor: pointer;
     flex-shrink: 0;
+    transition: background 0.2s ease;
+
+    &:hover { background: rgba(8,39,76,0.8); }
   }
 
   &__select-text { font-size: $font-size-xs; color: $color-text-1; }
@@ -290,19 +295,18 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
 
   // 表格
   &__table {
-    flex: 1;
-    min-height: 0;
     overflow: hidden;
   }
 
   &__scroll {
     width: 100%;
-    height: 100%;
+    height: 200px; // 表头 40px + 4行 × 40px
     overflow: auto;
 
     &::-webkit-scrollbar { width: 4px; height: 4px; }
-    &::-webkit-scrollbar-thumb { background: rgba(0,174,255,0.4); border-radius: 2px; }
+    &::-webkit-scrollbar-thumb { background: transparent; border-radius: 2px; transition: background 0.2s; }
     &::-webkit-scrollbar-corner { background: transparent; }
+    &:hover::-webkit-scrollbar-thumb { background: rgba(0,174,255,0.4); }
   }
 
   &__thead {
@@ -425,7 +429,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
 
   &__page-info {
     font-size: $font-size-xxs;
-    color: $color-text-3;
+    color: $color-primary;
     margin-left: 8px;
   }
 }
