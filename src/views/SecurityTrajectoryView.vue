@@ -273,6 +273,8 @@ function closeMonitor() {
   }
 
   &__left {
+    position: relative;
+    z-index: 20;
     display: flex;
     flex-direction: column;
     overflow: hidden;
