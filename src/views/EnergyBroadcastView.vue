@@ -62,6 +62,7 @@
               :selected-floor="selectedFloor"
               @floor-change="onFloorChange"
             />
+            <FirstPersonRoamButton />
           </div>
         </div>
       </section>
@@ -84,6 +85,7 @@ import AppHeader from '@/components/common/AppHeader.vue'
 import BottomNav from '@/components/common/BottomNav.vue'
 import Compass from '@/components/common/Compass.vue'
 import FloorSelector from '@/components/common/FloorSelector.vue'
+import FirstPersonRoamButton from '@/components/common/FirstPersonRoamButton.vue'
 import BroadcastStatsPanel from '@/components/panels/BroadcastStatsPanel.vue'
 import BroadcastListPanel from '@/components/panels/BroadcastListPanel.vue'
 import BroadcastDetailPanel from '@/components/panels/BroadcastDetailPanel.vue'

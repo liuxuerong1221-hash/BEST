@@ -52,6 +52,16 @@
             :active="selectedBarrierId === marker.id"
             @select="selectBarrier(marker.id)"
           />
+
+          <!-- 楼栋聚合点位：复用指南针 + 楼层选择器 -->
+          <div class="access-barrier__map-controls">
+            <Compass />
+            <FloorSelector
+              :selected-floor="selectedFloor"
+              @floor-change="onFloorChange"
+            />
+            <FirstPersonRoamButton />
+          </div>
         </div>
       </section>
 
@@ -71,6 +81,9 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/common/AppHeader.vue'
 import BottomNav from '@/components/common/BottomNav.vue'
+import Compass from '@/components/common/Compass.vue'
+import FloorSelector from '@/components/common/FloorSelector.vue'
+import FirstPersonRoamButton from '@/components/common/FirstPersonRoamButton.vue'
 import BarrierMapMarker from '@/components/common/BarrierMapMarker.vue'
 import VehicleDetailPanel from '@/components/panels/VehicleDetailPanel.vue'
 import BarrierStatsPanel from '@/components/panels/BarrierStatsPanel.vue'
@@ -103,6 +116,11 @@ const barrierDevices: Barrier[] = Array.from({ length: 30 }, (_, i) => ({
 const selectedBarrierId = ref<number | null>(null)
 const detailVisible = ref(false)
 const visibleBarrierIds = ref<number[]>(barrierDevices.slice(0, 10).map(item => item.id))
+const selectedFloor = ref('1F')
+
+function onFloorChange(floor: string) {
+  selectedFloor.value = floor
+}
 
 const selectedBarrier = computed(() => {
   if (!selectedBarrierId.value) return undefined
@@ -245,6 +263,17 @@ function goBack() {
   &__map {
     flex: 1;
     position: relative;
+  }
+
+  &__map-controls {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
   }
 
   &__bottom {

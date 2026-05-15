@@ -51,6 +51,16 @@
             :active="selectedCameraId === marker.id"
             @select="selectCamera(marker.id)"
           />
+
+          <!-- 楼栋聚合点位：复用指南针 + 楼层选择器 -->
+          <div class="security-camera__map-controls">
+            <Compass />
+            <FloorSelector
+              :selected-floor="selectedFloor"
+              @floor-change="onFloorChange"
+            />
+            <FirstPersonRoamButton />
+          </div>
         </div>
       </section>
 
@@ -70,6 +80,9 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/common/AppHeader.vue'
 import BottomNav from '@/components/common/BottomNav.vue'
+import Compass from '@/components/common/Compass.vue'
+import FloorSelector from '@/components/common/FloorSelector.vue'
+import FirstPersonRoamButton from '@/components/common/FirstPersonRoamButton.vue'
 import CameraMapMarker from '@/components/common/CameraMapMarker.vue'
 import CameraListPanel from '@/components/panels/CameraListPanel.vue'
 import CameraDetailPanel from '@/components/panels/CameraDetailPanel.vue'
@@ -107,6 +120,11 @@ const cameras: Camera[] = Array.from({ length: 150 }, (_, i) => {
 const selectedCameraId = ref<number | null>(null)
 const detailVisible = ref(false)
 const visibleIds = ref<number[]>(cameras.slice(0, 10).map(c => c.id))
+const selectedFloor = ref('1F')
+
+function onFloorChange(floor: string) {
+  selectedFloor.value = floor
+}
 
 const selectedCamera = computed(() => {
   if (!selectedCameraId.value) return undefined
@@ -249,6 +267,17 @@ function goBack() {
   &__map {
     flex: 1;
     position: relative;
+  }
+
+  &__map-controls {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
   }
 
   &__bottom {

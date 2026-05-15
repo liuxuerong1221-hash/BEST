@@ -32,6 +32,7 @@
           <div class="dashboard__map-controls">
             <Compass />
             <FloorSelector />
+            <FirstPersonRoamButton />
           </div>
         </div>
       </section>
@@ -55,6 +56,7 @@ import AppHeader        from '@/components/common/AppHeader.vue'
 import BottomNav        from '@/components/common/BottomNav.vue'
 import Compass          from '@/components/common/Compass.vue'
 import FloorSelector    from '@/components/common/FloorSelector.vue'
+import FirstPersonRoamButton from '@/components/common/FirstPersonRoamButton.vue'
 import FloatingEntry    from '@/components/common/FloatingEntry.vue'
 import EnergyStatsPanel from '@/components/panels/EnergyStatsPanel.vue'
 import DeviceStatusPanel from '@/components/panels/DeviceStatusPanel.vue'

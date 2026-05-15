@@ -113,6 +113,16 @@
           <div class="alert-pin__label">{{ alert.type }}</div>
         </div>
 
+        <!-- 楼栋聚合点位：复用指南针 + 楼层选择器 -->
+        <div class="alert-detail__map-controls">
+          <Compass />
+          <FloorSelector
+            :selected-floor="selectedFloor"
+            @floor-change="onFloorChange"
+          />
+          <FirstPersonRoamButton />
+        </div>
+
       </section>
 
       <!-- 右侧：实时监控 / 录像回放 / 抓拍图片 -->
@@ -193,6 +203,9 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '@/components/common/AppHeader.vue'
+import Compass from '@/components/common/Compass.vue'
+import FloorSelector from '@/components/common/FloorSelector.vue'
+import FirstPersonRoamButton from '@/components/common/FirstPersonRoamButton.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -224,6 +237,11 @@ const alert = computed<AlertDetail>(() =>
 )
 
 const showConfirm = ref(false)
+
+const selectedFloor = ref('1F')
+function onFloorChange(floor: string) {
+  selectedFloor.value = floor
+}
 
 function goBack() {
   router.push({ name: 'security' })
@@ -298,6 +316,17 @@ function confirmHandle() {
 
   &__center {
     position: relative;
+  }
+
+  &__map-controls {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
   }
 
   &__right {

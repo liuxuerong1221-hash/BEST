@@ -32,6 +32,7 @@
               :selected-floor="selectedFloor"
               @floor-change="selectedFloor = $event"
             />
+            <FirstPersonRoamButton />
           </div>
         </div>
       </section>
@@ -55,6 +56,7 @@ import AppHeader            from '@/components/common/AppHeader.vue'
 import BottomNav            from '@/components/common/BottomNav.vue'
 import Compass              from '@/components/common/Compass.vue'
 import FloorSelector        from '@/components/common/FloorSelector.vue'
+import FirstPersonRoamButton from '@/components/common/FirstPersonRoamButton.vue'
 import AccessFloatingEntries from '@/components/common/AccessFloatingEntries.vue'
 import VehicleMonitorPanel  from '@/components/panels/VehicleMonitorPanel.vue'
 import AccessTrendPanel     from '@/components/panels/AccessTrendPanel.vue'

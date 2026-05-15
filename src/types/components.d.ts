@@ -53,6 +53,7 @@ declare module 'vue' {
     EnergyStatsPanel: typeof import('./../components/panels/EnergyStatsPanel.vue')['default']
     EnergyTrendChart: typeof import('./../components/charts/EnergyTrendChart.vue')['default']
     EnvLineChart: typeof import('./../components/charts/EnvLineChart.vue')['default']
+    FirstPersonRoamButton: typeof import('./../components/common/FirstPersonRoamButton.vue')['default']
     FloatingEntry: typeof import('./../components/common/FloatingEntry.vue')['default']
     FloorSelector: typeof import('./../components/common/FloorSelector.vue')['default']
     FreshAirDetailPanel: typeof import('./../components/panels/FreshAirDetailPanel.vue')['default']
