@@ -1,16 +1,6 @@
 <template>
-  <div class="trajectory-map" :class="{ 'trajectory-map--empty': !waypoints.length }">
-    <!-- 背景网格 -->
-    <svg class="trajectory-map__grid" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs>
-        <pattern id="traj-grid" width="60" height="60" patternUnits="userSpaceOnUse">
-          <path d="M60 0H0V60" fill="none" stroke="rgba(0,174,255,0.08)" stroke-width="0.5" />
-        </pattern>
-      </defs>
-      <rect width="1200" height="720" fill="url(#traj-grid)" />
-    </svg>
-
-    <!-- 轨迹层（折线 + 端点圆） -->
+  <div class="trajectory-map">
+    <!-- 轨迹层（折线 + 端点圆 + 光点） -->
     <svg
       v-if="points.length"
       class="trajectory-map__lines"
@@ -62,11 +52,6 @@
         :active="idx === 0 || idx === points.length - 1"
       />
     </div>
-
-    <!-- 空态文案 -->
-    <div v-if="!waypoints.length" class="trajectory-map__empty-text">
-      请从左侧选择人员查看轨迹
-    </div>
   </div>
 </template>
 
@@ -104,7 +89,6 @@ const polylinePoints = computed(() =>
   points.value.map(p => `${p.px},${p.py}`).join(' ')
 )
 
-// ── 段长度与累积长度 ──
 const segLengths = computed(() => {
   const arr: number[] = []
   for (let i = 1; i < points.value.length; i++) {
@@ -119,7 +103,6 @@ const totalLength = computed(() =>
   segLengths.value.reduce((s, v) => s + v, 0)
 )
 
-// ── 动画状态 ──
 const DURATION_MS = 7000
 const progress = ref(0)
 let rafId = 0
@@ -182,7 +165,7 @@ watch(() => props.playState, (s, prev) => {
     rafId = requestAnimationFrame(step)
   } else if (s === 'paused') {
     cancelRaf()
-  } else { // idle
+  } else {
     cancelRaf()
     progress.value = 0
   }
@@ -203,30 +186,6 @@ onUnmounted(() => cancelRaf())
   position: relative;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 50% 50%, rgba(10, 40, 80, 0.9), rgba(2, 15, 30, 1));
-  border: 1px solid $color-border;
-  border-radius: $radius-md;
-  overflow: hidden;
-}
-
-.trajectory-map__grid {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-.trajectory-map__empty-text {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: $color-text-2;
-  font-size: $font-size-sm;
-  letter-spacing: 1px;
-  pointer-events: none;
 }
 
 .trajectory-map__lines {

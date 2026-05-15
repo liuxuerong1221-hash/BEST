@@ -1,6 +1,12 @@
 <template>
   <div class="security-traj">
     <div class="security-traj__bg" />
+    <TrajectoryMap
+      class="security-traj__map-overlay"
+      :waypoints="waypoints"
+      :play-state="playState"
+      @play-end="handlePlayEnd"
+    />
     <img class="security-traj__frame security-traj__frame--left"  src="@/assets/images/left-左.png" alt="" />
     <img class="security-traj__frame security-traj__frame--right" src="@/assets/images/left-右.png" alt="" />
 
@@ -96,12 +102,14 @@
       </div>
 
       <section class="security-traj__center">
-        <TrajectoryMap
-          :waypoints="waypoints"
-          :play-state="playState"
-          class="security-traj__map"
-          @play-end="handlePlayEnd"
-        />
+        <!-- 楼栋聚合点位：复用指南针 + 楼层选择器 -->
+        <div class="security-traj__map-controls">
+          <Compass />
+          <FloorSelector
+            :selected-floor="selectedFloor"
+            @floor-change="onFloorChange"
+          />
+        </div>
       </section>
     </main>
 
@@ -112,6 +120,8 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/common/AppHeader.vue'
+import Compass from '@/components/common/Compass.vue'
+import FloorSelector from '@/components/common/FloorSelector.vue'
 import TrajectoryQueryPanel from '@/components/panels/TrajectoryQueryPanel.vue'
 import TrajectoryMap, { type Waypoint } from '@/components/panels/TrajectoryMap.vue'
 import {
@@ -127,6 +137,11 @@ function goBack() {
 type PlayState = 'idle' | 'playing' | 'paused'
 const playState = ref<PlayState>('idle')
 const selectedId = ref<number>(1)
+
+const selectedFloor = ref('1F')
+function onFloorChange(floor: string) {
+  selectedFloor.value = floor
+}
 
 const activities = computed(() => getActivitiesForPerson(selectedId.value))
 
@@ -220,11 +235,18 @@ function handlePlayEnd() {
   &__center {
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
-  &__map {
-    flex: 1;
-    position: relative;
+  &__map-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+
+    :deep(*) {
+      pointer-events: auto;
+    }
   }
 
   &__map-controls {
