@@ -5,14 +5,14 @@
         <IconHvacOnline :size="60" />
         <div class="stat-card__info">
           <span class="stat-card__num stat-card__num--cool">{{ onlineCount }}</span>
-          <span class="stat-card__label">在线(台)</span>
+          <span class="stat-card__label">正常(台)</span>
         </div>
       </div>
       <div class="stat-card stat-card--offline">
         <IconHvacOffline :size="60" />
         <div class="stat-card__info">
           <span class="stat-card__num stat-card__num--warm">{{ offlineCount }}</span>
-          <span class="stat-card__label">离线(台)</span>
+          <span class="stat-card__label">故障(台)</span>
         </div>
       </div>
     </div>

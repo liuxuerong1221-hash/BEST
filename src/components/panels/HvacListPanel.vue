@@ -1,31 +1,54 @@
 <template>
   <BasePanel class="hvac-list" title="楼宇设备列表">
     <div class="hvac-list__toolbar">
-      <label class="search-input">
-        <input v-model="keyword" class="search-input__input" placeholder="请输入关键词搜索" />
+      <label class="search-input search-input--short">
+        <input v-model="keyword" class="search-input__input" placeholder="搜索设备" />
         <svg class="search-input__icon" viewBox="0 0 18 18" fill="none">
           <circle cx="8" cy="8" r="5.5" stroke="#4DF2FF" stroke-width="1.4"/>
           <path d="M12.5 12.5L16 16" stroke="#4DF2FF" stroke-width="1.4" stroke-linecap="round"/>
         </svg>
       </label>
 
-      <div class="filter-select" @click="toggleTypeFilter">
+      <div ref="typeFilterRef" class="filter-select" @click="toggleTypeFilter">
         <span class="filter-select__text">{{ typeFilterLabel }}</span>
         <svg class="filter-select__caret" :class="{ 'filter-select__caret--open': typeFilterOpen }"
              viewBox="0 0 12 12" fill="none">
           <path d="M2 4.5L6 8.5L10 4.5" stroke="#4DF2FF" stroke-width="1.4"
                 stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <ul v-if="typeFilterOpen" class="filter-select__menu" @click.stop>
-          <li v-for="opt in typeFilterOptions" :key="opt.value"
-              class="filter-select__option"
-              :class="{ 'filter-select__option--active': typeFilter === opt.value }"
-              @click="selectTypeFilter(opt.value)">
-            {{ opt.label }}
-          </li>
-        </ul>
+      </div>
+
+      <div ref="statusFilterRef" class="filter-select" @click="toggleStatusFilter">
+        <span class="filter-select__text">{{ statusFilterLabel }}</span>
+        <svg class="filter-select__caret" :class="{ 'filter-select__caret--open': statusFilterOpen }"
+             viewBox="0 0 12 12" fill="none">
+          <path d="M2 4.5L6 8.5L10 4.5" stroke="#4DF2FF" stroke-width="1.4"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
     </div>
+
+    <!-- 类型筛选菜单 — Teleport 到 body 避免被 overflow:hidden 裁剪 -->
+    <Teleport to="body">
+      <ul v-if="typeFilterOpen" class="filter-menu-float"
+          :style="typeMenuStyle" @click.stop>
+        <li v-for="opt in typeFilterOptions" :key="opt.value"
+            class="filter-menu-float__option"
+            :class="{ 'filter-menu-float__option--active': typeFilter === opt.value }"
+            @click="selectTypeFilter(opt.value)">
+          {{ opt.label }}
+        </li>
+      </ul>
+      <ul v-if="statusFilterOpen" class="filter-menu-float"
+          :style="statusMenuStyle" @click.stop>
+        <li v-for="opt in statusFilterOptions" :key="opt.value"
+            class="filter-menu-float__option"
+            :class="{ 'filter-menu-float__option--active': statusFilter === opt.value }"
+            @click="selectStatusFilter(opt.value)">
+          {{ opt.label }}
+        </li>
+      </ul>
+    </Teleport>
 
     <div class="hvac-list__table">
       <div class="hvac-row hvac-row--header">
@@ -52,7 +75,7 @@
           <span class="hvac-row__location">{{ d.location }}</span>
           <span class="hvac-row__status">
             <span class="status-badge" :class="`status-badge--${d.status}`">
-              {{ d.status === 'online' ? '在线' : '离线' }}
+              {{ d.status === 'online' ? '正常' : '故障' }}
             </span>
           </span>
         </div>
@@ -70,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import BasePanel from '@/components/common/BasePanel.vue'
 
 export type HvacType = 'air-conditioner' | 'fresh-air' | 'supply-air' | 'exhaust-air'
@@ -105,6 +128,23 @@ const TYPE_LABEL: Record<HvacType, string> = {
 
 const keyword = ref('')
 
+const typeFilterRef = ref<HTMLElement | null>(null)
+const statusFilterRef = ref<HTMLElement | null>(null)
+const typeMenuStyle = ref<Record<string, string>>({})
+const statusMenuStyle = ref<Record<string, string>>({})
+
+function calcMenuStyle(el: HTMLElement | null): Record<string, string> {
+  if (!el) return {}
+  const r = el.getBoundingClientRect()
+  return {
+    position: 'fixed',
+    top: `${r.bottom + 4}px`,
+    left: `${r.left}px`,
+    minWidth: `${r.width}px`,
+    zIndex: '99999',
+  }
+}
+
 const typeFilter = ref<'all' | HvacType>('all')
 const typeFilterOpen = ref(false)
 const typeFilterOptions = [
@@ -117,12 +157,45 @@ const typeFilterOptions = [
 const typeFilterLabel = computed(() =>
   typeFilterOptions.find(o => o.value === typeFilter.value)?.label ?? '全部类型',
 )
-function toggleTypeFilter() { typeFilterOpen.value = !typeFilterOpen.value }
+function toggleTypeFilter() {
+  if (!typeFilterOpen.value) typeMenuStyle.value = calcMenuStyle(typeFilterRef.value)
+  typeFilterOpen.value = !typeFilterOpen.value
+  statusFilterOpen.value = false
+}
 function selectTypeFilter(v: 'all' | HvacType) {
   typeFilter.value = v
   typeFilterOpen.value = false
   currentPage.value = 1
 }
+
+const statusFilter = ref<'all' | HvacStatus>('all')
+const statusFilterOpen = ref(false)
+const statusFilterOptions = [
+  { value: 'all',     label: '全部状态' },
+  { value: 'online',  label: '正常' },
+  { value: 'offline', label: '故障' },
+] as const
+const statusFilterLabel = computed(() =>
+  statusFilterOptions.find(o => o.value === statusFilter.value)?.label ?? '全部状态',
+)
+function toggleStatusFilter() {
+  if (!statusFilterOpen.value) statusMenuStyle.value = calcMenuStyle(statusFilterRef.value)
+  statusFilterOpen.value = !statusFilterOpen.value
+  typeFilterOpen.value = false
+}
+function selectStatusFilter(v: 'all' | HvacStatus) {
+  statusFilter.value = v
+  statusFilterOpen.value = false
+  currentPage.value = 1
+}
+
+function closeAll() {
+  typeFilterOpen.value = false
+  statusFilterOpen.value = false
+}
+
+onMounted(() => document.addEventListener('click', closeAll))
+onUnmounted(() => document.removeEventListener('click', closeAll))
 
 watch(() => props.filterBuildingId, () => { currentPage.value = 1 })
 watch(() => props.devices, () => { currentPage.value = 1 })
@@ -139,6 +212,9 @@ const filteredAll = computed(() => {
   }
   if (typeFilter.value !== 'all') {
     list = list.filter(d => d.type === typeFilter.value)
+  }
+  if (statusFilter.value !== 'all') {
+    list = list.filter(d => d.status === statusFilter.value)
   }
   return list
 })
@@ -204,6 +280,8 @@ watch(pageItems, list => {
   border: 1px solid $color-border;
   border-radius: $radius-sm;
 
+  &--short { flex: 0 0 100px; }
+
   &__input {
     flex: 1;
     background: transparent;
@@ -220,7 +298,8 @@ watch(pageItems, list => {
 
 .filter-select {
   position: relative;
-  width: 111px;
+  width: auto;
+  min-width: 90px;
   height: 34px;
   display: flex;
   align-items: center;
@@ -232,7 +311,7 @@ watch(pageItems, list => {
   cursor: pointer;
   user-select: none;
 
-  &__text { font-size: $font-size-xs; color: $color-text-2; }
+  &__text { font-size: $font-size-xs; color: $color-text-2; white-space: nowrap; }
   &__caret {
     width: 12px;
     height: 12px;
@@ -240,29 +319,6 @@ watch(pageItems, list => {
     &--open { transform: rotate(180deg); }
   }
 
-  &__menu {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding: 4px 0;
-    list-style: none;
-    background: rgba(10, 29, 53, 0.95);
-    border: 1px solid $color-border;
-    border-radius: $radius-sm;
-    z-index: 10;
-    box-shadow: $shadow-panel;
-  }
-
-  &__option {
-    padding: 6px 10px;
-    font-size: $font-size-xs;
-    color: $color-text-2;
-    cursor: pointer;
-    &:hover { background: rgba(0, 174, 255, 0.18); color: $color-text-1; }
-    &--active { color: $color-primary-bright; }
-  }
 }
 
 .hvac-row {
@@ -316,7 +372,7 @@ watch(pageItems, list => {
   border: 1px solid currentColor;
 
   &--online { color: $color-success; background: rgba(46, 208, 176, 0.12); }
-  &--offline { color: $color-warning; background: rgba(249, 185, 51, 0.12); }
+  &--offline { color: #FF4848; background: rgba(255, 72, 72, 0.12); }
 }
 
 .pagination-btn {
@@ -344,5 +400,30 @@ watch(pageItems, list => {
   font-family: $font-number;
   min-width: 60px;
   text-align: center;
+}
+</style>
+
+<style lang="scss">
+/* 非 scoped：Teleport 渲染在 body，需要全局样式 */
+.filter-menu-float {
+  position: fixed;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background: rgba(10, 29, 53, 0.97);
+  border: 1px solid rgba(0, 174, 255, 0.35);
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55);
+
+  &__option {
+    padding: 6px 14px;
+    font-size: 12px;
+    color: rgba(209, 237, 255, 0.75);
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover { background: rgba(0, 174, 255, 0.18); color: #fff; }
+    &--active { color: #4DF2FF; }
+  }
 }
 </style>

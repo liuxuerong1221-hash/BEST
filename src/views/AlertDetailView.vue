@@ -321,7 +321,7 @@ function confirmHandle() {
   &__map-controls {
     position: absolute;
     right: 8px;
-    bottom: 8px;
+    bottom: 24px;
     z-index: 5;
     display: flex;
     flex-direction: column;
