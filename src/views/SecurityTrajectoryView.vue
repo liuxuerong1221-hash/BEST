@@ -110,6 +110,7 @@
             :selected-floor="selectedFloor"
             @floor-change="onFloorChange"
           />
+          <FirstPersonRoamButton />
         </div>
       </section>
 
@@ -158,6 +159,7 @@ import { useRouter } from 'vue-router'
 import AppHeader from '@/components/common/AppHeader.vue'
 import Compass from '@/components/common/Compass.vue'
 import FloorSelector from '@/components/common/FloorSelector.vue'
+import FirstPersonRoamButton from '@/components/common/FirstPersonRoamButton.vue'
 import TrajectoryQueryPanel from '@/components/panels/TrajectoryQueryPanel.vue'
 import TrajectoryMap, { type Waypoint } from '@/components/panels/TrajectoryMap.vue'
 import {
@@ -286,12 +288,8 @@ function closeMonitor() {
   &__map-overlay {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 15;
     pointer-events: none;
-
-    :deep(*) {
-      pointer-events: auto;
-    }
   }
 
   &__monitor {
