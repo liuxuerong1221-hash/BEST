@@ -182,7 +182,7 @@ function goBack() {
   &__bg {
     position: absolute;
     inset: 0;
-    background-image: url('@/assets/images/bg图@2x.png');
+    background-image: url('@/assets/images/bg-park.jpg');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     z-index: 0;

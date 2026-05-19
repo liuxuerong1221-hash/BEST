@@ -78,7 +78,7 @@ import IconBuilding  from '@/components/icons/IconBuilding.vue'
 import IconAccess    from '@/components/icons/IconAccess.vue'
 import IconEnergy    from '@/components/icons/IconEnergy.vue'
 import IconCamera    from '@/components/icons/IconCamera.vue'
-import IconLighting  from '@/components/icons/IconLighting.vue'
+import IconDisplayScreen from '@/components/icons/IconDisplayScreen.vue'
 import IconBroadcast from '@/components/icons/IconBroadcast.vue'
 
 // ── 连线计算 ──────────────────────────────────────────
@@ -179,7 +179,7 @@ const devicesLeft = [
 ]
 const devicesRight = [
   { name: '摄像头', icon: IconCamera,    total: 24, online: 22 },
-  { name: '照明',   icon: IconLighting,  total: 24, online: 22 },
+  { name: '电子班牌', icon: IconDisplayScreen, total: 24, online: 22 },
   { name: '广播',   icon: IconBroadcast, total: 24, online: 22 },
 ]
 </script>

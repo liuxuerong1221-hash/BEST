@@ -111,7 +111,11 @@ function onSelect(key: TabKey) {
     }
 
     &--active &-label {
-      color: $color-text-1;
+      background: none;
+      -webkit-background-clip: unset;
+      background-clip: unset;
+      -webkit-text-fill-color: #FFFFFF;
+      color: #FFFFFF;
       text-shadow: 0 0 8px rgba(0, 174, 255, 0.8);
     }
   }

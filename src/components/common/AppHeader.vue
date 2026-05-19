@@ -1,7 +1,6 @@
 <template>
   <header class="app-header">
-    <!-- 头部装饰图 -->
-    <img class="app-header__deco" src="@/assets/images/头部@2x.png" alt="" />
+    <img class="app-header__deco" src="@/assets/images/头部@2x.png" aria-hidden="true" />
 
     <!-- 中间标题 -->
     <div class="app-header__center">
@@ -96,11 +95,23 @@ onUnmounted(() => clearInterval(timer))
   justify-content: space-between;
   padding: 0 24px;
   position: relative;
+  overflow: hidden;
+
+  &__deco {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+    z-index: 0;
+  }
 
   &__center {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    top: 42%;
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -126,15 +137,12 @@ onUnmounted(() => clearInterval(timer))
     font-weight: 400;
     letter-spacing: 6px;
     white-space: nowrap;
-    background: linear-gradient(180deg, #FFFFFF 0%, #52C0FF 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #FFFFFF;
     filter: drop-shadow(0 0 10px rgba(0, 174, 255, 0.8)) drop-shadow(0 0 24px rgba(0, 174, 255, 0.4));
   }
 
   &__subtitle {
-    font-size: 11px;
+    font-size: 14px;
     letter-spacing: 3px;
     color: rgba(77, 242, 255, 0.55);
     white-space: nowrap;
@@ -143,21 +151,11 @@ onUnmounted(() => clearInterval(timer))
   }
 
 
-  &__deco {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    height: 100%;
-    width: auto;
-    pointer-events: none;
-    z-index: 0;
-  }
-
   &__left {
     position: absolute;
     left: 40px;
-    top: 35px;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
     gap: 16px;
@@ -168,7 +166,8 @@ onUnmounted(() => clearInterval(timer))
   &__right {
     position: absolute;
     right: 40px;
-    top: 35px;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
     gap: 16px;

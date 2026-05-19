@@ -179,7 +179,7 @@ const activities = computed<MockActivity[]>(() =>
   display: flex;
   flex-direction: column;
   gap: 6px;
-  background: $color-bg-panel;
+  background: rgba(10, 29, 53, 0.4);
   border: 1px solid $color-border;
   border-radius: $radius-md;
   padding: 16px 14px 24px;
@@ -267,7 +267,7 @@ const activities = computed<MockActivity[]>(() =>
     gap: 12px;
     height: 88px;
     padding-right: 12px;
-    background: rgba(4, 22, 50, 0.85);
+    background: rgba(5, 25, 49, 0.64);
     border: 1px solid rgba(0, 174, 255, 0.12);
     border-radius: $radius-sm;
     overflow: hidden;

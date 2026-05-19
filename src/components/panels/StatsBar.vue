@@ -4,8 +4,10 @@
       <template v-for="(item, idx) in stats" :key="item.label">
         <div class="stats-bar__item">
           <img class="stats-bar__icon" :src="item.icon" :alt="item.label" />
-          <span class="stats-bar__label">{{ item.label }}</span>
-          <span class="stats-bar__value" :style="{ color: item.color }">{{ item.value }}</span>
+          <div class="stats-bar__info">
+            <span class="stats-bar__label">{{ item.label }}</span>
+            <span class="stats-bar__value" :style="{ color: item.color }">{{ item.value }}</span>
+          </div>
         </div>
         <div v-if="idx < stats.length - 1" class="stats-bar__sep" />
       </template>
@@ -37,10 +39,10 @@ const stats = [
     display: flex;
     align-items: center;
     padding: 0;
-    height: 58px;
+    height: 68px;
     margin-top: 10px;
     border-radius: 0.25rem;
-    background: linear-gradient(96deg, rgba(8, 38, 74, 0.352) 0%, rgba(3, 21, 43, 0.368) 95%);
+    background: linear-gradient(96deg, rgba(8, 38, 74, 0.6) 0%, rgba(3, 21, 43, 0.6) 95%);
     box-sizing: border-box;
     border: 0.06rem solid rgba(11, 182, 255, 0.3);
   }
@@ -48,34 +50,40 @@ const stats = [
   &__item {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     padding: 0 $spacing-lg;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
   }
 
   &__sep {
     width: 1px;
-    height: 20px;
+    height: 28px;
     background: rgba(0, 174, 255, 0.3);
     flex-shrink: 0;
   }
 
   &__icon {
-    width: 20px;
-    height: 20px;
+    width: 26px;
+    height: 26px;
     object-fit: contain;
     flex-shrink: 0;
   }
 
   &__label {
-    font-size: $font-size-xxs;
-    color: $color-text-2;
+    font-size: $font-size-xs;
+    color: $color-text-1;
     line-height: 1;
     white-space: nowrap;
   }
 
   &__value {
     font-family: $font-number;
-    font-size: $font-size-xs;
+    font-size: $font-size-sm;
     font-weight: bold;
     line-height: 1;
     white-space: nowrap;

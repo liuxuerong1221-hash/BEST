@@ -56,7 +56,7 @@ const stats: StatItem[] = [
     gap: 13px;
     padding: 17px 20px;
     position: relative;
-    background: linear-gradient(117deg, rgba(8, 38, 74, 0.352) 0%, rgba(3, 21, 43, 0.368) 97%);
+    background: linear-gradient(117deg, rgba(8, 38, 74, 0.6) 0%, rgba(3, 21, 43, 0.6) 97%);
     border: 1px solid rgba(11, 182, 255, 0.3);
     border-radius: $radius-sm;
     backdrop-filter: blur(6px);
