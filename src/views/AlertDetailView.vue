@@ -270,7 +270,7 @@ function confirmHandle() {
   &__bg {
     position: absolute;
     inset: 0;
-    background-image: url('@/assets/images/bg-park.jpg');
+    background-image: url('@/assets/images/大屏背景@2x.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     z-index: 0;
